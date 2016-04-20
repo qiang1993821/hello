@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 
 /**
- * Created by Administrator on 2016/4/20.
+ * Created by roc on 2016/4/20.
  */
 @Repository
 public interface UserDao extends CrudRepository<User, Integer> {

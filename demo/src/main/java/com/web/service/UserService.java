@@ -11,7 +11,7 @@ public interface UserService {
      * @param user
      * @return
      */
-    User save(User user);
+    void save(User user);
 
     /**
      * 根据名字获取用户

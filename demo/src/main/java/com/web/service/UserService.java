@@ -2,6 +2,8 @@ package com.web.service;
 
 import com.web.domain.User;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2016/4/20.
  */
@@ -18,7 +20,7 @@ public interface UserService {
      * @param name
      * @return
      */
-    User findUserByName(String name);
+    List<User> findUserByName(String name);
 
     /**
      * 获取全部用户
@@ -39,4 +41,11 @@ public interface UserService {
      * @return
      */
     int updateUserNameById(String name,Integer id);
+
+    /**
+     * 根绝token获取用户id
+     * @param token
+     * @return
+     */
+    Long findIdByToken(String token);
 }

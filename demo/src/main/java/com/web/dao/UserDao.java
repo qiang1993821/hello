@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Created by roc on 2016/4/20.
@@ -24,6 +25,9 @@ public interface UserDao extends CrudRepository<User, Integer> {
     int deleteUserByName(@Param("name") String name);
 
     @Query("SELECT user FROM User user WHERE user.name = :name")
-    User findUserByName(String name);
+    List<User> findUserByName(@Param("name")String name);
+
+    @Query("SELECT user.id FROM User user WHERE user.token = :token")
+    List<Long> findIdByToken(@Param("token")String token);
 
 }

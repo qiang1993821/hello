@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.ModelAndView
 
@@ -20,6 +21,7 @@ class Test {
     private final Logger logger = LoggerFactory.getLogger(Test.class);
     @Autowired
     private UserServiceImpl userService
+    @ResponseBody
     @RequestMapping("/hello")
     String hello(){
         "hello world, bye bye kobe."

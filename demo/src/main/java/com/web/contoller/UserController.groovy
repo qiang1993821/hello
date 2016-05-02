@@ -3,7 +3,10 @@ package com.web.contoller
 import com.web.domain.User
 import com.web.service.impl.UserServiceImpl
 import com.web.util.CacheUtil
+import com.web.util.HttpJsonUtil
 import com.web.util.TimeUtil
+import groovyx.net.http.HTTPBuilder
+import groovyx.net.http.Method
 import org.apache.commons.lang.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -11,11 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.stereotype.Controller
 import groovy.json.JsonBuilder
+import static groovyx.net.http.ContentType.JSON
+import static groovyx.net.http.Method.GET
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.ModelAndView
 
 import javax.servlet.http.HttpServletRequest
@@ -45,6 +49,13 @@ class UserController {
             modelAndView = new ModelAndView("/error")
             modelAndView.addObject("erroInfo", "微信登录异常，请重新登录！")
         }else {
+            def user = HttpJsonUtil.getUserByCode(code)
+            if (user == null){
+                modelAndView = new ModelAndView("/error")
+                modelAndView.addObject("erroInfo", "微信获取信息异常，请重新登录！")
+            }else {
+
+            }
             modelAndView = new ModelAndView("/main")
             modelAndView.addObject("code", code)
         }
@@ -68,8 +79,11 @@ class UserController {
             userService.save(user)
             uid = userService.findIdByToken(token)
             map.put("msg","参与或发起志愿活动前，请前往完善个人信息！")
-        }else
-            map.put("msg","欢迎你，志愿者！")
+            map.put("type",1)
+        }else {
+            map.put("msg", "欢迎你，志愿者！")
+            map.put("type",0)
+        }
         CacheUtil.putCache(token,uid,CacheUtil.MEMCACHED_ONE_DAY*3)
         return new JsonBuilder(map).toString()
     }

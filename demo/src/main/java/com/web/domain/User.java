@@ -11,8 +11,8 @@ public class User {
     @Id
     @GeneratedValue
     private long id;
-    @Column(nullable = false, name="access_token")
-    private String token;
+    @Column(nullable = true, name="sex")
+    private int sex;
     @Column(nullable = true, name="name")
     private String name;
     @Column(nullable = true, name="regtime")
@@ -32,14 +32,6 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public String getRegTime() {

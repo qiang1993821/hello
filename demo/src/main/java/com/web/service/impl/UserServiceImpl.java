@@ -4,6 +4,7 @@ import com.web.dao.UserDao;
 import com.web.domain.User;
 import com.web.service.UserService;
 import com.web.util.CacheUtil;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +32,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findUserByName(String name) {
+
         return userDao.findUserByName(name);
     }
 
     @Override
-    public Iterable<User> getUsers() {
-        return userDao.findAll();
+    public User findOneUser(long id) {
+        return userDao.findOneById(id).get(0);
     }
 
     @Override
@@ -51,15 +53,46 @@ public class UserServiceImpl implements UserService {
         return userDao.updateNameById(name,id);
     }
 
+//    @Override
+//    public Long findIdByOpenid(String openid) {
+//        if (openid!=null) {
+//            Long uid = (Long) CacheUtil.getCache(openid);
+//            if (uid == null) {
+//                try {
+//                    uid = userDao.findIdByOpenid(openid).get(0);
+//                }catch (Exception e){
+//                    logger.error("findIdByOpenid:"+e.getMessage());
+//                }
+//            }
+//            return uid;
+//        }else {
+//            return null;
+//        }
+//    }
+
     @Override
-    public Long findIdByToken(String token) {
-        if (token!=null) {
-            Long uid = (Long) CacheUtil.getCache(token);
+    public String getPhoneById(long id) {
+        String key = "phone-"+id;
+        String phone = (String)CacheUtil.getCache(key);
+        if (StringUtils.isBlank(phone)){
+            try {
+                phone = userDao.getPhoneById(id).get(0);
+            }catch (Exception e){
+                logger.error("getPhoneById:"+e.getMessage());
+            }
+        }
+        return phone;
+    }
+
+    @Override
+    public Long findIdByName(String name) {
+        if (name!=null) {
+            Long uid = (Long) CacheUtil.getCache(name);
             if (uid == null) {
                 try {
-                    uid = userDao.findIdByToken(token).get(0);
+                    uid = userDao.findIdByName(name).get(0);
                 }catch (Exception e){
-                    logger.error("findIdByToken:"+e.getMessage());
+                    logger.error("findIdByName:"+e.getMessage());
                 }
             }
             return uid;

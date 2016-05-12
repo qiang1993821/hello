@@ -55,7 +55,8 @@ class HttpJsonUtil {
             uri.query = [ access_token:token,openid:openid,lang:'zh_CN' ]
             response.success = { resp, json ->
                 user.name = json.nickname
-                user.sex
+                user.sex = json.sex
+                user.openid = json.openid
             }
             response.'404' = { resp ->
                 logger.error("Not found wecaturl at /user/index")
@@ -64,6 +65,10 @@ class HttpJsonUtil {
                 logger.error("Unexpected failure: ${resp.statusLine}")
             }
         }
+        if (StringUtils.isBlank(user.openid))
+            return null
+        else
+            return user
     }
 //    private static final token = 'zoro'//测试用
 //    public static String testHttp(){

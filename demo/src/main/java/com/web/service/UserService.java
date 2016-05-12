@@ -23,10 +23,10 @@ public interface UserService {
     List<User> findUserByName(String name);
 
     /**
-     * 获取全部用户
+     * 获取一个用户
      * @return
      */
-    Iterable<User> getUsers();
+    User findOneUser(long id);
 
     /**
      * 根据用户名字删除
@@ -47,5 +47,20 @@ public interface UserService {
      * @param token
      * @return
      */
-    Long findIdByToken(String token);
+//    Long findIdByOpenid(String token);
+
+    /**
+     * 根据用户名获取
+     * @param name
+     * @return
+     */
+    Long findIdByName(String name);
+
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    String getPhoneById(long id);
 }

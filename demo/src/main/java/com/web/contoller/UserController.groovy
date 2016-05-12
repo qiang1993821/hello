@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.stereotype.Controller
 import groovy.json.JsonBuilder
+import org.springframework.web.bind.annotation.RestController
+
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.Method.GET
 import org.springframework.web.bind.annotation.RequestMapping
@@ -28,7 +30,7 @@ import javax.servlet.http.HttpServletResponse
 /**
  * Created by Administrator on 2016/4/26.
  */
-@Controller
+@RestController
 @EnableAutoConfiguration
 @RequestMapping("/user")
 class UserController {
@@ -41,50 +43,97 @@ class UserController {
      * @param token
      * @return
      */
-    @RequestMapping(value = "/index", method = RequestMethod.GET)
-    ModelAndView index(@RequestParam(value = "code",required = false) String code,
-                       @RequestParam(value = "state") String state){
-        def modelAndView
-        if (StringUtils.isBlank(code)){
-            modelAndView = new ModelAndView("/error")
-            modelAndView.addObject("erroInfo", "微信登录异常，请重新登录！")
-        }else {
-            def user = HttpJsonUtil.getUserByCode(code)
-            if (user == null){
-                modelAndView = new ModelAndView("/error")
-                modelAndView.addObject("erroInfo", "微信获取信息异常，请重新登录！")
-            }else {
-
-            }
-            modelAndView = new ModelAndView("/main")
-            modelAndView.addObject("code", code)
-        }
-        return modelAndView
-    }
+//    @RequestMapping(value = "/index", method = RequestMethod.GET)
+//    ModelAndView index(@RequestParam(value = "code",required = false) String code,
+//                       @RequestParam(value = "state") String state){
+//        def modelAndView
+//        if (StringUtils.isBlank(code)){
+//            modelAndView = new ModelAndView("/error")
+//            modelAndView.addObject("erroInfo", "微信登录异常，请重新登录！")
+//        }else {
+//            def user = HttpJsonUtil.getUserByCode(code)
+//            if (user == null){
+//                modelAndView = new ModelAndView("/error")
+//                modelAndView.addObject("erroInfo", "微信获取信息异常，请重新登录！")
+//            }else {
+//                modelAndView = new ModelAndView("/main")
+//                modelAndView.addObject("code", code)
+//                def uid = userService.findIdByOpenid(user.openid)
+//                if (uid == null){
+//                    userService.save(user)
+//                    uid = userService.findIdByOpenid(user.openid)
+//                    modelAndView.addObject("uid", uid)
+//                }
+//                CacheUtil.putCache(user.openid,uid,CacheUtil.MEMCACHED_ONE_DAY*3)
+//            }
+//        }
+//        return modelAndView
+//    }
 
     /**
-     * 前端到main界面后，获取完token（和微信用户信息）访问login，注册或更新用户登录信息
+     * 判断是否填写了个人信息，以手机号为准
      * @return
      */
-    @ResponseBody
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    String login(@RequestParam(value = "token") String token){
+    @RequestMapping(value = "/isFullInfo")
+    String isFullInfo(@RequestParam(value = "uid") Long uid){
+        if (uid == null)
+            return null
         // 包装数据并返回
         def map = [:]
-        def uid = userService.findIdByToken(token)
-        if (uid == null){
-            def user = new User()
-            user.token = token
-            user.regTime = TimeUtil.getNowTime()
-            userService.save(user)
-            uid = userService.findIdByToken(token)
+        def phone = userService.getPhoneById(uid)
+        if (StringUtils.isBlank(phone)){
             map.put("msg","参与或发起志愿活动前，请前往完善个人信息！")
-            map.put("type",1)
+            map.put("type",0)
         }else {
             map.put("msg", "欢迎你，志愿者！")
+            map.put("type",1)
+            CacheUtil.putCache("phone-"+uid,phone,CacheUtil.MEMCACHED_ONE_DAY*3)
+        }
+        return new JsonBuilder(map).toString()
+    }
+
+    @RequestMapping(value = "/login")
+    String login(@RequestParam(value = "username") String username){
+        def map = [:]
+        if (StringUtils.isBlank(username)){
+            map.put("result","微信登录异常，请重新登录！")
+            map.put("type",0)
+        }else {
+            def uid = userService.findIdByName(username)
+            if (uid == null){
+                def user = new User()
+                user.name = username
+                user.regTime = TimeUtil.getNowTime()
+                userService.save(user)
+                uid = userService.findIdByName(username)
+            }
+            map.put("result",uid)//存cookie用
+            map.put("type",1)
+            CacheUtil.putCache(username,uid,CacheUtil.MEMCACHED_ONE_DAY*3)
+        }
+        return new JsonBuilder(map).toString()
+    }
+
+    @RequestMapping(value = "/updateUserInfo")
+    String updateUserInfo(User oldUser,HttpServletRequest request){
+        def map = [:]
+        try {
+            def user = userService.findOneUser(oldUser.id)
+            user.name = StringUtils.isBlank(oldUser.name)?user.name:oldUser.name
+            user.academy = StringUtils.isBlank(oldUser.academy)?user.academy:oldUser.academy
+            user.className = StringUtils.isBlank(oldUser.className)?user.className:oldUser.className
+            user.phone = StringUtils.isBlank(oldUser.phone)?user.phone:oldUser.phone
+            user.wechat = StringUtils.isBlank(oldUser.wechat)?user.wechat:oldUser.wechat
+            user.show = StringUtils.isBlank(request.getParameter("show"))?user.show:oldUser.show
+            user.sex = StringUtils.isBlank(request.getParameter("sex"))?user.sex:oldUser.sex
+            userService.save(user)
+            map.put("msg","更新个人信息成功！")
+            map.put("type",1)
+        }catch (Exception e){
+            logger.error(e.message)
+            map.put("msg","更新个人信息失败！")
             map.put("type",0)
         }
-        CacheUtil.putCache(token,uid,CacheUtil.MEMCACHED_ONE_DAY*3)
         return new JsonBuilder(map).toString()
     }
 }

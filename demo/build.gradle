@@ -18,8 +18,8 @@ apply plugin: 'war'
 
 
 jar {
-	baseName = 'ios'
-	version = '0.0.1-SNAPSHOT'
+	baseName = 'ustb'
+	version = '0.0.1'
 }
 sourceCompatibility = 1.7
 targetCompatibility = 1.7

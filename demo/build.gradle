@@ -36,6 +36,7 @@ dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-jdbc'
 	compile 'com.h2database:h2:1.4.190'
 	compile 'com.alibaba:fastjson:1.2.7'
+	compile 'javax.mail:mail:1.5.0-b01'
 	compile 'com.google.guava:guava:18.0'
 	compile 'org.springframework.boot:spring-boot-starter-redis'
 	compile 'org.springframework.boot:spring-boot-starter-web'

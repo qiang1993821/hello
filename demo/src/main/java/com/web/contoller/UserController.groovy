@@ -65,11 +65,11 @@ class UserController {
 //    }
 
     /**
-     * 判断是否填写了个人信息，以手机号为准
+     * 判断是否填写了个人信息，以手机号和邮箱为准，在用户参加或发起活动前调用
      * @return
      */
     @RequestMapping(value = "/isFullInfo")
-    String isFullInfo(@RequestParam(value = "uid") Long uid){
+    String isFullInfo(@RequestParam(value = "uid") Long uid){//这接口去了吧，把逻辑直接加到发起或参加活动那里
         if (uid == null)
             return null
         // 包装数据并返回
@@ -79,7 +79,7 @@ class UserController {
             map.put("msg","参与或发起志愿活动前，请前往完善个人信息！")
             map.put("type",0)
         }else {
-            map.put("msg", "欢迎你，志愿者！")
+            map.put("msg", "")
             map.put("type",1)
             CacheUtil.putCache("phone-"+uid,phone,CacheUtil.MEMCACHED_ONE_DAY*3)
         }
@@ -94,16 +94,23 @@ class UserController {
             map.put("type",0)
         }else {
             def uid = userService.findIdByName(username)
+            def type
+            def result
             if (uid == null){
                 def user = new User()
                 user.name = username
                 user.regTime = TimeUtil.getNowTime()
-                userService.save(user)
-                uid = userService.findIdByName(username)
+                type = userService.save(user)
+                if (type == 1) {
+                    uid = userService.findIdByName(username)
+                    result = uid//存cookie用
+                    CacheUtil.putCache(username,uid,CacheUtil.MEMCACHED_ONE_DAY*3)
+                }else {
+                    result = "创建用户异常"
+                }
             }
-            map.put("result",uid)//存cookie用
-            map.put("type",1)
-            CacheUtil.putCache(username,uid,CacheUtil.MEMCACHED_ONE_DAY*3)
+            map.put("type",type)
+            map.put("result",result)
         }
         return new JsonBuilder(map).toString()
     }

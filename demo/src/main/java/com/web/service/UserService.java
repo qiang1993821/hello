@@ -9,11 +9,11 @@ import java.util.List;
  */
 public interface UserService {
     /**
-     * 新增用户
+     * 新增/修改用户
      * @param user
      * @return
      */
-    void save(User user);
+    int save(User user);
 
     /**
      * 根据名字获取用户
@@ -42,12 +42,6 @@ public interface UserService {
      */
     int updateUserNameById(String name,Integer id);
 
-    /**
-     * 根绝token获取用户id
-     * @param token
-     * @return
-     */
-//    Long findIdByOpenid(String token);
 
     /**
      * 根据用户名获取

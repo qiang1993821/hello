@@ -36,8 +36,12 @@ class Test {
         return result
     }
     @RequestMapping("/jsp")
-    public String welcome() {
+    public String welcome(Map<String, Object> model) {
         logger.error("kkkkkkkkkkkkkkkkkkkkkkkkk")
+        def list = new ArrayList<String>();
+        list.add("门外四匹伊利马")
+        list.add("爱拉哪俩拉哪俩")
+        model.put("list",list)
         return "main"
     }
 

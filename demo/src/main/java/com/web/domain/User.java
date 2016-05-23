@@ -27,6 +27,12 @@ public class User {
     private String wechat;
     @Column(nullable = true, name="is_show")
     private int show;//1显示，0不显示
+    @Column(nullable = true, name="join")
+    private String join;
+    @Column(nullable = true, name="launch")
+    private String launch;
+    @Column(nullable = true, name="friends")
+    private String friends;
 
     public long getId() {
         return id;
@@ -98,5 +104,29 @@ public class User {
 
     public void setShow(int show) {
         this.show = show;
+    }
+
+    public String getJoin() {
+        return join;
+    }
+
+    public void setJoin(String join) {
+        this.join = join;
+    }
+
+    public String getLaunch() {
+        return launch;
+    }
+
+    public void setLaunch(String launch) {
+        this.launch = launch;
+    }
+
+    public String getFriends() {
+        return friends;
+    }
+
+    public void setFriends(String friends) {
+        this.friends = friends;
     }
 }

@@ -23,8 +23,13 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login() {
-        logger.error("lllllllllllllllll");
+    public String login(Map<String, Object> model,
+                        @RequestParam(value = "activityId", required = false) Long activityId) {
+        if (activityId!=null) {
+            model.put("activityId", activityId);//在jsp写个hidden
+        }else {
+            model.put("activityId", 0);
+        }
         return "login";
     }
 }

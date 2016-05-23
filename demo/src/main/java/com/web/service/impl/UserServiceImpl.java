@@ -26,13 +26,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void save(User user) {
-        userDao.save(user);
+    public int save(User user) {
+        try {
+            userDao.save(user);
+            return 1;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return 0;
+        }
     }
 
     @Override
     public List<User> findUserByName(String name) {
-
         return userDao.findUserByName(name);
     }
 

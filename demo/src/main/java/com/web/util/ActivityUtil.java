@@ -19,7 +19,7 @@ public class ActivityUtil {
      * @param uid
      * @return
      */
-    public static String addMember(String memberStr,long uid){
+    public static String addMember(String memberStr,long uid,String name){
         try {
             JSONObject member = null;
             List<JSONObject> memberList = null;
@@ -32,6 +32,7 @@ public class ActivityUtil {
             }
             JSONObject user = new JSONObject();
             user.put("uid", uid);
+            user.put("name",name);
             user.put("status", 0);
             memberList.add(user);
             member.put("memberList", memberList);
@@ -63,4 +64,5 @@ public class ActivityUtil {
         jsonObject.put("status",status);
         return jsonObject;
     }
+
 }

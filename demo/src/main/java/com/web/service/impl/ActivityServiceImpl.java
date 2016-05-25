@@ -92,7 +92,6 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    @Transactional
     public int approve(Pend pend) {
         //在活动表的成员项加入成员，在用户表的参与项加入活动
         try {
@@ -101,7 +100,7 @@ public class ActivityServiceImpl implements ActivityService {
             User user = userDao.findOneById(pend.getUid()).get(0);
             if (activity == null || user == null)
                 return 0;
-            String newMember = ActivityUtil.addMember(activity.getMember(),pend.getUid());
+            String newMember = ActivityUtil.addMember(activity.getMember(),pend.getUid(),pend.getUsername());
             String newJoin = UserUtil.addJoin(user.getPartake(),pend.getActivityId());
             if (newMember == null || newJoin == null)
                 return 0;
@@ -172,6 +171,40 @@ public class ActivityServiceImpl implements ActivityService {
             return nameList;
         }catch (Exception e){
             logger.error("fuzzyQuery|"+e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public boolean hasJoined(long uid, long activityId) {
+        try {
+            if (pendDao.hasJoined(activityId,uid).size()>0)//判断是否报名|受邀过
+                return true;
+            User user = userDao.findOneById(uid).get(0);
+            List<Number> partake = (List<Number>)JSON.parseObject(user.getPartake()).get("activityList");
+            for (Number number:partake){//判断是否参与过
+                if (number.longValue()==activityId)
+                    return true;
+            }
+            List<Number> launch = (List<Number>)JSON.parseObject(user.getLaunch()).get("activityList");
+            for (Number number:launch){//判断是否发起过
+                if (number.longValue()==activityId)
+                    return true;
+            }
+        }catch (Exception e){
+            logger.error("hasJoined|"+e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public List<JSONObject> getMemberList(long activityId) {
+        try {
+            Activity activity = activityDao.findOneById(activityId).get(0);
+            JSONObject jsonObject = JSON.parseObject(activity.getMember());
+            return (List<JSONObject>)jsonObject.get("memberList");
+        }catch (Exception e){
+            logger.error("getMemberList|"+e.getMessage());
             return null;
         }
     }

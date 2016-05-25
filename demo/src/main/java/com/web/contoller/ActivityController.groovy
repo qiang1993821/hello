@@ -95,6 +95,9 @@ class ActivityController {
         }else if (!userService.isFullInfo(pend.uid)){//先判断报名人信息是否完整
             map.put("msg","请完善个人后再发起（姓名、邮箱、手机）！")
             map.put("type",0)
+        }else if (activityService.hasJoined(pend.uid,pend.activityId)){//先判断报名人是否已经参与
+            map.put("msg","报名失败，您曾报名|受邀|参与|发起过该活动！")
+            map.put("type",0)
         }else {
             activityService.join(pend)
             map.put("msg","报名成功！")
@@ -112,14 +115,14 @@ class ActivityController {
     @RequestMapping(value = "/approveUser")
     String approveUser(Pend pend,HttpServletRequest request){
         def map = [:]
-        def status = request.getParameter("status")
+        def result = request.getParameter("result")
         def type
         if (StringUtils.isBlank(request.getParameter("id")) || StringUtils.isBlank(request.getParameter("uid"))
-                || StringUtils.isBlank(request.getParameter("activityId")) || StringUtils.isBlank(status)){
+                || StringUtils.isBlank(request.getParameter("activityId")) || StringUtils.isBlank(result)){
             map.put("msg","信息错误，审批失败！")
             map.put("type",0)
         }else {
-            if (status == null || status == 0) {//拒绝
+            if (result == null || result == 0) {//拒绝
                 type = activityService.reject(pend)
             }else {//批准
                 type = activityService.approve(pend)

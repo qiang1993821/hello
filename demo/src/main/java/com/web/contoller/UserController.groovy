@@ -110,6 +110,7 @@ class UserController {
                     uid = user.id
                     result = uid//存cookie用
                     CacheUtil.putCache(username,uid,CacheUtil.MEMCACHED_ONE_DAY*3)
+                    logger.error("LOGIN|uid:"+uid+",name:"+username+",time:"+TimeUtil.getNowTime())
                 }else {
                     result = "创建用户异常"
                 }

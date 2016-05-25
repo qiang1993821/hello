@@ -70,4 +70,19 @@ public interface ActivityService {
      * @return
      */
     List<String> fuzzyQuery(String name);
+
+    /**
+     * 获取成员列表
+     * @param activityId
+     * @return
+     */
+    List<JSONObject> getMemberList(long activityId);
+
+    /**
+     * 判断是否已经报名参加发起
+     * @param uid
+     * @param activityId
+     * @return
+     */
+    boolean hasJoined(long uid,long activityId);
 }

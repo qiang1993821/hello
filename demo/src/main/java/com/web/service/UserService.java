@@ -57,4 +57,18 @@ public interface UserService {
      * @return
      */
     String getPhoneById(long id);
+
+    /**
+     * 是否有活跃事件，更新活动进展
+     * @param uid
+     * @return
+     */
+    int current(long uid);
+
+    /**
+     * 必要个人信息是否填写完善
+     * @param uid
+     * @return
+     */
+    boolean isFullInfo(long uid);
 }

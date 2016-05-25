@@ -15,7 +15,7 @@ public class Pend {
     private String username;
     @Column(nullable = false, name="uid")
     private long uid;
-    @Column(nullable = false, name="activityId")
+    @Column(nullable = false, name="activity_id")
     private long activityId;
     @Column(nullable = false, name="type")
     private int type;//0是申请，1是邀请

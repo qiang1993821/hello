@@ -86,6 +86,11 @@ class UserController {
         return new JsonBuilder(map).toString()
     }
 
+    /**
+     * 登录接口，临时的，只认用户名，没有的就创建
+     * @param username
+     * @return
+     */
     @RequestMapping(value = "/login")
     String login(@RequestParam(value = "username") String username){
         def map = [:]
@@ -94,15 +99,15 @@ class UserController {
             map.put("type",0)
         }else {
             def uid = userService.findIdByName(username)
-            def type
-            def result
+            def type = 1
+            def result = uid
             if (uid == null){
                 def user = new User()
                 user.name = username
                 user.regTime = TimeUtil.getNowTime()
                 type = userService.save(user)
                 if (type == 1) {
-                    uid = userService.findIdByName(username)
+                    uid = user.id
                     result = uid//存cookie用
                     CacheUtil.putCache(username,uid,CacheUtil.MEMCACHED_ONE_DAY*3)
                 }else {
@@ -115,18 +120,25 @@ class UserController {
         return new JsonBuilder(map).toString()
     }
 
+    /**
+     * 修改个人信息
+     * @param oldUser
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/updateUserInfo")
-    String updateUserInfo(User oldUser,HttpServletRequest request){
+    String updateUserInfo(User newUser,HttpServletRequest request){
         def map = [:]
         try {
-            def user = userService.findOneUser(oldUser.id)
-            user.name = StringUtils.isBlank(oldUser.name)?user.name:oldUser.name
-            user.academy = StringUtils.isBlank(oldUser.academy)?user.academy:oldUser.academy
-            user.className = StringUtils.isBlank(oldUser.className)?user.className:oldUser.className
-            user.phone = StringUtils.isBlank(oldUser.phone)?user.phone:oldUser.phone
-            user.wechat = StringUtils.isBlank(oldUser.wechat)?user.wechat:oldUser.wechat
-            user.show = StringUtils.isBlank(request.getParameter("show"))?user.show:oldUser.show
-            user.sex = StringUtils.isBlank(request.getParameter("sex"))?user.sex:oldUser.sex
+            def user = userService.findOneUser(newUser.id)
+            user.name = StringUtils.isBlank(newUser.name)?user.name:newUser.name
+            user.academy = StringUtils.isBlank(newUser.academy)?user.academy:newUser.academy
+            user.className = StringUtils.isBlank(newUser.className)?user.className:newUser.className
+            user.phone = StringUtils.isBlank(newUser.phone)?user.phone:newUser.phone
+            user.mail = StringUtils.isBlank(newUser.mail)?user.mail:newUser.mail
+            user.wechat = StringUtils.isBlank(newUser.wechat)?user.wechat:newUser.wechat
+            user.show = StringUtils.isBlank(request.getParameter("show"))?user.show:newUser.show
+            user.sex = StringUtils.isBlank(request.getParameter("sex"))?user.sex:newUser.sex
             userService.save(user)
             map.put("msg","更新个人信息成功！")
             map.put("type",1)
@@ -134,6 +146,22 @@ class UserController {
             logger.error(e.message)
             map.put("msg","更新个人信息失败！")
             map.put("type",0)
+        }
+        return new JsonBuilder(map).toString()
+    }
+
+    /**
+     * 查询活跃事件，同时检测所有活动相关状态，若到时改变状态
+     * @param uid
+     * @return
+     */
+    @RequestMapping(value = "/current")
+    String current(@RequestParam(value = "uid") Long uid){
+        def map = [:]
+        if (uid == null){
+            map.put("type",0)
+        }else {
+            map.put("type",userService.current(uid))
         }
         return new JsonBuilder(map).toString()
     }

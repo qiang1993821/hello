@@ -1,9 +1,16 @@
 package com.web.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.web.dao.ActivityDao;
+import com.web.dao.PendDao;
 import com.web.dao.UserDao;
+import com.web.domain.Activity;
+import com.web.domain.Pend;
 import com.web.domain.User;
 import com.web.service.UserService;
 import com.web.util.CacheUtil;
+import com.web.util.TimeUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,14 +30,17 @@ public class UserServiceImpl implements UserService {
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private ActivityDao activityDao;
+    @Autowired
+    private PendDao pendDao;
 
     @Override
-    @Transactional
     public int save(User user) {
         try {
             userDao.save(user);
             return 1;
-        }catch (Exception e){
+        }catch (Exception e){//处理了异常可能无法触发事物
             logger.error(e.getMessage());
             return 0;
         }
@@ -57,23 +67,6 @@ public class UserServiceImpl implements UserService {
     public int updateUserNameById(String name, Integer id) {
         return userDao.updateNameById(name,id);
     }
-
-//    @Override
-//    public Long findIdByOpenid(String openid) {
-//        if (openid!=null) {
-//            Long uid = (Long) CacheUtil.getCache(openid);
-//            if (uid == null) {
-//                try {
-//                    uid = userDao.findIdByOpenid(openid).get(0);
-//                }catch (Exception e){
-//                    logger.error("findIdByOpenid:"+e.getMessage());
-//                }
-//            }
-//            return uid;
-//        }else {
-//            return null;
-//        }
-//    }
 
     @Override
     public String getPhoneById(long id) {
@@ -104,5 +97,76 @@ public class UserServiceImpl implements UserService {
         }else {
             return null;
         }
+    }
+
+    @Override
+    public int current(long uid) {
+        int current = 0;
+        try {
+            User user = userDao.findOneById(uid).get(0);
+            if (StringUtils.isNotBlank(user.getLaunch())){
+                List<Long> activityList = (List<Long>)JSON.parseObject(user.getLaunch()).get("activityList");
+                current = checkStatus(activityList);
+            }
+            if (StringUtils.isNotBlank(user.getPartake())){
+                List<Long> activityList = (List<Long>)JSON.parseObject(user.getPartake()).get("activityList");
+                current = checkStatus(activityList);
+            }
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        return current;
+    }
+
+    /**
+     * 检查和修改活动阶段，返回是否有活跃事件
+     * @param activityList
+     * @return 1有，0没有
+     */
+    public int checkStatus(List<Long> activityList){
+        int current = 0;
+        if (activityList.size()>0){
+            for (Number activityId:activityList){
+                Activity activity = activityDao.findOneById(activityId.longValue()).get(0);
+                int oldStatus = activity.getStatus();
+                if (oldStatus>=1&&oldStatus<=3){
+                    int status = TimeUtil.changeStatus(activity.getStartTime(),activity.getEndTime());
+                    if (status!=oldStatus){//状态发生了改变
+                        activity.setStatus(status);
+                        activityDao.save(activity);
+                        logger.error("ACTIVITY_STATUS_CHANGE|from "+oldStatus+" to "+status+" at time "+TimeUtil.getNowTime());
+                        List<Pend> pendList = pendDao.queryByActivityId(activityId.longValue());
+                        if (pendList.size() > 0) {
+                            switch (status) {
+                                case 3://进行中，将报名和邀请设为拒绝
+                                    for (Pend pend : pendList) {
+                                        pend.setStatus(-1);
+                                        pendDao.save(pend);
+                                    }
+                                    break;
+                                case 4://已结束，删除报名和邀请记录
+                                    pendDao.delByActivityId(activityId.longValue());
+                                    break;
+                            }
+                        }
+                    }
+                }
+                if (activity.getStatus()==2||activity.getStatus()==3)//即将开始或正在进行
+                    current = 1;
+            }
+        }
+        return current;
+    }
+
+    @Override
+    public boolean isFullInfo(long uid) {
+        try {
+            User user = userDao.findOneById(uid).get(0);
+            if (StringUtils.isNotBlank(user.getName())&&StringUtils.isNotBlank(user.getPhone())&&StringUtils.isNotBlank(user.getMail()))
+                return true;
+        }catch (Exception e){
+            logger.error("isFullInfo|"+e.getMessage());
+        }
+        return false;
     }
 }

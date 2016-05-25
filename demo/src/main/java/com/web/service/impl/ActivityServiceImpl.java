@@ -10,14 +10,20 @@ import com.web.domain.Pend;
 import com.web.domain.User;
 import com.web.service.ActivityService;
 import com.web.util.ActivityUtil;
+import com.web.util.TimeUtil;
 import com.web.util.UserUtil;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-
+@SpringBootApplication
+@Service
 public class ActivityServiceImpl implements ActivityService {
     private final Logger logger = LoggerFactory.getLogger(ActivityServiceImpl.class);
     @Autowired
@@ -40,14 +46,39 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    public int launch(Activity activity) {
+        try {
+            JSONObject launch = null;
+            List<Long> activityList = null;
+            activityDao.save(activity);
+            User user = userDao.findOneById(activity.getSponsor()).get(0);
+            if (StringUtils.isBlank(user.getLaunch())){//之前没发布过活动
+                launch = new JSONObject();
+                activityList = new ArrayList<Long>();
+            }else {
+                launch = JSON.parseObject(user.getLaunch());
+                activityList = (List<Long>)launch.get("activityList");
+            }
+            activityList.add(activity.getId());
+            launch.put("activityList",activityList);
+            user.setLaunch(launch.toJSONString());
+            userDao.save(user);
+            return 1;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        return 0;
+    }
+
+    @Override
     public Activity findOneById(long id) {
         return activityDao.findOneById(id).get(0);
     }
 
     @Override
-    @Transactional
     public int join(Pend pend) {
         try {
+            pend.setType(1);
             pendDao.save(pend);
             return 1;
         }catch (Exception e){
@@ -67,11 +98,11 @@ public class ActivityServiceImpl implements ActivityService {
             if (activity == null || user == null)
                 return 0;
             String newMember = ActivityUtil.addMember(activity.getMember(),pend.getUid());
-            String newJoin = UserUtil.addJoin(user.getJoin(),pend.getActivityId());
+            String newJoin = UserUtil.addJoin(user.getPartake(),pend.getActivityId());
             if (newMember == null || newJoin == null)
                 return 0;
             activity.setMember(newMember);
-            user.setJoin(newJoin);
+            user.setPartake(newJoin);
             activityDao.save(activity);
             userDao.save(user);
             return 1;

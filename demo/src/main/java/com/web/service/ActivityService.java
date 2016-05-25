@@ -15,6 +15,13 @@ public interface ActivityService {
     int save(Activity activity);
 
     /**
+     * 发起活动
+     * @param activity
+     * @return
+     */
+    int launch(Activity activity);
+
+    /**
      * 通过id获取活动
      * @param id
      * @return

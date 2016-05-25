@@ -22,7 +22,8 @@ public class HomeController {
         return "manual";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    //登录页
+    @RequestMapping(value = "/login")
     public String login(Map<String, Object> model,
                         @RequestParam(value = "activityId", required = false) Long activityId) {
         if (activityId!=null) {

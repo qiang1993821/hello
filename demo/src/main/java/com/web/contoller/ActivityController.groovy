@@ -3,6 +3,7 @@ package com.web.contoller
 import com.web.domain.Activity
 import com.web.domain.Pend
 import com.web.service.impl.ActivityServiceImpl
+import com.web.service.impl.UserServiceImpl
 import groovy.json.JsonBuilder
 import org.apache.commons.lang.StringUtils
 import org.slf4j.Logger
@@ -25,6 +26,8 @@ class ActivityController {
     private final Logger logger = LoggerFactory.getLogger(ActivityController.class);
     @Autowired
     private ActivityServiceImpl activityService;
+    @Autowired
+    private UserServiceImpl userService
 
     /**
      * 发起活动
@@ -37,10 +40,16 @@ class ActivityController {
         if (activity.sponsor==0 || StringUtils.isBlank(activity.name)){
             map.put("msg","信息有误，发起活动失败！")
             map.put("type",0)
-        }else {
-            activityService.save(activity)
-            map.put("msg","活动发起成功！")
-            map.put("type",1)
+        }else if (!userService.isFullInfo(activity.sponsor)){//先判断发起人信息是否完整
+            map.put("msg","请完善个人后再发起（姓名、邮箱、手机）！")
+            map.put("type",0)
+        }else{
+            def type = activityService.launch(activity)
+            map.put("type",type)
+            if (type == 1)
+                map.put("msg","活动发起成功！")
+            else
+                map.put("msg","活动发起异常！")
         }
         return new JsonBuilder(map).toString()
     }
@@ -82,6 +91,9 @@ class ActivityController {
         def map = [:]
         if (StringUtils.isBlank(request.getParameter("uid")) || StringUtils.isBlank(request.getParameter("activityId"))){
             map.put("msg","信息错误，加入活动失败！")
+            map.put("type",0)
+        }else if (!userService.isFullInfo(pend.uid)){//先判断报名人信息是否完整
+            map.put("msg","请完善个人后再发起（姓名、邮箱、手机）！")
             map.put("type",0)
         }else {
             activityService.join(pend)

@@ -19,6 +19,8 @@ public class User {
     private String regTime;
     @Column(nullable = true, name="phone")
     private String phone;
+    @Column(nullable = true, name="mail")
+    private String mail;
     @Column(nullable = true, name="academy")
     private String academy;
     @Column(nullable = true, name="class_name")
@@ -27,8 +29,8 @@ public class User {
     private String wechat;
     @Column(nullable = true, name="is_show")
     private int show;//1显示，0不显示
-    @Column(nullable = true, name="join")
-    private String join;
+    @Column(nullable = true, name="partake")
+    private String partake;
     @Column(nullable = true, name="launch")
     private String launch;
     @Column(nullable = true, name="friends")
@@ -106,12 +108,12 @@ public class User {
         this.show = show;
     }
 
-    public String getJoin() {
-        return join;
+    public String getPartake() {
+        return partake;
     }
 
-    public void setJoin(String join) {
-        this.join = join;
+    public void setPartake(String partake) {
+        this.partake = partake;
     }
 
     public String getLaunch() {
@@ -128,5 +130,13 @@ public class User {
 
     public void setFriends(String friends) {
         this.friends = friends;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 }

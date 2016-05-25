@@ -8,9 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * Created by Administrator on 2016/5/22.
- */
 @Repository
 public interface ActivityDao extends PagingAndSortingRepository<Activity,Integer> {
     @Query("SELECT activity FROM Activity activity WHERE activity.id = :id")

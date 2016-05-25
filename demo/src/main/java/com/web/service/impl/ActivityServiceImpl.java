@@ -17,6 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -124,5 +128,51 @@ public class ActivityServiceImpl implements ActivityService {
             logger.error(e.getMessage());
         }
         return 0;
+    }
+
+    @Override
+    public List<JSONObject> queryByPage(int page) {
+        try {
+            Sort sort = new Sort(Sort.Direction.DESC, "id");
+            Pageable pageable = new PageRequest(page, 3, sort);
+            Page<Activity> activityPage = activityDao.findAll(pageable);
+            List<Activity> activityList = activityPage.getContent();
+            List<JSONObject> jsonList = new ArrayList<JSONObject>();
+            for (Activity activity:activityList){
+                jsonList.add(ActivityUtil.activityToJSON(activity));
+            }
+            return jsonList;
+        }catch (Exception e){
+            logger.error("queryByPage|"+e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<JSONObject> queryByName(String name) {
+        try {
+            List<Activity> activityList = activityDao.queryByName(name);
+            List<JSONObject> jsonList = new ArrayList<JSONObject>();
+            for (Activity activity:activityList){
+                jsonList.add(ActivityUtil.activityToJSON(activity));
+            }
+            return jsonList;
+        }catch (Exception e){
+            logger.error("queryByName|"+e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<String> fuzzyQuery(String name) {
+        try {
+            List<String> nameList =  activityDao.queryLikeName("%"+name+"%");
+            if (nameList.size()>4)//最长为4
+                return nameList.subList(0,4);
+            return nameList;
+        }catch (Exception e){
+            logger.error("fuzzyQuery|"+e.getMessage());
+            return null;
+        }
     }
 }

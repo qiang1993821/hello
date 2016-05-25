@@ -133,4 +133,27 @@ class ActivityController {
         }
         return new JsonBuilder(map).toString()
     }
+
+    @RequestMapping(value = "/searchAC")
+    String searchAC(@RequestParam(value = "page",defaultValue = "0") Integer page){
+        def map = [:]
+        def activityList = activityService.queryByPage(page)
+        map.put("activityList",activityList)
+        return new JsonBuilder(map).toString()
+    }
+
+    @RequestMapping(value = "/queryByName")
+    String queryByName(@RequestParam(value = "name") String name){
+        def map = [:]
+        def activityList = activityService.queryByName(name)
+        map.put("activityList",activityList)
+        return new JsonBuilder(map).toString()
+    }
+    @RequestMapping(value = "/fuzzyQueryAC")
+    String fuzzyQueryAC(@RequestParam(value = "name") String name){
+        def map = [:]
+        def nameList = activityService.fuzzyQuery(name)
+        map.put("nameList",nameList)
+        return new JsonBuilder(map).toString()
+    }
 }

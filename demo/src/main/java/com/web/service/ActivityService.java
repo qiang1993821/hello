@@ -1,7 +1,10 @@
 package com.web.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.web.domain.Activity;
 import com.web.domain.Pend;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/5/22.
@@ -46,4 +49,25 @@ public interface ActivityService {
      * @return
      */
     int reject(Pend pend);
+
+    /**
+     * 分页查询活动信息
+     * @param page
+     * @return
+     */
+    List<JSONObject> queryByPage(int page);
+
+    /**
+     * 根据活动名称查询，会有重名
+     * @param name
+     * @return
+     */
+    List<JSONObject> queryByName(String name);
+
+    /**
+     * 模糊查询
+     * @param name
+     * @return
+     */
+    List<String> fuzzyQuery(String name);
 }

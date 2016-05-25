@@ -11,6 +11,7 @@ import com.web.domain.User;
 import com.web.service.UserService;
 import com.web.util.CacheUtil;
 import com.web.util.TimeUtil;
+import com.web.util.UserUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,6 +167,20 @@ public class UserServiceImpl implements UserService {
                 return true;
         }catch (Exception e){
             logger.error("isFullInfo|"+e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean doFriend(long uid, long friendId, boolean status) {
+        try {
+            User user = userDao.findOneById(uid).get(0);
+            User friend = userDao.findOneById(friendId).get(0);
+            user.setFriends(UserUtil.doFriend(user.getFriends(),friendId,friend.getName(),status));
+            userDao.save(user);
+            return true;
+        }catch (Exception e){
+            logger.error("doFriend|"+e.getMessage());
         }
         return false;
     }

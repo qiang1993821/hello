@@ -54,8 +54,49 @@ public class UserUtil {
             join.put("activityList", joinList);
             return join.toJSONString();
         }catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error("util_addJoin|"+e.getMessage());
             return null;
         }
+    }
+
+    /**
+     * 添加或删除好友
+     * @param friendStr
+     * @param status
+     * @return
+     */
+    public static String doFriend(String friendStr,long friendId,String name,boolean status){
+        try {
+            JSONObject jsonObject = null;
+            List<JSONObject> friendList = null;
+            if (status){//添加
+                if (StringUtils.isBlank(friendStr)){
+                    jsonObject = new JSONObject();
+                    friendList = new ArrayList<JSONObject>();
+                }else {
+                    jsonObject = JSON.parseObject(friendStr);
+                    friendList = (List<JSONObject>)jsonObject.get("friendList");
+                }
+                JSONObject friend = new JSONObject();
+                friend.put("id",friendId);
+                friend.put("name",name);
+                friendList.add(friend);
+            }else {//删除
+                jsonObject = JSON.parseObject(friendStr);
+                friendList = (List<JSONObject>)jsonObject.get("friendList");
+                for (int i = 0; i < friendList.size(); i++){
+                    JSONObject friend = friendList.get(i);
+                    if (friend.getLongValue("id")==friendId){
+                        friendList.remove(i);
+                        break;
+                    }
+                }
+            }
+            jsonObject.put("friendList",friendList);
+            return jsonObject.toJSONString();
+        }catch (Exception e){
+            logger.error("util_doFriend"+e.getMessage());
+        }
+        return friendStr;
     }
 }

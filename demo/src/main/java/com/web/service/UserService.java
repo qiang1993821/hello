@@ -71,4 +71,13 @@ public interface UserService {
      * @return
      */
     boolean isFullInfo(long uid);
+
+    /**
+     * 删除或添加好友
+     * @param uid
+     * @param friendId
+     * @param status true添加 false删除
+     * @return
+     */
+    boolean doFriend(long uid,long friendId,boolean status);
 }

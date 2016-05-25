@@ -166,4 +166,30 @@ class UserController {
         }
         return new JsonBuilder(map).toString()
     }
+
+    @RequestMapping(value = "/addFriend")
+    String addFriend(@RequestParam(value = "uid") Long uid,@RequestParam(value = "friendId") Long friendId){
+        def map = [:]
+        if (userService.doFriend(uid,friendId,true)){
+            map.put("msg","添加成功！")
+            map.put("type",1)
+        }else {
+            map.put("msg","添加失败！")
+            map.put("type",0)
+        }
+        return new JsonBuilder(map).toString()
+    }
+
+    @RequestMapping(value = "/delFriend")
+    String delFriend(@RequestParam(value = "uid") Long uid,@RequestParam(value = "friendId") Long friendId){
+        def map = [:]
+        if (userService.doFriend(uid,friendId,false)){
+            map.put("msg","删除成功！")
+            map.put("type",1)
+        }else {
+            map.put("msg","删除失败！")
+            map.put("type",0)
+        }
+        return new JsonBuilder(map).toString()
+    }
 }

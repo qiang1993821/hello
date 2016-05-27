@@ -1,6 +1,8 @@
 package com.web.contoller
 
-import com.web.service.impl.ActivityServiceImpl;
+import com.web.service.impl.ActivityServiceImpl
+import com.web.service.impl.UserServiceImpl
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @EnableAutoConfiguration
-@RequestMapping("/home")
+@RequestMapping("/")
 public class HomeController {
     private final Logger logger = LoggerFactory.getLogger(HomeController.class);
     @Autowired
     private ActivityServiceImpl activityService;
+    @Autowired
+    private UserServiceImpl userService
 
     @RequestMapping(value = "/testMail")
     public String testMail(Map<String, Object> model,
@@ -52,5 +56,20 @@ public class HomeController {
         def memberList = activityService.getMemberList(activityId)
         model.put("memberList",memberList)
         return "login";
+    }
+
+    //用户详情页
+    @RequestMapping(value = "/userInfo")
+    public String userInfo(Map<String, Object> model,
+                         @RequestParam(value = "uid") Long uid) {
+        def user = userService.findOneUser(uid)
+        model.put("academy",StringUtils.isBlank(user.academy)?"未填写":user.academy)
+        model.put("className",StringUtils.isBlank(user.className)?"未填写":user.className)
+        model.put("wechat",StringUtils.isBlank(user.wechat)?"未填写":user.wechat)
+        model.put("phone",StringUtils.isBlank(user.phone)?"未填写":user.phone)
+        model.put("mail",StringUtils.isBlank(user.mail)?"未填写":user.mail)
+        model.put("sex",user.sex==0?"女":"男")
+        model.put("id",user.id)
+        return "userInfo";
     }
 }

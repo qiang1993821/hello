@@ -96,7 +96,7 @@ class UserController {
         def map = [:]
         if (StringUtils.isBlank(username)){
             map.put("result","微信登录异常，请重新登录！")
-            map.put("type",0)
+            map.put("code",0)
         }else {
             def uid = userService.findIdByName(username)
             def type = 1
@@ -115,7 +115,7 @@ class UserController {
                     result = "创建用户异常"
                 }
             }
-            map.put("type",type)
+            map.put("code",type)
             map.put("result",result)
         }
         return new JsonBuilder(map).toString()
@@ -160,9 +160,9 @@ class UserController {
     String current(@RequestParam(value = "uid") Long uid){
         def map = [:]
         if (uid == null){
-            map.put("type",0)
+            map.put("code",0)
         }else {
-            map.put("type",userService.current(uid))
+            map.put("code",userService.current(uid))
         }
         return new JsonBuilder(map).toString()
     }

@@ -166,8 +166,8 @@ public class ActivityServiceImpl implements ActivityService {
     public List<String> fuzzyQuery(String name) {
         try {
             List<String> nameList =  activityDao.queryLikeName("%"+name+"%");
-            if (nameList.size()>4)//最长为4
-                return nameList.subList(0,4);
+            if (nameList.size()>10)//最长为10
+                return nameList.subList(0,10);
             return nameList;
         }catch (Exception e){
             logger.error("fuzzyQuery|"+e.getMessage());

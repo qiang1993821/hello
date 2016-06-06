@@ -41,21 +41,6 @@
                         <p>实时搜索文本</p>
                     </div>
                 </div>
-                <div class="weui_cell">
-                    <div class="weui_cell_bd weui_cell_primary">
-                        <p>实时搜索文本</p>
-                    </div>
-                </div>
-                <div class="weui_cell">
-                    <div class="weui_cell_bd weui_cell_primary">
-                        <p>实时搜索文本</p>
-                    </div>
-                </div>
-                <div class="weui_cell">
-                    <div class="weui_cell_bd weui_cell_primary">
-                        <p>实时搜索文本</p>
-                    </div>
-                </div>
             </div>
         </div>
        
@@ -64,13 +49,13 @@
 
             </div>
             <div class="weui_tabbar">
-                <a href="javascript:;" class="weui_tabbar_item">
+                <a href="javascript:;" class="weui_tabbar_item" id="activity">
                     <div class="weui_tabbar_icon">
                         <img src="static/images/icon_nav_article.png" alt="">
                     </div>
                     <p class="weui_tabbar_label">活动</p>
                 </a>
-                <a href="javascript:;" class="weui_tabbar_item">
+                <a href="javascript:;" class="weui_tabbar_item" id="me">
                     <div class="weui_tabbar_icon" id="current">
                         <img src="static/images/icon_nav_cell.png" alt="">
                     </div>
@@ -81,33 +66,92 @@
         
         <div class="lists"> 
             <div class="weui_panel weui_panel_access">
-                <div class="weui_panel_bd">
-                    <div class="weui_media_box weui_media_text">
-                        <h4 class="weui_media_title">测试活动</h4>
-                        <p class="weui_media_desc">6工时|正在进行</p>
-                    </div>
-                    <div class="weui_media_box weui_media_text">
-                        <h4 class="weui_media_title">测试活动1</h4>
-                        <p class="weui_media_desc">0工时|审核中</p>
-                    </div>
+                <div class="weui_panel_bd"  id="result_show">
+                    <a class="weui_cell" href="/testMail">
+                        <div class="weui_media_box weui_media_text">
+                            <h4 class="weui_media_title">测试活动</h4>
+                            <p class="weui_media_desc">6工时|正在进行</p>
+                        </div>
+                    </a>
+                    <a class="weui_cell" href="/testMail">
+                        <div class="weui_media_box weui_media_text">
+                            <h4 class="weui_media_title">测试活动</h4>
+                            <p class="weui_media_desc">6工时|正在进行</p>
+                        </div>
+                    </a>
+                    <a class="weui_cell" href="/testMail">
+                        <div class="weui_media_box weui_media_text">
+                            <h4 class="weui_media_title">测试活动</h4>
+                            <p class="weui_media_desc">6工时|正在进行</p>
+                        </div>
+                    </a>
+                    <a class="weui_cell" href="/testMail">
+                        <div class="weui_media_box weui_media_text">
+                            <h4 class="weui_media_title">测试活动</h4>
+                            <p class="weui_media_desc">6工时|正在进行</p>
+                        </div>
+                    </a>
+                    <a class="weui_cell" href="/testMail">
+                        <div class="weui_media_box weui_media_text">
+                            <h4 class="weui_media_title">测试活动</h4>
+                            <p class="weui_media_desc">6工时|正在进行</p>
+                        </div>
+                    </a>
                 </div>
+                <div onclick="queryByPage()" class="weui_btn weui_btn_default" id="loadMore">加载更多</div>
             </div>
             <div> 
                 <div class="weui_cells weui_cells_access">
-                    <a class="weui_cell" href="javascript:;">
+                    <div class="hd">
+                        <h1 class="page_title">${name}</h1>
+                    </div>
+                    <a class="weui_cell" href="/launch?uid=${uid}" id="launch">
                         <div class="weui_cell_bd weui_cell_primary">
-                            <p>cell standard</p>
+                            <p>发起活动</p>
                         </div>
                         <div class="weui_cell_ft">
                         </div>
                     </a>
                     <a class="weui_cell" href="javascript:;">
                         <div class="weui_cell_bd weui_cell_primary">
-                            <p>cell standard</p>
+                            <p>修改个人信息</p>
                         </div>
                         <div class="weui_cell_ft">
                         </div>
                     </a>
+                    <a class="weui_cell" href="javascript:;">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>我的好友</p>
+                        </div>
+                        <div class="weui_cell_ft">
+                        </div>
+                    </a>
+                    <a class="weui_cell" href="javascript:;">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>收到的邀请</p>
+                        </div>
+                        <div class="weui_cell_ft">
+                        </div>
+                    </a>
+                    <a class="weui_cell" href="javascript:;">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>我发起的</p>
+                        </div>
+                        <div class="weui_cell_ft">
+                        </div>
+                    </a>
+                    <a class="weui_cell" href="javascript:;">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>我参与的</p>
+                        </div>
+                        <div class="weui_cell_ft">
+                        </div>
+                    </a>
+                    <div class="bd spacing">
+                        <a href="javascript:logout()" class="weui_btn weui_btn_warn">
+                            退出登录
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -118,6 +162,12 @@
     <script src="static/js/zepto.min.js"></script>
     <script src="static/js/router.min.js"></script>
     <script src="static/js/index.js"></script>
+    <script type="text/javascript">
+        if(localStorage.needRefresh && localStorage.needRefresh==1) {
+            location.reload();
+            localStorage.needRefresh = 0;
+        }
+    </script>
 </body>
 </html>
 

@@ -1,5 +1,6 @@
 var page = 0;
 $(function () {
+    //登录拦截
     if(!localStorage.gyid){
         location.href = "/login";
     }
@@ -43,12 +44,17 @@ $(function () {
                             $searchShow.append('<div class="weui_cell"> <div class="weui_cell_bd weui_cell_primary"> <p>无相关结果</p> </div> </div>')
                         },
                         success: function (data) {
-                            if(data.code==1){
-                                $('#current').addClass('current');
+                            if(data&&data.nameList&&data.nameList.length>0){
+                                $searchShow.empty();
+                                for(var i in data.nameList){
+                                    $searchShow.append('<div class="weui_cell"> <div class="weui_cell_bd weui_cell_primary"> <p onclick="javascript:queryByName(\''+data.nameList[i]+'\')">'+data.nameList[i]+'</p> </div> </div>')
+                                }
+                            }else{
+                                $searchShow.empty();
+                                $searchShow.append('<div class="weui_cell"> <div class="weui_cell_bd weui_cell_primary"> <p>无相关结果</p> </div> </div>')
                             }
                         }
                     });
-                    $searchShow.append('<div class="weui_cell"> <div class="weui_cell_bd weui_cell_primary"> <p>'+content+'</p> </div> </div>')
                     $searchShow.show();
                 } else {
                     $searchShow.hide();
@@ -78,6 +84,15 @@ $(function () {
 		$('.lists>div').hide();
 		$('.lists>div').eq($(this).index()).show();
 	})
+    $('#activity').on('click',function(){
+        $('#search_bar').show();
+        $("#result_show").empty();
+        page = 0;
+        queryByPage();
+    })
+    $('#me').on('click',function(){
+        $('#search_bar').hide();
+    })
 
 
     // .container 设置了 overflow 属性, 导致 Android 手机下输入框获取焦点时, 输入法挡住输入框的 bug
@@ -109,4 +124,65 @@ $(function () {
             }
         }
     });
+
+    //加载前五个活动
+    $("#result_show").empty();
+    queryByPage();
 });
+//根据名字精确查询
+function queryByName(name){
+    $('#loadMore').hide();
+    var $searchShow = $("#search_show");
+    var $resultShow = $("#result_show");
+    $searchShow.hide();
+    $resultShow.empty();
+    $.ajax({
+        url: 'activity/queryByName?name=' + name,
+        type: 'POST',
+        dataType: 'json',
+        error: function () {
+            $resultShow.append('<div class="weui_media_box weui_media_text"><h4 class="weui_media_title">无相关结果</h4></div>');
+        },
+        success: function (data) {
+            if(data&&data.activityList&&data.activityList.length>0){
+                for(var i in data.activityList) {
+                    var activity = data.activityList[i];
+                    $resultShow.append('<a class="weui_cell" href="/activityInfo?activityId="'+activity.id+'><div class="weui_media_box weui_media_text">' +
+                    '<h4 class="weui_media_title">'+activity.name+'</h4><p class="weui_media_desc">'+activity.hour+'工时|'+activity.status+'</p></div></a>');
+                }
+            }else{
+                $resultShow.append('<div class="weui_media_box weui_media_text"><h4 class="weui_media_title">无相关结果</h4></div>');
+            }
+        }
+    });
+}
+//分页查询
+function queryByPage(){
+    var $resultShow = $("#result_show");
+    $.ajax({
+        url: 'activity/searchAC?page=' + page,
+        type: 'POST',
+        dataType: 'json',
+        error: function () {
+            $resultShow.append('<div class="weui_media_box weui_media_text"><h4 class="weui_media_title">无相关结果</h4></div>');
+        },
+        success: function (data) {
+            if(data&&data.activityList&&data.activityList.length>0){
+                for(var i in data.activityList) {
+                    var activity = data.activityList[i];
+                    $resultShow.append('<a class="weui_cell" href="/activityInfo?activityId="'+activity.id+'><div class="weui_media_box weui_media_text">' +
+                    '<h4 class="weui_media_title">'+activity.name+'</h4><p class="weui_media_desc">'+activity.hour+'工时|'+activity.status+'</p></div></a>');
+                }
+                if(data.activityList.length==5){
+                    $("#loadMore").show();
+                }else{
+                    $("#loadMore").hide();
+                }
+            }else{
+                $("#loadMore").hide();
+                $resultShow.append('<div class="weui_media_box weui_media_text"><h4 class="weui_media_title">无相关结果</h4></div>');
+            }
+        }
+    });
+    page = page+1;
+}

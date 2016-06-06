@@ -32,13 +32,14 @@
 	</div>
 	<input type="hidden" id="activityId" value="${activityId}"/>
 	<script type="text/javascript">
+		localStorage.needRefresh = 1;
 		$(function() {
 			var activityId = $("#activityId").val();
 			if(localStorage.gyid){
 				if(activityId==0) {
-					location.href = "/index";
+					location.href = "/index?uid="+localStorage.gyid;
 				} else{
-					location.href = "/activity?activityId="+activityId;
+					location.href = "/activityInfo?activityId="+activityId;
 				}
 			}
 		});
@@ -61,7 +62,7 @@
 						if(data.code==1){
 							$(".weui_dialog_title").html("登录成功");
 							$(".weui_dialog_bd").html("");
-							$('#url').attr('href',activityId==0?"/index":"/activity?activityId="+activityId);
+							$('#url').attr('href',activityId==0?"/index?uid="+data.result:"/activityInfo?activityId="+activityId);
 							localStorage.gyid = data.result;
 						}else{
 							$(".weui_dialog_title").html("登录失败");

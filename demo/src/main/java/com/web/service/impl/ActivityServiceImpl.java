@@ -133,7 +133,7 @@ public class ActivityServiceImpl implements ActivityService {
     public List<JSONObject> queryByPage(int page) {
         try {
             Sort sort = new Sort(Sort.Direction.DESC, "id");
-            Pageable pageable = new PageRequest(page, 3, sort);
+            Pageable pageable = new PageRequest(page, 5, sort);
             Page<Activity> activityPage = activityDao.findAll(pageable);
             List<Activity> activityList = activityPage.getContent();
             List<JSONObject> jsonList = new ArrayList<JSONObject>();

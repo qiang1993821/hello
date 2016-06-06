@@ -21,3 +21,13 @@
     position:relative;
 }
 
+.weui_tabbar{
+    position:fixed;
+    bottom:0;
+    left:0;
+    z-index: 10;
+}
+.lists{
+    padding-bottom: 54px;
+}
+

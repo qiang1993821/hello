@@ -28,7 +28,7 @@ public class HomeController {
                           @RequestParam(value = "mail") String mail) {
         model.put("uid",uid);
         model.put("mail",mail);
-        return "manual";
+        return "manual"
     }
 
     //登录页
@@ -40,13 +40,17 @@ public class HomeController {
         }else {
             model.put("activityId", 0);
         }
-        return "login";
+        return "login"
     }
 
     //主页
     @RequestMapping(value = "/index")
-    public String index() {
-        return "index";
+    public String index(Map<String, Object> model,
+                        @RequestParam(value = "uid") Long uid) {
+        def user = userService.findOneUser(uid);
+        model.put("name",user.name);
+        model.put("uid",uid);
+        return "index"
     }
 
     //成员列表页
@@ -55,7 +59,7 @@ public class HomeController {
                         @RequestParam(value = "activityId") Long activityId) {
         def memberList = activityService.getMemberList(activityId)
         model.put("memberList",memberList)
-        return "login";
+        return "login"
     }
 
     //用户详情页
@@ -70,6 +74,13 @@ public class HomeController {
         model.put("mail",StringUtils.isBlank(user.mail)?"未填写":user.mail)
         model.put("sex",user.sex==0?"女":"男")
         model.put("id",user.id)
-        return "userInfo";
+        return "userInfo"
+    }
+
+    //活动详情页
+    @RequestMapping(value = "/activityInfo")
+    public String activityInfo(Map<String, Object> model,
+                           @RequestParam(value = "activityId") Long activityId) {
+        return "activityInfo"
     }
 }

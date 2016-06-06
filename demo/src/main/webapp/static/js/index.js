@@ -147,7 +147,7 @@ function queryByName(name){
             if(data&&data.activityList&&data.activityList.length>0){
                 for(var i in data.activityList) {
                     var activity = data.activityList[i];
-                    $resultShow.append('<a class="weui_cell" href="/activityInfo?activityId="'+activity.id+'><div class="weui_media_box weui_media_text">' +
+                    $resultShow.append('<a class="weui_cell" href="/activityInfo?activityId='+activity.id+'"><div class="weui_media_box weui_media_text">' +
                     '<h4 class="weui_media_title">'+activity.name+'</h4><p class="weui_media_desc">'+activity.hour+'工时|'+activity.status+'</p></div></a>');
                 }
             }else{
@@ -170,7 +170,7 @@ function queryByPage(){
             if(data&&data.activityList&&data.activityList.length>0){
                 for(var i in data.activityList) {
                     var activity = data.activityList[i];
-                    $resultShow.append('<a class="weui_cell" href="/activityInfo?activityId="'+activity.id+'><div class="weui_media_box weui_media_text">' +
+                    $resultShow.append('<a class="weui_cell" href="/activityInfo?activityId='+activity.id+'"><div class="weui_media_box weui_media_text">' +
                     '<h4 class="weui_media_title">'+activity.name+'</h4><p class="weui_media_desc">'+activity.hour+'工时|'+activity.status+'</p></div></a>');
                 }
                 if(data.activityList.length==5){
@@ -185,4 +185,9 @@ function queryByPage(){
         }
     });
     page = page+1;
+}
+//登出
+function logout(){
+    localStorage.clear();
+    location.href = "/login";
 }

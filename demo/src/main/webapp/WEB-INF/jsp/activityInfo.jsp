@@ -13,13 +13,16 @@
 <link rel="stylesheet" href="static/css/reset.css">
 <link rel="stylesheet" href="static/css/index.css">
 <link rel="stylesheet" href="static/css/example.css">
-<title>活动详情页</title>
+<title>招募|${activity.name}</title>
 </head>
 <body class="activity">
+<div style='margin:0 auto;width:0px;height:0px;overflow:hidden;'>
+	<img src="static/images/mem.png" width='700'>
+</div>
 	<div class="container" id="container"></div>
 	<script type="text/html" id="tpl_home">
 		<div class="hd">
-		    <h1 class="page_title">活动名称</h1>
+		    <h1 class="page_title">${activity.name}</h1>
 		</div>
 		<div class="bd">
 		    <div class="weui_cells">
@@ -27,7 +30,7 @@
 		            <div class="weui_cell_bd weui_cell_primary">
 		                <p>活动状态</p>
 		            </div>
-		            <div class="weui_cell_ft">说明文字</div>
+		            <div class="weui_cell_ft">${activity.status}</div>
 		        </div>
 		    </div>
 		    <div class="weui_cells">
@@ -35,7 +38,7 @@
 		            <div class="weui_cell_bd weui_cell_primary">
 		                <p>开始时间</p>
 		            </div>
-		            <div class="weui_cell_ft">说明文字</div>
+		            <div class="weui_cell_ft">${activity.startTime}</div>
 		        </div>
 		    </div>
 		    <div class="weui_cells">
@@ -43,7 +46,7 @@
 		            <div class="weui_cell_bd weui_cell_primary">
 		                <p>结束时间</p>
 		            </div>
-		            <div class="weui_cell_ft">说明文字</div>
+		            <div class="weui_cell_ft">${activity.endTime}</div>
 		        </div>
 		    </div>
 		    
@@ -59,18 +62,27 @@
 		    <article class="weui_article">
 			    <section>
 	                <h3>活动详情</h3>
-	                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-	                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-	                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-	                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+	                <p>${activity.details}</p>
 	            </section>
 	        </article>
-	        <div class="bd spacing"> 
-	        	<a href="javascript:;" class="weui_btn weui_btn_primary">报名</a>
-	        </div>
+			<c:if test="${activity.join}">
+				<div class="bd spacing">
+					<a href="javascript:joinAC(${activity.id})" class="weui_btn weui_btn_primary">报名</a>
+				</div>
+			</c:if>
 	        
 		</div>
 	</script>
+<div class="weui_dialog_alert" hidden="hidden">
+	<div class="weui_mask"></div>
+	<div class="weui_dialog">
+		<div class="weui_dialog_hd"><strong class="weui_dialog_title">弹窗标题</strong></div>
+		<div class="weui_dialog_bd">弹窗内容，告知当前页面信息等</div>
+		<div class="weui_dialog_ft">
+			<a href="#" class="weui_btn_dialog primary" id="url">确定</a>
+		</div>
+	</div>
+</div>
 	<script src="static/js/zepto.min.js"></script>
     <script src="static/js/router.min.js"></script>
     <script src="static/js/activity.js"></script>

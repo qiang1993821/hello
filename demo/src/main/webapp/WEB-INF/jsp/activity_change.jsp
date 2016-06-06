@@ -16,13 +16,14 @@
 <title>发起/修改活动页</title>
 </head>
 <body class="activityChange">
+<input type="hidden" id="activityId" value="${activityId}"/>
 	<div class="container" id="container"></div>
 	<script type="text/html" id="tpl_home">
 		<div class="weui_cells_title">活动名称</div>
 		<div class="weui_cell">
             <div class="weui_cell_hd"><label class="weui_label"></label></div>
             <div class="weui_cell_bd weui_cell_primary">
-                <input class="weui_input" type="text" placeholder="请输入活动名称">
+                <input class="weui_input" type="text" placeholder="请输入活动名称" value="123">
             </div>
         </div>
         <div class="weui_cell">

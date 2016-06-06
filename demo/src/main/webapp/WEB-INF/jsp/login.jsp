@@ -49,6 +49,7 @@
 			if(name==null||name==""){
 				$(".weui_dialog_title").html("登录失败");
 				$(".weui_dialog_bd").html("用户名不能为空！");
+				$(".weui_dialog_alert").removeAttr("hidden");
 			}else{
 				$.ajax({
 					url: 'user/login?username=' + name,
@@ -57,6 +58,7 @@
 					error: function () {
 						$(".weui_dialog_title").html("登录失败");
 						$(".weui_dialog_bd").html("网络传输错误！");
+						$(".weui_dialog_alert").removeAttr("hidden");
 					},
 					success: function (data) {
 						if(data.code==1){
@@ -69,10 +71,10 @@
 							$(".weui_dialog_bd").html(data.result);
 							$('#url').attr('href',activityId==0?"/login":"/login?activityId="+activityId);
 						}
+						$(".weui_dialog_alert").removeAttr("hidden");
 					}
 				});
 			}
-			$(".weui_dialog_alert").removeAttr("hidden");
 		}
 	</script>
 </body>

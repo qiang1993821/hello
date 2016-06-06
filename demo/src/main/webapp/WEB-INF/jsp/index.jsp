@@ -105,7 +105,7 @@
                     <div class="hd">
                         <h1 class="page_title">${name}</h1>
                     </div>
-                    <a class="weui_cell" href="/launch?uid=${uid}" id="launch">
+                    <a class="weui_cell" href="/launch" id="launch">
                         <div class="weui_cell_bd weui_cell_primary">
                             <p>发起活动</p>
                         </div>
@@ -164,8 +164,8 @@
     <script src="static/js/index.js"></script>
     <script type="text/javascript">
         if(localStorage.needRefresh && localStorage.needRefresh==1) {
-            location.reload();
             localStorage.needRefresh = 0;
+            location.reload();
         }
     </script>
 </body>

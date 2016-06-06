@@ -75,4 +75,27 @@ $(function () {
             }
         })
     }
+
+    //var activityId = $("#activityId").val();
+    //if(activityId && activityId!=""){
+    //    //获取活动信息，给各项填入数据，只有活动在审核状态适用，目前预留
+    //}
 });
+function joinAC(activityId){
+    if(localStorage.gyid){
+        $.ajax({
+            url: 'activity/join?uid=' + uid + '&activityId=' + activityId,
+            type: 'POST',
+            dataType: 'json',
+            error: function () {
+            },
+            success: function (data) {
+                if(data.code==1){
+                    $('#current').addClass('current');
+                }
+            }
+        });
+    }else{
+        location.href = "/login?activityId="+activityId;
+    }
+}

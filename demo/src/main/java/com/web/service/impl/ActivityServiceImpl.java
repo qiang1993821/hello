@@ -208,4 +208,23 @@ public class ActivityServiceImpl implements ActivityService {
             return null;
         }
     }
+
+    @Override
+    public JSONObject getActivityInfo(long activityId) {
+        try {
+            Activity activity = activityDao.findOneById(activityId).get(0);
+            JSONObject jsonObject = ActivityUtil.activityToJSON(activity);
+            jsonObject.put("startTime",activity.getStartTime());
+            jsonObject.put("endTime",activity.getEndTime());
+            jsonObject.put("details",activity.getDetails());
+            boolean join = false;
+            if (activity.getStatus()==1 || activity.getStatus()==2)
+                join = true;
+            jsonObject.put("join", join);
+            return jsonObject;
+        }catch (Exception e){
+            logger.error("getActivityInfo|"+e.getMessage());
+            return null;
+        }
+    }
 }

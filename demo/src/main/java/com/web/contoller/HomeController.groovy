@@ -49,7 +49,6 @@ public class HomeController {
                         @RequestParam(value = "uid") Long uid) {
         def user = userService.findOneUser(uid);
         model.put("name",user.name);
-        model.put("uid",uid);
         return "index"
     }
 
@@ -81,6 +80,15 @@ public class HomeController {
     @RequestMapping(value = "/activityInfo")
     public String activityInfo(Map<String, Object> model,
                            @RequestParam(value = "activityId") Long activityId) {
+        def activity = activityService.getActivityInfo(activityId)
+        model.put("activity",activity)
         return "activityInfo"
+    }
+
+    //发起活动页
+    @RequestMapping(value = "/launch")
+    public String launch(Map<String, Object> model) {
+        model.put("activityId","")
+        return "activity_change"
     }
 }

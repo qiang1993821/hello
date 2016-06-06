@@ -85,4 +85,11 @@ public interface ActivityService {
      * @return
      */
     boolean hasJoined(long uid,long activityId);
+
+    /**
+     * 获取活动详情展示页的相关属性
+     * @param activityId
+     * @return
+     */
+    JSONObject getActivityInfo(long activityId);
 }

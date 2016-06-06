@@ -91,17 +91,17 @@ class ActivityController {
         def map = [:]
         if (StringUtils.isBlank(request.getParameter("uid")) || StringUtils.isBlank(request.getParameter("activityId"))){
             map.put("msg","信息错误，加入活动失败！")
-            map.put("type",0)
+            map.put("code",0)
         }else if (!userService.isFullInfo(pend.uid)){//先判断报名人信息是否完整
             map.put("msg","请完善个人后再发起（姓名、邮箱、手机）！")
-            map.put("type",0)
+            map.put("code",0)
         }else if (activityService.hasJoined(pend.uid,pend.activityId)){//先判断报名人是否已经参与
             map.put("msg","报名失败，您曾报名|受邀|参与|发起过该活动！")
-            map.put("type",0)
+            map.put("code",0)
         }else {
             activityService.join(pend)
             map.put("msg","报名成功！")
-            map.put("type",1)
+            map.put("code",1)
         }
         return new JsonBuilder(map).toString()
     }

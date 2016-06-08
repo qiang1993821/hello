@@ -99,4 +99,22 @@ public class UserUtil {
         }
         return friendStr;
     }
+
+    public static List<JSONObject> getFriendList(String friendStr){
+        try {
+            List<JSONObject> friendList = new ArrayList<JSONObject>();
+            List<JSONObject> friends = (List<JSONObject>)JSON.parseObject(friendStr).get("friendList");
+            for (int i=friends.size()-1;i>=0;i--){
+                JSONObject user = new JSONObject();
+                user.put("name", friends.get(i).getString("name"));
+                user.put("info","");
+                user.put("url","/userInfo?uid="+friends.get(i).getString("id")+"&page=2");
+                friendList.add(user);
+            }
+            return friendList;
+        }catch (Exception e){
+            logger.error("util_getFriendList"+e.getMessage());
+        }
+        return null;
+    }
 }

@@ -83,14 +83,14 @@
                         <div class="weui_cell_ft">
                         </div>
                     </a>
-                    <a class="weui_cell" href="javascript:;">
+                    <a class="weui_cell" href="/editUser?uid=${uid}">
                         <div class="weui_cell_bd weui_cell_primary">
                             <p>修改个人信息</p>
                         </div>
                         <div class="weui_cell_ft">
                         </div>
                     </a>
-                    <a class="weui_cell" href="javascript:;">
+                    <a class="weui_cell" href="/friendList?uid=${uid}">
                         <div class="weui_cell_bd weui_cell_primary">
                             <p>我的好友</p>
                         </div>

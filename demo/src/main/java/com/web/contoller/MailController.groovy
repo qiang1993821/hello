@@ -21,16 +21,16 @@ class MailController {
         def map = [:]
         if (uid == null || StringUtils.isBlank(mail)){
             map.put("msg","数据异常，无法发送！")
-            map.put("type",0)
+            map.put("code",0)
         }
-        def msg = "志愿者，你好！这是一封志愿平台邮箱验证邮件，若非本人操作请忽略！<a href=\"http://localhost/home/testMail?uid="+uid+"&mail="+mail+"\">点击验证</a>"
+        def msg = "志愿者，你好！这是一封志愿平台邮箱验证邮件，若非本人操作请忽略！<a href=\"http://localhost/testMail?uid="+uid+"&mail="+mail+"\">点击验证</a>"
         def title = "志愿者平台邮箱验证"
         if (MailUtil.sendMail(MailUtil.ustbMail,MailUtil.ustbPwd,mail,title,msg)){
-            map.put("msg","验证邮件发送成功！")
-            map.put("type",1)
+            map.put("msg","验证邮件已发送，请尽快登录邮箱进行验证！")
+            map.put("code",1)
         }else {
             map.put("msg","验证邮件发送失败！")
-            map.put("type",0)
+            map.put("code",0)
         }
         return new JsonBuilder(map).toString()
     }

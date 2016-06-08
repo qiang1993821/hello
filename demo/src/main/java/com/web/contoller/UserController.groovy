@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import groovy.json.JsonBuilder
+import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
 import org.springframework.web.bind.annotation.RequestMapping
@@ -127,7 +128,7 @@ class UserController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/updateUserInfo")
+    @RequestMapping(value = "/updateUserInfo",method = RequestMethod.POST)
     String updateUserInfo(User newUser,HttpServletRequest request){
         def map = [:]
         try {
@@ -136,17 +137,16 @@ class UserController {
             user.academy = StringUtils.isBlank(newUser.academy)?user.academy:newUser.academy
             user.className = StringUtils.isBlank(newUser.className)?user.className:newUser.className
             user.phone = StringUtils.isBlank(newUser.phone)?user.phone:newUser.phone
-            user.mail = StringUtils.isBlank(newUser.mail)?user.mail:newUser.mail
             user.wechat = StringUtils.isBlank(newUser.wechat)?user.wechat:newUser.wechat
             user.show = StringUtils.isBlank(request.getParameter("show"))?user.show:newUser.show
             user.sex = StringUtils.isBlank(request.getParameter("sex"))?user.sex:newUser.sex
             userService.save(user)
-            map.put("msg","更新个人信息成功！")
-            map.put("type",1)
+            map.put("msg", "")
+            map.put("code",1)
         }catch (Exception e){
             logger.error(e.message)
             map.put("msg","更新个人信息失败！")
-            map.put("type",0)
+            map.put("code",0)
         }
         return new JsonBuilder(map).toString()
     }

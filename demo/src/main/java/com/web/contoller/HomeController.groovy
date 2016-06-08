@@ -2,6 +2,7 @@ package com.web.contoller
 
 import com.web.service.impl.ActivityServiceImpl
 import com.web.service.impl.UserServiceImpl
+import com.web.util.UserUtil
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory
@@ -26,9 +27,15 @@ public class HomeController {
     public String testMail(Map<String, Object> model,
                           @RequestParam(value = "uid") Long uid,
                           @RequestParam(value = "mail") String mail) {
-        model.put("uid",uid);
-        model.put("mail",mail);
-        return "manual"
+        try {
+            def user = userService.findOneUser(uid)
+            user.mail = mail
+            userService.save(user)
+            model.put("result","验证成功！");
+        }catch (Exception e){
+            model.put("result","验证失败，请重试，若已尝试多次，请返回平台再次发送验证邮件！");
+        }
+        return "result"
     }
 
     //登录页
@@ -49,6 +56,7 @@ public class HomeController {
                         @RequestParam(value = "uid") Long uid) {
         def user = userService.findOneUser(uid);
         model.put("name",user.name);
+        model.put("uid",uid);
         return "index"
     }
 
@@ -79,6 +87,16 @@ public class HomeController {
         return "infoList"
     }
 
+    //成员列表页
+    @RequestMapping(value = "/friendList")
+    public String friendList(Map<String, Object> model,
+                         @RequestParam(value = "uid") Long uid) {
+        def user = userService.findOneUser(uid)
+        def friendList = UserUtil.getFriendList(user.friends)
+        model.put("infoList",friendList)
+        return "infoList"
+    }
+
     //用户详情页
     @RequestMapping(value = "/userInfo")
     public String userInfo(Map<String, Object> model,
@@ -92,9 +110,9 @@ public class HomeController {
         model.put("page",page)
         model.put("uid",user.id)
         if (page==null || page%2==0){
-            model.put("wechat",StringUtils.isBlank(user.wechat)?(user.show==0?"保密":"未填写"):user.wechat)
-            model.put("phone",StringUtils.isBlank(user.phone)?(user.show==0?"保密":"未填写"):user.phone)
-            model.put("mail",StringUtils.isBlank(user.mail)?(user.show==0?"保密":"未填写"):user.mail)
+            model.put("wechat",StringUtils.isBlank(user.wechat)?"未填写":(user.show==0?"保密":user.wechat))
+            model.put("phone",StringUtils.isBlank(user.phone)?"未填写":(user.show==0?"保密":user.phone))
+            model.put("mail",StringUtils.isBlank(user.mail)?"未填写":(user.show==0?"保密":user.mail))
         }else {//从我发起的查看成员，确认签到，审批报名三个情景可见信息
             model.put("wechat",StringUtils.isBlank(user.wechat)?"未填写":user.wechat)
             model.put("phone",StringUtils.isBlank(user.phone)?"未填写":user.phone)
@@ -121,6 +139,23 @@ public class HomeController {
     public String launch(Map<String, Object> model) {
         model.put("activityId","")
         return "activity_change"
+    }
+
+    //修改个人信息
+    @RequestMapping(value = "/editUser")
+    public String editUser(Map<String, Object> model,
+                           @RequestParam(value = "uid") Long uid) {
+        def user = userService.findOneUser(uid)
+        model.put("name",user.name)
+        model.put("academy",user.academy)
+        model.put("academyList",UserUtil.getAcademyList())
+        model.put("className",user.className)
+        model.put("sex",user.sex)
+        model.put("show",user.show)
+        model.put("wechat",user.wechat)
+        model.put("phone",user.phone)
+        model.put("mail",user.mail)
+        return "user_change"
     }
 
 }

@@ -79,6 +79,13 @@ public interface ActivityService {
     List<JSONObject> getMemberList(long activityId);
 
     /**
+     * 获取受邀活动
+     * @param uid
+     * @return
+     */
+    List<JSONObject> getInviteList(long uid);
+
+    /**
      * 判断是否已经报名参加发起
      * @param uid
      * @param activityId

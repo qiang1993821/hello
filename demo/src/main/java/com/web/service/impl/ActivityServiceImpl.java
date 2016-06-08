@@ -247,4 +247,23 @@ public class ActivityServiceImpl implements ActivityService {
             return null;
         }
     }
+
+    @Override
+    public List<JSONObject> getInviteList(long uid) {
+        try {
+            List<Pend> pendList = pendDao.getInvite(uid);
+            List<JSONObject> inviteList = new ArrayList<JSONObject>();
+            for (Pend pend:pendList){
+                JSONObject invite = new JSONObject();
+                invite.put("name",pend.getActivityName());
+                invite.put("info","");
+                invite.put("url","/activityInfo?activityId=" + pend.getActivityId() + "&page=1");
+                inviteList.add(invite);
+            }
+            return inviteList;
+        }catch (Exception e){
+            logger.error("getInviteList|"+e.getMessage());
+            return null;
+        }
+    }
 }

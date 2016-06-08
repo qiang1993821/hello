@@ -97,7 +97,7 @@
                         <div class="weui_cell_ft">
                         </div>
                     </a>
-                    <a class="weui_cell" href="javascript:;">
+                    <a class="weui_cell" href="/inviteList?uid=${uid}">
                         <div class="weui_cell_bd weui_cell_primary">
                             <p>收到的邀请</p>
                         </div>

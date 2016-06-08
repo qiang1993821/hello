@@ -87,13 +87,22 @@ public class HomeController {
         return "infoList"
     }
 
-    //成员列表页
+    //好友列表页
     @RequestMapping(value = "/friendList")
     public String friendList(Map<String, Object> model,
                          @RequestParam(value = "uid") Long uid) {
         def user = userService.findOneUser(uid)
         def friendList = UserUtil.getFriendList(user.friends)
         model.put("infoList",friendList)
+        return "infoList"
+    }
+
+    //收到邀请的活动列表页
+    @RequestMapping(value = "/inviteList")
+    public String inviteList(Map<String, Object> model,
+                         @RequestParam(value = "uid") Long uid) {
+        def inviteList = activityService.getInviteList(uid)
+        model.put("infoList",inviteList)
         return "infoList"
     }
 

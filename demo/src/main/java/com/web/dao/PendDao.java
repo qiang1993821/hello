@@ -15,6 +15,9 @@ public interface PendDao extends CrudRepository<Pend,Integer> {
     @Query("SELECT pend FROM Pend pend WHERE pend.id = :id")
     List<Pend> findOneById(@Param("id")long id);
 
+    @Query("SELECT pend FROM Pend pend WHERE pend.uid = :uid AND pend.type = 2 AND pend.status = 0")
+    List<Pend> getInvite(@Param("uid")long uid);
+
     @Query("SELECT pend FROM Pend pend WHERE pend.activityId = :activityId")
     List<Pend> queryByActivityId(@Param("activityId")long activityId);
 

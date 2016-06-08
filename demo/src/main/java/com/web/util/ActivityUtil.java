@@ -89,14 +89,6 @@ public class ActivityUtil {
         }else if (from==1){
             for (Activity activity : list) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("info", "");
-                jsonObject.put("url", "/activityInfo?activityId=" + activity.getId() + "&page=1");
-                jsonObject.put("name", activity.getName());
-                newList.add(jsonObject);
-            }
-        }else if (from==2){
-            for (Activity activity : list) {
-                JSONObject jsonObject = new JSONObject();
                 jsonObject.put("info", ActivityUtil.statusToString(activity.getStatus()));
                 int page = 2;
                 if (activity.getStatus()==4)
@@ -107,7 +99,7 @@ public class ActivityUtil {
                 jsonObject.put("name", activity.getName());
                 newList.add(jsonObject);
             }
-        }else if (from==3){
+        }else if (from==2){
             for (Activity activity : list) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("info", ActivityUtil.statusToString(activity.getStatus()));

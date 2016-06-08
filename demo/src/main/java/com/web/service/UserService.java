@@ -86,7 +86,7 @@ public interface UserService {
      * 获取活动列表
      * @param uid
      * @param type launch或partake
-     * @param from 0是普通的，1是受邀列表，2是我参与列表，3是我发起的
+     * @param from 0是普通的，1是我参与列表，2是我发起的
      * @return
      */
     List<JSONObject> getActivityList(long uid,String type,int from);

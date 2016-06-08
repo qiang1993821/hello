@@ -17,6 +17,8 @@ public class Pend {
     private long uid;
     @Column(nullable = false, name="activity_id")
     private long activityId;
+    @Column(nullable = true, name="activity_name")
+    private String activityName;
     @Column(nullable = false, name="type")
     private int type;//0是申请，1是邀请
     @Column(nullable = false, name="status")
@@ -68,5 +70,13 @@ public class Pend {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getActivityName() {
+        return activityName;
+    }
+
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
     }
 }

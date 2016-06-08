@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="static/css/reset.css">
 <link rel="stylesheet" href="static/css/index.css">
 <link rel="stylesheet" href="static/css/example.css">
-<title>发起/修改活动页</title>
+<title>弓一志愿平台</title>
 </head>
 <body class="activityChange">
 <input type="hidden" id="activityId" value="${activityId}"/>
@@ -23,40 +23,50 @@
 		<div class="weui_cell">
             <div class="weui_cell_hd"><label class="weui_label"></label></div>
             <div class="weui_cell_bd weui_cell_primary">
-                <input class="weui_input" type="text" placeholder="请输入活动名称" value="123">
+                <input class="weui_input" type="text" placeholder="请输入活动名称" id="activityName">
             </div>
         </div>
         <div class="weui_cell">
             <div class="weui_cell_hd"><label for="" class="weui_label">开始时间</label></div>
             <div class="weui_cell_bd weui_cell_primary">
-                <input class="weui_input" type="datetime-local" value="" placeholder="">
+                <input class="weui_input" type="datetime-local" value="" placeholder="" id="startTime">
             </div>
         </div>
         <div class="weui_cell">
             <div class="weui_cell_hd"><label for="" class="weui_label">结束时间</label></div>
             <div class="weui_cell_bd weui_cell_primary">
-                <input class="weui_input" type="datetime-local" value="" placeholder="">
+                <input class="weui_input" type="datetime-local" value="" placeholder="" id="endTime">
             </div>
         </div>
         <div class="weui_cell">
             <div class="weui_cell_hd"><label class="weui_label">工时</label></div>
             <div class="weui_cell_bd weui_cell_primary">
-                <input class="weui_input" type="text" placeholder="">
+                <input class="weui_input" type="text" placeholder="" id="hour">
             </div>
         </div>
         <div class="weui_cells_title">活动详情</div>
         <div class="weui_cells weui_cells_form">
         <div class="weui_cell">
             <div class="weui_cell_bd weui_cell_primary">
-                <textarea class="weui_textarea" placeholder="请输入活动详情" rows="3"></textarea>
+                <textarea class="weui_textarea" placeholder="请输入活动详情" rows="3" id="details"></textarea>
                 <div class="weui_textarea_counter"><span>0</span>/200</div>
             </div>
         </div>
         <div class="bd spacing"> 
-        	<a href="javascript:;" class="weui_btn weui_btn_primary">确定</a>
+        	<a href="javascript:launch()" class="weui_btn weui_btn_primary">发起活动</a>
         </div>
     </div>
 	</script>
+<div class="weui_dialog_alert" hidden="hidden">
+    <div class="weui_mask"></div>
+    <div class="weui_dialog">
+        <div class="weui_dialog_hd"><strong class="weui_dialog_title">弹窗标题</strong></div>
+        <div class="weui_dialog_bd">弹窗内容，告知当前页面信息等</div>
+        <div class="weui_dialog_ft">
+            <a href="#" class="weui_btn_dialog primary" id="url">确定</a>
+        </div>
+    </div>
+</div>
 	<script src="static/js/zepto.min.js"></script>
     <script src="static/js/router.min.js"></script>
     <script src="static/js/activity.js"></script>

@@ -197,7 +197,8 @@ public class UserServiceImpl implements UserService {
                 List<Long> launch = (List<Long>)JSON.parseObject(user.getLaunch()).get("activityList");
                 List<Activity> activityList = new ArrayList<Activity>();
                 for (int i = launch.size()-1; i >= 0; i--){//倒序，最新的在上面
-                    Activity activity = activityDao.findOneById(launch.get(i)).get(0);
+                    Number activityId = launch.get(i);
+                    Activity activity = activityDao.findOneById(activityId.longValue()).get(0);
                     if (activity == null)
                         continue;
                     activityList.add(activity);
@@ -208,7 +209,8 @@ public class UserServiceImpl implements UserService {
                 List<Long> partake = (List<Long>)JSON.parseObject(user.getPartake()).get("activityList");
                 List<Activity> activityList = new ArrayList<Activity>();
                 for (int i = partake.size()-1; i >= 0; i--){//倒序，最新的在上面
-                    Activity activity = activityDao.findOneById(partake.get(i)).get(0);
+                    Number activityId = partake.get(i);
+                    Activity activity = activityDao.findOneById(activityId.longValue()).get(0);
                     if (activity == null)
                         continue;
                     activityList.add(activity);

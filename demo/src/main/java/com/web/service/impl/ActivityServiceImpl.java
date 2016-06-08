@@ -54,6 +54,7 @@ public class ActivityServiceImpl implements ActivityService {
         try {
             JSONObject launch = null;
             List<Long> activityList = null;
+            activity.setStatus(1);//暂时直接进入招募阶段
             activityDao.save(activity);
             User user = userDao.findOneById(activity.getSponsor()).get(0);
             if (StringUtils.isBlank(user.getLaunch())){//之前没发布过活动

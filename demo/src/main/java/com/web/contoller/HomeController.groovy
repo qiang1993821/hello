@@ -61,6 +61,15 @@ public class HomeController {
         return "infoList"
     }
 
+    //ta参与的
+    @RequestMapping(value = "/partake_user")
+    public String userPartake(Map<String, Object> model,
+                             @RequestParam(value = "uid") Long uid) {
+        def launchList = userService.getActivityList(uid,"partake",0)
+        model.put("infoList",launchList)
+        return "infoList"
+    }
+
     //成员列表页
     @RequestMapping(value = "/member")
     public String member(Map<String, Object> model,

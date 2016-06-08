@@ -101,7 +101,7 @@ function joinAC(activityId){
                 }else{
                     $(".weui_dialog_title").html("报名失败");
                     $(".weui_dialog_bd").html(data.msg);
-                    $('#url').attr('href',"javascript:closeDialog(0)");
+                    $('#url').attr('href',"javascript:closeDialog(1)");
                 }
                 $(".weui_dialog_alert").removeAttr("hidden");
             }
@@ -112,6 +112,61 @@ function joinAC(activityId){
 }
 //关闭对话框
 function closeDialog(code){
-    localStorage.needRefresh = 1;
-    location.href = "/index?uid="+localStorage.gyid;
+    if(code==1) {
+        localStorage.needRefresh = 1;
+        location.href = "/index?uid=" + localStorage.gyid;
+    }else if(code==0){
+        $(".weui_dialog_alert").attr("hidden","hidden");
+    }
+}
+//发起活动
+function launch(){
+    if(!localStorage.gyid){
+        location.href = "/login";
+    }
+    var name = $("#activityName").val();
+    var startTime = $("#startTime").val();
+    var endTime = $("#endTime").val();
+    var details = $("#details").val();
+    var hour = $("#hour").val();
+    if(!hour)
+        hour = 0;
+    if(name&&startTime&&endTime&&details){
+        $.ajax({
+            url: 'activity/launch',
+            type: 'POST',
+            data:{
+                sponsor:localStorage.gyid,
+                startTime:startTime,
+                endTime:endTime,
+                hour:hour,
+                details:details,
+                name:name
+            },
+            dataType: 'json',
+            error: function () {
+                $(".weui_dialog_title").html("发起失败");
+                $(".weui_dialog_bd").html("服务器被海王类劫持了！");
+                $('#url').attr('href',"javascript:closeDialog(0)");
+                $(".weui_dialog_alert").removeAttr("hidden");
+            },
+            success: function (data) {
+                if(data.code==1){
+                    $(".weui_dialog_title").html("发起成功");
+                    $(".weui_dialog_bd").html("");
+                    $('#url').attr('href',"javascript:closeDialog(1)");
+                }else{
+                    $(".weui_dialog_title").html("发起失败");
+                    $(".weui_dialog_bd").html(data.msg);
+                    $('#url').attr('href',"javascript:closeDialog(0)");
+                }
+                $(".weui_dialog_alert").removeAttr("hidden");
+            }
+        });
+    }else{
+        $(".weui_dialog_title").html("发起失败");
+        $(".weui_dialog_bd").html("请仔细检查资料是否填写完善！");
+        $('#url').attr('href',"javascript:closeDialog(0)");
+        $(".weui_dialog_alert").removeAttr("hidden");
+    }
 }

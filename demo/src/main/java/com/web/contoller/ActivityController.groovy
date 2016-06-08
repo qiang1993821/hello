@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
@@ -34,10 +35,10 @@ class ActivityController {
      * @param activity
      * @return
      */
-    @RequestMapping(value = "/launch")
+    @RequestMapping(value = "/launch",method = RequestMethod.POST)
     String launch(Activity activity){
         def map = [:]
-        if (activity.sponsor==0 || StringUtils.isBlank(activity.name)){
+        if (activity.sponsor==0 || StringUtils.isBlank(activity.name) || StringUtils.isBlank(activity.startTime) || StringUtils.isBlank(activity.endTime)){
             map.put("msg","信息有误，发起活动失败！")
             map.put("code",0)
         }else if (!userService.isFullInfo(activity.sponsor)){//先判断发起人信息是否完整

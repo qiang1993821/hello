@@ -27,6 +27,14 @@
 						<div class="weui_cell_ft">${info.info}</div>
 					</a>
 				</c:forEach>
+				<c:if test="${infoList==null || infoList.size()==0}">
+					<a class="weui_cell" href="#">
+						<div class="weui_cell_bd weui_cell_primary">
+							<p>暂无相关数据</p>
+						</div>
+						<div class="weui_cell_ft"></div>
+					</a>
+				</c:if>
 			</div>
 		</div>
 	</div>

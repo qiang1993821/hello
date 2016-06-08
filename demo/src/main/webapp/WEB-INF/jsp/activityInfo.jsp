@@ -51,7 +51,7 @@
 		    </div>
 		    
 		    <div class="weui_cells weui_cells_access">
-		        <a class="weui_cell" href="javascript:;">
+		        <a class="weui_cell" href="/member?activityId=${activity.id}">
 		            <div class="weui_cell_bd weui_cell_primary">
 		                <p>参与成员</p>
 		            </div>
@@ -65,12 +65,28 @@
 	                <p>${activity.details}</p>
 	            </section>
 	        </article>
-			<c:if test="${activity.join}">
-				<div class="bd spacing">
+			<c:if test="${activity.join && page == 0}">
+				<div class="bd spacing" id="joinBtn">
 					<a href="javascript:joinAC(${activity.id})" class="weui_btn weui_btn_primary">报名</a>
 				</div>
 			</c:if>
-	        
+			<c:if test="${page == 1}">
+				<div class="bd spacing">
+					<input type="hidden" id="activityId" value="${activity.id}"/>
+					<a href="javascript:approve(1)" class="weui_btn weui_btn_primary">接受</a>
+					<a href="javascript:approve(0)" class="weui_btn weui_btn_warn">拒绝</a>
+				</div>
+			</c:if>
+			<c:if test="${page == 2}">
+				<div class="bd spacing">
+					<a href="javascript:quitAC(${activity.id})" class="weui_btn weui_btn_warn">退出活动</a>
+				</div>
+			</c:if>
+			<c:if test="${page == 3}">
+				<div class="bd spacing">
+					<a href="javascript:signIn(${activity.id})" class="weui_btn weui_btn_primary">签到</a>
+				</div>
+			</c:if>
 		</div>
 	</script>
 <div class="weui_dialog_alert" hidden="hidden">

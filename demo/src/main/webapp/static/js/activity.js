@@ -1,6 +1,5 @@
 $(function () {
     //tab切换
-
     var router = new Router({
         container: '#container',
         enterTimeout: 250,
@@ -81,21 +80,38 @@ $(function () {
     //    //获取活动信息，给各项填入数据，只有活动在审核状态适用，目前预留
     //}
 });
+//点击报名活动按钮
 function joinAC(activityId){
     if(localStorage.gyid){
         $.ajax({
-            url: 'activity/join?uid=' + uid + '&activityId=' + activityId,
+            url: 'activity/join?uid=' + localStorage.gyid + '&activityId=' + activityId,
             type: 'POST',
             dataType: 'json',
             error: function () {
+                $(".weui_dialog_title").html("报名失败");
+                $(".weui_dialog_bd").html("服务器被海王类劫持了！");
+                $('#url').attr('href',"javascript:closeDialog(0)");
+                $(".weui_dialog_alert").removeAttr("hidden");
             },
             success: function (data) {
                 if(data.code==1){
-                    $('#current').addClass('current');
+                    $(".weui_dialog_title").html("报名成功");
+                    $(".weui_dialog_bd").html("");
+                    $('#url').attr('href',"javascript:closeDialog(1)");
+                }else{
+                    $(".weui_dialog_title").html("报名失败");
+                    $(".weui_dialog_bd").html(data.msg);
+                    $('#url').attr('href',"javascript:closeDialog(0)");
                 }
+                $(".weui_dialog_alert").removeAttr("hidden");
             }
         });
     }else{
         location.href = "/login?activityId="+activityId;
     }
+}
+//关闭对话框
+function closeDialog(code){
+    localStorage.needRefresh = 1;
+    location.href = "/index?uid="+localStorage.gyid;
 }

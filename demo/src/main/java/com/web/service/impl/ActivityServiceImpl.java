@@ -181,15 +181,23 @@ public class ActivityServiceImpl implements ActivityService {
             if (pendDao.hasJoined(activityId,uid).size()>0)//判断是否报名|受邀过
                 return true;
             User user = userDao.findOneById(uid).get(0);
-            List<Number> partake = (List<Number>)JSON.parseObject(user.getPartake()).get("activityList");
-            for (Number number:partake){//判断是否参与过
-                if (number.longValue()==activityId)
-                    return true;
+            if (StringUtils.isNotBlank(user.getPartake())) {//判断是否参与过
+                List<Number> partake = (List<Number>) JSON.parseObject(user.getPartake()).get("activityList");
+                if (partake!=null && partake.size()>0) {//防止空指针异常，下同
+                    for (Number number : partake) {
+                        if (number.longValue() == activityId)
+                            return true;
+                    }
+                }
             }
-            List<Number> launch = (List<Number>)JSON.parseObject(user.getLaunch()).get("activityList");
-            for (Number number:launch){//判断是否发起过
-                if (number.longValue()==activityId)
-                    return true;
+            if (StringUtils.isNotBlank(user.getLaunch())) {//判断是否发起过
+                List<Number> launch = (List<Number>) JSON.parseObject(user.getLaunch()).get("activityList");
+                if (launch!=null && launch.size()>0) {
+                    for (Number number : launch) {
+                        if (number.longValue() == activityId)
+                            return true;
+                    }
+                }
             }
         }catch (Exception e){
             logger.error("hasJoined|"+e.getMessage());
@@ -200,9 +208,20 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public List<JSONObject> getMemberList(long activityId) {
         try {
+            List<JSONObject> memberList = new ArrayList<JSONObject>();
             Activity activity = activityDao.findOneById(activityId).get(0);
+            User user = userDao.findOneById(activity.getSponsor()).get(0);
+            JSONObject sponsor = new JSONObject();
+            sponsor.put("name",user.getName());
+            sponsor.put("url","/userInfo?uid="+user.getId()+"&page=1");
+            sponsor.put("info","发起者");
+            memberList.add(sponsor);
             JSONObject jsonObject = JSON.parseObject(activity.getMember());
-            return (List<JSONObject>)jsonObject.get("memberList");
+            List<JSONObject> otherList = (List<JSONObject>)jsonObject.get("memberList");
+            if (otherList!=null && otherList.size()>0) {
+                memberList.addAll((ActivityUtil.getMemberList(otherList)));
+            }
+            return memberList;
         }catch (Exception e){
             logger.error("getMemberList|"+e.getMessage());
             return null;

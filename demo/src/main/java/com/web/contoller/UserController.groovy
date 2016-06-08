@@ -172,10 +172,10 @@ class UserController {
         def map = [:]
         if (userService.doFriend(uid,friendId,true)){
             map.put("msg","添加成功！")
-            map.put("type",1)
+            map.put("code",1)
         }else {
             map.put("msg","添加失败！")
-            map.put("type",0)
+            map.put("code",0)
         }
         return new JsonBuilder(map).toString()
     }

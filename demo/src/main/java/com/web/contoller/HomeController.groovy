@@ -52,36 +52,58 @@ public class HomeController {
         return "index"
     }
 
+    //ta发起的
+    @RequestMapping(value = "/launch_user")
+    public String userLaunch(Map<String, Object> model,
+                        @RequestParam(value = "uid") Long uid) {
+        def launchList = userService.getActivityList(uid,"launch",0)
+        model.put("infoList",launchList)
+        return "infoList"
+    }
+
     //成员列表页
     @RequestMapping(value = "/member")
     public String member(Map<String, Object> model,
-                        @RequestParam(value = "activityId") Long activityId) {
+                         @RequestParam(value = "activityId") Long activityId) {
         def memberList = activityService.getMemberList(activityId)
-        model.put("memberList",memberList)
-        return "login"
+        model.put("infoList",memberList)
+        return "infoList"
     }
 
     //用户详情页
     @RequestMapping(value = "/userInfo")
     public String userInfo(Map<String, Object> model,
-                         @RequestParam(value = "uid") Long uid) {
+                         @RequestParam(value = "uid") Long uid,
+                         @RequestParam(value = "page") Integer page) {
         def user = userService.findOneUser(uid)
+        model.put("name",user.name)
         model.put("academy",StringUtils.isBlank(user.academy)?"未填写":user.academy)
         model.put("className",StringUtils.isBlank(user.className)?"未填写":user.className)
-        model.put("wechat",StringUtils.isBlank(user.wechat)?"未填写":user.wechat)
-        model.put("phone",StringUtils.isBlank(user.phone)?"未填写":user.phone)
-        model.put("mail",StringUtils.isBlank(user.mail)?"未填写":user.mail)
         model.put("sex",user.sex==0?"女":"男")
-        model.put("id",user.id)
+        model.put("page",page)
+        model.put("uid",user.id)
+        if (page==null || page%2==0){
+            model.put("wechat",StringUtils.isBlank(user.wechat)?(user.show==0?"保密":"未填写"):user.wechat)
+            model.put("phone",StringUtils.isBlank(user.phone)?(user.show==0?"保密":"未填写"):user.phone)
+            model.put("mail",StringUtils.isBlank(user.mail)?(user.show==0?"保密":"未填写"):user.mail)
+        }else {//从我发起的查看成员，确认签到，审批报名三个情景可见信息
+            model.put("wechat",StringUtils.isBlank(user.wechat)?"未填写":user.wechat)
+            model.put("phone",StringUtils.isBlank(user.phone)?"未填写":user.phone)
+            model.put("mail",StringUtils.isBlank(user.mail)?"未填写":user.mail)
+        }
         return "userInfo"
     }
 
     //活动详情页
     @RequestMapping(value = "/activityInfo")
     public String activityInfo(Map<String, Object> model,
-                           @RequestParam(value = "activityId") Long activityId) {
+                           @RequestParam(value = "activityId") Long activityId,
+                           @RequestParam(value = "page", required = false) Integer page) {
         def activity = activityService.getActivityInfo(activityId)
         model.put("activity",activity)
+        if (page==null)
+            page = 0
+        model.put("page",page)
         return "activityInfo"
     }
 
@@ -91,4 +113,5 @@ public class HomeController {
         model.put("activityId","")
         return "activity_change"
     }
+
 }

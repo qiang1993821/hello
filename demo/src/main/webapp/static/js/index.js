@@ -4,6 +4,11 @@ $(function () {
     if(!localStorage.gyid){
         location.href = "/login";
     }
+    //刷新使js生效
+    if(localStorage.needRefresh && localStorage.needRefresh==1) {
+        localStorage.needRefresh = 0;
+        location.reload();
+    }
     var uid = localStorage.gyid;
 	//tab切换
     var router = new Router({
@@ -11,7 +16,6 @@ $(function () {
         enterTimeout: 250,
         leaveTimeout: 250
     });
-
     var home = {
         url: '/',
         className: 'home',
@@ -84,6 +88,9 @@ $(function () {
 		$('.lists>div').hide();
 		$('.lists>div').eq($(this).index()).show();
 	})
+    //加载前五个活动
+    $("#result_show").empty();
+    queryByPage();
     $('#activity').on('click',function(){
         $('#search_bar').show();
         $("#result_show").empty();
@@ -124,10 +131,6 @@ $(function () {
             }
         }
     });
-
-    //加载前五个活动
-    $("#result_show").empty();
-    queryByPage();
 });
 //根据名字精确查询
 function queryByName(name){

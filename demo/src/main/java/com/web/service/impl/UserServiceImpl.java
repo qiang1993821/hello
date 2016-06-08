@@ -9,6 +9,7 @@ import com.web.domain.Activity;
 import com.web.domain.Pend;
 import com.web.domain.User;
 import com.web.service.UserService;
+import com.web.util.ActivityUtil;
 import com.web.util.CacheUtil;
 import com.web.util.TimeUtil;
 import com.web.util.UserUtil;
@@ -20,6 +21,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -183,5 +185,40 @@ public class UserServiceImpl implements UserService {
             logger.error("doFriend|"+e.getMessage());
         }
         return false;
+    }
+
+    @Override
+    public List<JSONObject> getActivityList(long uid, String type, int from) {
+        try {
+            User user = userDao.findOneById(uid).get(0);
+            if (user == null || StringUtils.isBlank(type))
+                return null;
+            if (type.equals("launch") && StringUtils.isNotBlank(user.getLaunch())){
+                List<Long> launch = (List<Long>)JSON.parseObject(user.getLaunch()).get("activityList");
+                List<Activity> activityList = new ArrayList<Activity>();
+                for (int i = launch.size()-1; i >= 0; i--){//倒序，最新的在上面
+                    Activity activity = activityDao.findOneById(launch.get(i)).get(0);
+                    if (activity == null)
+                        continue;
+                    activityList.add(activity);
+                }
+                List<JSONObject> newLaunch = ActivityUtil.getActivityList(activityList,from);
+                return newLaunch;
+            }else if (type.equals("partake") && StringUtils.isNotBlank(user.getPartake())){
+                List<Long> partake = (List<Long>)JSON.parseObject(user.getPartake()).get("activityList");
+                List<Activity> activityList = new ArrayList<Activity>();
+                for (int i = partake.size()-1; i >= 0; i--){//倒序，最新的在上面
+                    Activity activity = activityDao.findOneById(partake.get(i)).get(0);
+                    if (activity == null)
+                        continue;
+                    activityList.add(activity);
+                }
+                List<JSONObject> newPartake = ActivityUtil.getActivityList(activityList,from);
+                return newPartake;
+            }
+        }catch (Exception e){
+            logger.error("getActivityList|"+e.getMessage());
+        }
+        return null;
     }
 }

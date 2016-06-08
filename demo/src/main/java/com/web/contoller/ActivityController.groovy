@@ -39,13 +39,13 @@ class ActivityController {
         def map = [:]
         if (activity.sponsor==0 || StringUtils.isBlank(activity.name)){
             map.put("msg","信息有误，发起活动失败！")
-            map.put("type",0)
+            map.put("code",0)
         }else if (!userService.isFullInfo(activity.sponsor)){//先判断发起人信息是否完整
             map.put("msg","请完善个人后再发起（姓名、邮箱、手机）！")
-            map.put("type",0)
+            map.put("code",0)
         }else{
             def type = activityService.launch(activity)
-            map.put("type",type)
+            map.put("code",type)
             if (type == 1)
                 map.put("msg","活动发起成功！")
             else
@@ -93,10 +93,10 @@ class ActivityController {
             map.put("msg","信息错误，加入活动失败！")
             map.put("code",0)
         }else if (!userService.isFullInfo(pend.uid)){//先判断报名人信息是否完整
-            map.put("msg","请完善个人后再发起（姓名、邮箱、手机）！")
+            map.put("msg","请完善个人后再报名（姓名、邮箱、手机）！")
             map.put("code",0)
         }else if (activityService.hasJoined(pend.uid,pend.activityId)){//先判断报名人是否已经参与
-            map.put("msg","报名失败，您曾报名|受邀|参与|发起过该活动！")
+            map.put("msg","您曾报名|受邀|参与|发起过该活动！")
             map.put("code",0)
         }else {
             activityService.join(pend)

@@ -57,7 +57,8 @@
 					dataType: 'json',
 					error: function () {
 						$(".weui_dialog_title").html("登录失败");
-						$(".weui_dialog_bd").html("网络传输错误！");
+						$(".weui_dialog_bd").html("服务器被海王类劫持了！");
+						$('#url').attr('href',activityId==0?"/login":"/login?activityId="+activityId);
 						$(".weui_dialog_alert").removeAttr("hidden");
 					},
 					success: function (data) {

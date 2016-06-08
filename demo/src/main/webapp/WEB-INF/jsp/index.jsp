@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="static/css/reset.css">
 <link rel="stylesheet" href="static/css/index.css">
 <link rel="stylesheet" href="static/css/example.css">
-<title>首页</title>
+<title>弓一志愿平台</title>
 </head>
 <body class="common" ontouchstart>
     <div class="container" id="container"></div>
@@ -67,36 +67,7 @@
         <div class="lists"> 
             <div class="weui_panel weui_panel_access">
                 <div class="weui_panel_bd"  id="result_show">
-                    <a class="weui_cell" href="/testMail">
-                        <div class="weui_media_box weui_media_text">
-                            <h4 class="weui_media_title">测试活动</h4>
-                            <p class="weui_media_desc">6工时|正在进行</p>
-                        </div>
-                    </a>
-                    <a class="weui_cell" href="/testMail">
-                        <div class="weui_media_box weui_media_text">
-                            <h4 class="weui_media_title">测试活动</h4>
-                            <p class="weui_media_desc">6工时|正在进行</p>
-                        </div>
-                    </a>
-                    <a class="weui_cell" href="/testMail">
-                        <div class="weui_media_box weui_media_text">
-                            <h4 class="weui_media_title">测试活动</h4>
-                            <p class="weui_media_desc">6工时|正在进行</p>
-                        </div>
-                    </a>
-                    <a class="weui_cell" href="/testMail">
-                        <div class="weui_media_box weui_media_text">
-                            <h4 class="weui_media_title">测试活动</h4>
-                            <p class="weui_media_desc">6工时|正在进行</p>
-                        </div>
-                    </a>
-                    <a class="weui_cell" href="/testMail">
-                        <div class="weui_media_box weui_media_text">
-                            <h4 class="weui_media_title">测试活动</h4>
-                            <p class="weui_media_desc">6工时|正在进行</p>
-                        </div>
-                    </a>
+
                 </div>
                 <div onclick="queryByPage()" class="weui_btn weui_btn_default" id="loadMore">加载更多</div>
             </div>
@@ -162,12 +133,6 @@
     <script src="static/js/zepto.min.js"></script>
     <script src="static/js/router.min.js"></script>
     <script src="static/js/index.js"></script>
-    <script type="text/javascript">
-        if(localStorage.needRefresh && localStorage.needRefresh==1) {
-            localStorage.needRefresh = 0;
-            location.reload();
-        }
-    </script>
 </body>
 </html>
 

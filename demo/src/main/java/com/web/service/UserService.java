@@ -83,6 +83,14 @@ public interface UserService {
     boolean doFriend(long uid,long friendId,boolean status);
 
     /**
+     * 判断是否已经是好友
+     * @param uid
+     * @param friendId
+     * @return
+     */
+    boolean isFriend(long uid,long friendId);
+
+    /**
      * 获取活动列表
      * @param uid
      * @param type launch或partake

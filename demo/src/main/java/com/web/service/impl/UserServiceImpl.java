@@ -188,6 +188,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean isFriend(long uid, long friendId) {
+        try {
+            User user = userDao.findOneById(uid).get(0);
+            if (StringUtils.isBlank(user.getFriends())){
+                return false;
+            }else {
+                List<JSONObject> friends = (List<JSONObject>)JSON.parseObject(user.getFriends()).get("friendList");
+                for (JSONObject jsonObject:friends){
+                    if (jsonObject.getString("id").equals(friendId+"")){
+                        return true;
+                    }
+                }
+            }
+        }catch (Exception e){
+            logger.error("isFriend|"+e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
     public List<JSONObject> getActivityList(long uid, String type, int from) {
         try {
             User user = userDao.findOneById(uid).get(0);
@@ -208,6 +228,18 @@ public class UserServiceImpl implements UserService {
             }else if (type.equals("partake") && StringUtils.isNotBlank(user.getPartake())){
                 List<Long> partake = (List<Long>)JSON.parseObject(user.getPartake()).get("activityList");
                 List<Activity> activityList = new ArrayList<Activity>();
+                List<Pend> pendList = pendDao.getPartake(uid);
+                List<JSONObject> newPartake = new ArrayList<JSONObject>();
+                for (Pend pend:pendList){
+                    Activity activity = activityDao.findOneById(pend.getActivityId()).get(0);
+                    if (activity == null)
+                        continue;
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("name",activity.getName());
+                    jsonObject.put("info","正在审核");
+                    jsonObject.put("url","/activityInfo?activityId=" + activity.getId());
+                    newPartake.add(jsonObject);
+                }
                 for (int i = partake.size()-1; i >= 0; i--){//倒序，最新的在上面
                     Number activityId = partake.get(i);
                     Activity activity = activityDao.findOneById(activityId.longValue()).get(0);
@@ -215,7 +247,7 @@ public class UserServiceImpl implements UserService {
                         continue;
                     activityList.add(activity);
                 }
-                List<JSONObject> newPartake = ActivityUtil.getActivityList(activityList,from);
+                newPartake.addAll(ActivityUtil.getActivityList(activityList,from));
                 return newPartake;
             }
         }catch (Exception e){

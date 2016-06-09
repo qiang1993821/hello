@@ -217,10 +217,12 @@ public class ActivityServiceImpl implements ActivityService {
             sponsor.put("url","/userInfo?uid="+user.getId()+"&page=1");
             sponsor.put("info","发起者");
             memberList.add(sponsor);
-            JSONObject jsonObject = JSON.parseObject(activity.getMember());
-            List<JSONObject> otherList = (List<JSONObject>)jsonObject.get("memberList");
-            if (otherList!=null && otherList.size()>0) {
-                memberList.addAll((ActivityUtil.getMemberList(otherList)));
+            if (StringUtils.isNotBlank(activity.getMember())) {
+                JSONObject jsonObject = JSON.parseObject(activity.getMember());
+                List<JSONObject> otherList = (List<JSONObject>) jsonObject.get("memberList");
+                if (otherList != null && otherList.size() > 0) {
+                    memberList.addAll((ActivityUtil.getMemberList(otherList)));
+                }
             }
             return memberList;
         }catch (Exception e){

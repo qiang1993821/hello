@@ -60,7 +60,7 @@ public class HomeController {
         return "index"
     }
 
-    //ta发起的
+    //发起的
     @RequestMapping(value = "/launch_user")
     public String userLaunch(Map<String, Object> model,
                         @RequestParam(value = "uid") Long uid,
@@ -72,7 +72,7 @@ public class HomeController {
         return "infoList"
     }
 
-    //ta参与的
+    //参与的
     @RequestMapping(value = "/partake_user")
     public String userPartake(Map<String, Object> model,
                              @RequestParam(value = "uid") Long uid,

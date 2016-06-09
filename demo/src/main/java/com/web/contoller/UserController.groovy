@@ -170,11 +170,16 @@ class UserController {
     @RequestMapping(value = "/addFriend")
     String addFriend(@RequestParam(value = "uid") Long uid,@RequestParam(value = "friendId") Long friendId){
         def map = [:]
+        if (userService.isFriend(uid,friendId)){
+            map.put("msg","ta已经是您的好友，不必再次添加！")
+            map.put("code",0)
+            return new JsonBuilder(map).toString()
+        }
         if (userService.doFriend(uid,friendId,true)){
             map.put("msg","添加成功！")
             map.put("code",1)
         }else {
-            map.put("msg","添加失败！")
+            map.put("msg","添加发生异常！")
             map.put("code",0)
         }
         return new JsonBuilder(map).toString()
@@ -185,10 +190,10 @@ class UserController {
         def map = [:]
         if (userService.doFriend(uid,friendId,false)){
             map.put("msg","删除成功！")
-            map.put("type",1)
+            map.put("code",1)
         }else {
-            map.put("msg","删除失败！")
-            map.put("type",0)
+            map.put("msg","删除发生异常！")
+            map.put("code",0)
         }
         return new JsonBuilder(map).toString()
     }

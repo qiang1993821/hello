@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="static/css/reset.css">
 <link rel="stylesheet" href="static/css/index.css">
 <link rel="stylesheet" href="static/css/example.css">
-<title>参与成员页</title>
+<title>列表</title>
 </head>
 <body class="activity">
 	<div class="container" id="container">

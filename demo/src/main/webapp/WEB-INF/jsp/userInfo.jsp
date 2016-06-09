@@ -107,6 +107,11 @@
 				<a href="javascript:approve(0)" class="weui_btn weui_btn_warn">拒绝</a>
 			</div>
 		</c:if>
+		<c:if test="${page==7}">
+			<div class="bd spacing">
+				<a href="javascript:kicked(${uid})" class="weui_btn weui_btn_warn">踢出成员</a>
+			</div>
+		</c:if>
 	</div>
 	<div class="weui_dialog_alert" hidden="hidden">
 		<div class="weui_mask"></div>
@@ -121,6 +126,80 @@
 	<script src="static/js/zepto.min.js"></script>
     <script src="static/js/router.min.js"></script>
 	<script type="text/javascript">
+		//关闭对话框
+		function closeDialog(code){
+			if(code==1) {
+				localStorage.needRefresh = 1;
+				location.href = "/index?uid=" + localStorage.gyid;
+			}else if(code==0){
+				$(".weui_dialog_alert").attr("hidden","hidden");
+			}
+		}
+		//添加好友
+		function addFriend(uid){
+			if(!localStorage.gyid){
+				location.href = "/login";
+			}
+			if(localStorage.gyid==uid){
+				$(".weui_dialog_title").html("添加失败");
+				$(".weui_dialog_bd").html("不能添加自己为好友！");
+				$('#url').attr('href',"javascript:closeDialog(0)");
+				$(".weui_dialog_alert").removeAttr("hidden");
+			}else{
+				$.ajax({
+					url: 'user/addFriend?uid=' + localStorage.gyid + '&friendId=' + uid,
+					type: 'POST',
+					dataType: 'json',
+					error: function () {
+						$(".weui_dialog_title").html("添加失败");
+						$(".weui_dialog_bd").html("服务器被海王类劫持了！");
+						$('#url').attr('href',"javascript:closeDialog(0)");
+						$(".weui_dialog_alert").removeAttr("hidden");
+					},
+					success: function (data) {
+						if(data.code==1){
+							$(".weui_dialog_title").html("添加成功");
+							$(".weui_dialog_bd").html("");
+							$('#url').attr('href',"javascript:closeDialog(0)");
+						}else{
+							$(".weui_dialog_title").html("添加失败");
+							$(".weui_dialog_bd").html(data.msg);
+							$('#url').attr('href',"javascript:closeDialog(0)");
+						}
+						$(".weui_dialog_alert").removeAttr("hidden");
+					}
+				});
+			}
+		}
+		//删除好友
+		function delFriend(uid){
+			if(!localStorage.gyid){
+				location.href = "/login";
+			}
+			$.ajax({
+				url: 'user/delFriend?uid=' + localStorage.gyid + '&friendId=' + uid,
+				type: 'POST',
+				dataType: 'json',
+				error: function () {
+					$(".weui_dialog_title").html("删除失败");
+					$(".weui_dialog_bd").html("服务器被海王类劫持了！");
+					$('#url').attr('href',"javascript:closeDialog(0)");
+					$(".weui_dialog_alert").removeAttr("hidden");
+				},
+				success: function (data) {
+					if(data.code==1){
+						$(".weui_dialog_title").html("删除成功");
+						$(".weui_dialog_bd").html("");
+						$('#url').attr('href',"javascript:closeDialog(1)");
+					}else{
+						$(".weui_dialog_title").html("删除失败");
+						$(".weui_dialog_bd").html(data.msg);
+						$('#url').attr('href',"javascript:closeDialog(0)");
+					}
+					$(".weui_dialog_alert").removeAttr("hidden");
+				}
+			});
+		}
 	</script>
 </body>
 </html>

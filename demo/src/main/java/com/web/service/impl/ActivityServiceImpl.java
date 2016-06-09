@@ -10,6 +10,7 @@ import com.web.domain.Pend;
 import com.web.domain.User;
 import com.web.service.ActivityService;
 import com.web.util.ActivityUtil;
+import com.web.util.MailUtil;
 import com.web.util.TimeUtil;
 import com.web.util.UserUtil;
 import org.apache.commons.lang.StringUtils;
@@ -96,7 +97,6 @@ public class ActivityServiceImpl implements ActivityService {
     public int approve(Pend pend) {
         //在活动表的成员项加入成员，在用户表的参与项加入活动
         try {
-            pendDao.delete(pend);
             Activity activity = activityDao.findOneById(pend.getActivityId()).get(0);
             User user = userDao.findOneById(pend.getUid()).get(0);
             if (activity == null || user == null)
@@ -107,8 +107,13 @@ public class ActivityServiceImpl implements ActivityService {
                 return 0;
             activity.setMember(newMember);
             user.setPartake(newJoin);
+            pendDao.delete(pend);
             activityDao.save(activity);
             userDao.save(user);
+            //发邮件通知
+            String msg = "志愿者，恭喜！活动发起者已同意你的报名申请，请准时参加"+activity.getStartTime()+"开始的"+activity.getName()+"。";
+            String title = activity.getName()+"活动报名结果反馈";
+            MailUtil.sendMail(MailUtil.ustbMail, MailUtil.ustbPwd, user.getMail(), title, msg);
             return 1;
         }catch (Exception e){
             logger.error(e.getMessage());
@@ -117,12 +122,17 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    @Transactional
     public int reject(Pend pend) {
         try {
-            Pend newPend = pendDao.findOneById(pend.getUid()).get(0);
+            Pend newPend = pendDao.findOneById(pend.getId()).get(0);
             newPend.setStatus(-1);
             pendDao.save(newPend);
+            //发邮件通知
+            Activity activity = activityDao.findOneById(pend.getActivityId()).get(0);
+            User user = userDao.findOneById(pend.getUid()).get(0);
+            String msg = "志愿者，你好！很遗憾活动发起者拒绝了你对开始于"+activity.getStartTime()+"的"+activity.getName()+"的申请。";
+            String title = activity.getName()+"活动报名结果反馈";
+            MailUtil.sendMail(MailUtil.ustbMail, MailUtil.ustbPwd, user.getMail(), title, msg);
             return 1;
         }catch (Exception e){
             logger.error(e.getMessage());
@@ -265,6 +275,49 @@ public class ActivityServiceImpl implements ActivityService {
             return inviteList;
         }catch (Exception e){
             logger.error("getInviteList|"+e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<JSONObject> getApproveList(long activityId) {
+        try {
+            List<Pend> pendList = pendDao.getApproveList(activityId);
+            List<JSONObject> approveList = new ArrayList<JSONObject>();
+            for (Pend pend:pendList){
+                JSONObject approve = new JSONObject();
+                approve.put("name",pend.getUsername());
+                approve.put("info","");
+                approve.put("url","/userInfo?uid=" + pend.getUid() + "&page=5&pendId="+pend.getId()+"&activityId="+pend.getActivityId());
+                approveList.add(approve);
+            }
+            return approveList;
+        }catch (Exception e){
+            logger.error("getApproveList|"+e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<JSONObject> partakeList(long activityId) {
+        try {
+            List<JSONObject> partakeList = new ArrayList<JSONObject>();
+            Activity activity = activityDao.findOneById(activityId).get(0);
+            if (StringUtils.isNotBlank(activity.getMember())) {
+                JSONObject jsonObject = JSON.parseObject(activity.getMember());
+                List<JSONObject> otherList = (List<JSONObject>) jsonObject.get("memberList");
+                if (otherList != null && otherList.size() > 0) {
+                    for (JSONObject member:otherList){
+                        member.put("info","");
+                        member.put("url","/userInfo?uid="+member.getString("uid")+"&page=7");
+                        member.put("name",member.getString("name"));
+                        partakeList.add(member);
+                    }
+                }
+            }
+            return partakeList;
+        }catch (Exception e){
+            logger.error("partakeList|"+e.getMessage());
             return null;
         }
     }

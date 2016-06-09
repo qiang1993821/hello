@@ -40,7 +40,7 @@
 				</a>
 			</div>
 			<div class="weui_cells weui_cells_access">
-				<a class="weui_cell" href="javascript:;">
+				<a class="weui_cell" href="/approveList?activityId=${activityId}">
 					<div class="weui_cell_bd weui_cell_primary">
 						<p>报名申请</p>
 					</div>
@@ -49,7 +49,7 @@
 				</a>
 			</div>
 			<div class="weui_cells weui_cells_access">
-				<a class="weui_cell" href="javascript:;">
+				<a class="weui_cell" href="/partakeList?activityId=${activityId}">
 					<div class="weui_cell_bd weui_cell_primary">
 						<p>参与成员</p>
 					</div>

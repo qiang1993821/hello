@@ -100,6 +100,8 @@ class ActivityController {
             map.put("msg","您曾报名|受邀|参与|发起过该活动！")
             map.put("code",0)
         }else {
+            def user = userService.findOneUser(pend.uid)
+            pend.username = user.name
             activityService.join(pend)
             map.put("msg","报名成功！")
             map.put("code",1)
@@ -114,12 +116,11 @@ class ActivityController {
      * @return
      */
     @RequestMapping(value = "/approveUser")
-    String approveUser(Pend pend,HttpServletRequest request){
+    String approveUser(Pend pend,HttpServletRequest request,@RequestParam(value = "result",defaultValue = "0") Integer result){
         def map = [:]
-        def result = request.getParameter("result")
         def type
         if (StringUtils.isBlank(request.getParameter("id")) || StringUtils.isBlank(request.getParameter("uid"))
-                || StringUtils.isBlank(request.getParameter("activityId")) || StringUtils.isBlank(result)){
+                || StringUtils.isBlank(request.getParameter("activityId"))){
             map.put("msg","信息错误，审批失败！")
             map.put("type",0)
         }else {
@@ -128,12 +129,11 @@ class ActivityController {
             }else {//批准
                 type = activityService.approve(pend)
             }
-            if (type == 1){
-                map.put("msg","审批成功！")
-            }else {
-                map.put("msg","审批异常！")
+            map.put("msg","")
+            if (type != 1){
+                map.put("msg","审批过程发生异常！")
             }
-            map.put("type",type)
+            map.put("code",type)
         }
         return new JsonBuilder(map).toString()
     }

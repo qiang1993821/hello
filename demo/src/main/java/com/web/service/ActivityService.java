@@ -86,6 +86,20 @@ public interface ActivityService {
     List<JSONObject> getInviteList(long uid);
 
     /**
+     * 获取报名列表
+     * @param activityId
+     * @return
+     */
+    List<JSONObject> getApproveList(long activityId);
+
+    /**
+     * 我发起的活动招募中的成员列表
+     * @param activityId
+     * @return
+     */
+    List<JSONObject> partakeList(long activityId);
+
+    /**
      * 判断是否已经报名参加发起
      * @param uid
      * @param activityId

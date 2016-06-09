@@ -9,10 +9,7 @@ import com.web.domain.Activity;
 import com.web.domain.Pend;
 import com.web.domain.User;
 import com.web.service.UserService;
-import com.web.util.ActivityUtil;
-import com.web.util.CacheUtil;
-import com.web.util.TimeUtil;
-import com.web.util.UserUtil;
+import com.web.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,6 +142,10 @@ public class UserServiceImpl implements UserService {
                                     for (Pend pend : pendList) {
                                         pend.setStatus(-1);
                                         pendDao.save(pend);
+                                        User user = userDao.findOneById(pend.getUid()).get(0);
+                                        String msg = "志愿者，你好！很遗憾活动发起者拒绝了你对开始于"+activity.getStartTime()+"的"+activity.getName()+"的申请。";
+                                        String title = activity.getName()+"活动报名结果反馈";
+                                        MailUtil.sendMail(MailUtil.ustbMail, MailUtil.ustbPwd, user.getMail(), title, msg);
                                     }
                                     break;
                                 case 4://已结束，删除报名和邀请记录

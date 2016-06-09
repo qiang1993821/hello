@@ -103,6 +103,9 @@
 		<c:if test="${page==5}">
 			<div class="bd spacing">
 				<input type="hidden" id="uid" value="${uid}"/>
+				<input type="hidden" id="pendId" value="${pendId}"/>
+				<input type="hidden" id="activityId" value="${activityId}"/>
+				<input type="hidden" id="username" value="${name}"/>
 				<a href="javascript:approve(1)" class="weui_btn weui_btn_primary">接受</a>
 				<a href="javascript:approve(0)" class="weui_btn weui_btn_warn">拒绝</a>
 			</div>
@@ -126,6 +129,11 @@
 	<script src="static/js/zepto.min.js"></script>
     <script src="static/js/router.min.js"></script>
 	<script type="text/javascript">
+		$(function () {
+			if(!localStorage.gyid){
+				location.href = "/login";
+			}
+		});
 		//关闭对话框
 		function closeDialog(code){
 			if(code==1) {
@@ -137,9 +145,6 @@
 		}
 		//添加好友
 		function addFriend(uid){
-			if(!localStorage.gyid){
-				location.href = "/login";
-			}
 			if(localStorage.gyid==uid){
 				$(".weui_dialog_title").html("添加失败");
 				$(".weui_dialog_bd").html("不能添加自己为好友！");
@@ -173,9 +178,6 @@
 		}
 		//删除好友
 		function delFriend(uid){
-			if(!localStorage.gyid){
-				location.href = "/login";
-			}
 			$.ajax({
 				url: 'user/delFriend?uid=' + localStorage.gyid + '&friendId=' + uid,
 				type: 'POST',
@@ -193,6 +195,42 @@
 						$('#url').attr('href',"javascript:closeDialog(1)");
 					}else{
 						$(".weui_dialog_title").html("删除失败");
+						$(".weui_dialog_bd").html(data.msg);
+						$('#url').attr('href',"javascript:closeDialog(0)");
+					}
+					$(".weui_dialog_alert").removeAttr("hidden");
+				}
+			});
+		}
+		//审批报名
+		function approve(code){
+			var uid = $("#uid").val();
+			var pendId = $("#pendId").val();
+			var activityId = $("#activityId").val();
+			var username = $("#username").val();
+			var url;
+			if(code==1){
+				url = "activity/approveUser?id="+pendId+"&uid="+uid+"&activityId="+activityId+"&result=1&username="+username;
+			}else{
+				url = "activity/approveUser?id="+pendId+"&uid="+uid+"&activityId="+activityId+"&result=0";
+			}
+			$.ajax({
+				url: url,
+				type: 'POST',
+				dataType: 'json',
+				error: function () {
+					$(".weui_dialog_title").html("审批失败");
+					$(".weui_dialog_bd").html("服务器被海王类劫持了！");
+					$('#url').attr('href',"javascript:closeDialog(0)");
+					$(".weui_dialog_alert").removeAttr("hidden");
+				},
+				success: function (data) {
+					if(data.code==1){
+						$(".weui_dialog_title").html("审批成功");
+						$(".weui_dialog_bd").html("");
+						$('#url').attr('href',"javascript:closeDialog(1)");
+					}else{
+						$(".weui_dialog_title").html("审批失败");
 						$(".weui_dialog_bd").html(data.msg);
 						$('#url').attr('href',"javascript:closeDialog(0)");
 					}

@@ -23,7 +23,7 @@ class MailController {
             map.put("msg","数据异常，无法发送！")
             map.put("code",0)
         }
-        def msg = "志愿者，你好！这是一封志愿平台邮箱验证邮件，若非本人操作请忽略！<a href=\"http://localhost/testMail?uid="+uid+"&mail="+mail+"\">点击验证</a>"
+        def msg = "志愿者，你好！这是一封志愿平台邮箱验证邮件，若非本人操作请忽略！<a href=\"http://www.ustbvolunteer.com/testMail?uid="+uid+"&mail="+mail+"\">点击验证</a>"
         def title = "志愿者平台邮箱验证"
         if (MailUtil.sendMail(MailUtil.ustbMail,MailUtil.ustbPwd,mail,title,msg)){
             map.put("msg","验证邮件已发送，请尽快登录邮箱进行验证！")

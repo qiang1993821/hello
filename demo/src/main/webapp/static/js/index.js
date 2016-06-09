@@ -4,11 +4,6 @@ $(function () {
     if(!localStorage.gyid){
         location.href = "/login";
     }
-    //刷新使js生效
-    if(localStorage.needRefresh && localStorage.needRefresh==1) {
-        localStorage.needRefresh = 0;
-        location.reload();
-    }
     var uid = localStorage.gyid;
 	//tab切换
     var router = new Router({
@@ -117,7 +112,11 @@ $(function () {
             }
         })
     }
-
+//刷新使js生效,放在这个位置第一次访问js才生效，原因不详
+    if(!localStorage.needRefresh || localStorage.needRefresh==1) {
+        localStorage.needRefresh = 0;
+        location.reload();
+    }
     //查询活跃时间
     $.ajax({
         url: 'user/current?uid=' + uid,

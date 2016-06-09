@@ -112,11 +112,31 @@ public class HomeController {
         return "infoList"
     }
 
+    //报名申请的用户列表页
+    @RequestMapping(value = "/approveList")
+    public String approveList(Map<String, Object> model,
+                             @RequestParam(value = "activityId") Long activityId) {
+        def approveList = activityService.getApproveList(activityId)
+        model.put("infoList",approveList)
+        return "infoList"
+    }
+
+    //我发起的活动里看成员列表页
+    @RequestMapping(value = "/partakeList")
+    public String partakeList(Map<String, Object> model,
+                              @RequestParam(value = "activityId") Long activityId) {
+        def approveList = activityService.partakeList(activityId)
+        model.put("infoList",approveList)
+        return "infoList"
+    }
+
     //用户详情页
     @RequestMapping(value = "/userInfo")
     public String userInfo(Map<String, Object> model,
                          @RequestParam(value = "uid") Long uid,
-                         @RequestParam(value = "page") Integer page) {
+                         @RequestParam(value = "page") Integer page,
+                         @RequestParam(value = "pendId", required = false) Long pendId,
+                         @RequestParam(value = "activityId", required = false) Long activityId) {
         def user = userService.findOneUser(uid)
         model.put("name",user.name)
         model.put("academy",StringUtils.isBlank(user.academy)?"未填写":user.academy)
@@ -132,6 +152,10 @@ public class HomeController {
             model.put("wechat",StringUtils.isBlank(user.wechat)?"未填写":user.wechat)
             model.put("phone",StringUtils.isBlank(user.phone)?"未填写":user.phone)
             model.put("mail",StringUtils.isBlank(user.mail)?"未填写":user.mail)
+        }
+        if (pendId!=null&&activityId!=null) {
+            model.put("pendId", pendId)
+            model.put("activityId", activityId)
         }
         return "userInfo"
     }

@@ -104,14 +104,14 @@
                         <div class="weui_cell_ft">
                         </div>
                     </a>
-                    <a class="weui_cell" href="javascript:;">
+                    <a class="weui_cell" href="/launch_user?uid=${uid}&from=2">
                         <div class="weui_cell_bd weui_cell_primary">
                             <p>我发起的</p>
                         </div>
                         <div class="weui_cell_ft">
                         </div>
                     </a>
-                    <a class="weui_cell" href="javascript:;">
+                    <a class="weui_cell" href="/partake_user?uid=${uid}&from=1">
                         <div class="weui_cell_bd weui_cell_primary">
                             <p>我参与的</p>
                         </div>

@@ -92,7 +92,7 @@ public class ActivityUtil {
                 jsonObject.put("info", ActivityUtil.statusToString(activity.getStatus()));
                 int page = 2;
                 if (activity.getStatus()==4)
-                    page = 4;
+                    page = 5;
                 else if (activity.getStatus()==3)
                     page = 3;
                 jsonObject.put("url", "/activityInfo?activityId=" + activity.getId() + "&page=" + page);
@@ -109,7 +109,7 @@ public class ActivityUtil {
                     case 1:url = "/activity1?activityId=" + activity.getId();break;
                     case 2:url = "/activity2?activityId=" + activity.getId();break;
                     case 3:url = "/activity3?activityId=" + activity.getId();break;
-                    case 4:url = "/activity?activityId=" + activity.getId();break;
+                    case 4:url = "/activityInfo?activityId=" + activity.getId() + "&page=4";break;
                 }
                 jsonObject.put("url", url);
                 jsonObject.put("name", activity.getName());

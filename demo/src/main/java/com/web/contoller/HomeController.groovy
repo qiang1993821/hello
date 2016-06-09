@@ -63,8 +63,11 @@ public class HomeController {
     //ta发起的
     @RequestMapping(value = "/launch_user")
     public String userLaunch(Map<String, Object> model,
-                        @RequestParam(value = "uid") Long uid) {
-        def launchList = userService.getActivityList(uid,"launch",0)
+                        @RequestParam(value = "uid") Long uid,
+                        @RequestParam(value = "from",required = false) Integer from) {
+        if (from==null)
+            from = 0
+        def launchList = userService.getActivityList(uid,"launch",from)
         model.put("infoList",launchList)
         return "infoList"
     }
@@ -72,8 +75,11 @@ public class HomeController {
     //ta参与的
     @RequestMapping(value = "/partake_user")
     public String userPartake(Map<String, Object> model,
-                             @RequestParam(value = "uid") Long uid) {
-        def launchList = userService.getActivityList(uid,"partake",0)
+                             @RequestParam(value = "uid") Long uid,
+                             @RequestParam(value = "from",required = false) Integer from) {
+        if (from==null)
+            from = 0
+        def launchList = userService.getActivityList(uid,"partake",from)
         model.put("infoList",launchList)
         return "infoList"
     }
@@ -136,11 +142,73 @@ public class HomeController {
                            @RequestParam(value = "activityId") Long activityId,
                            @RequestParam(value = "page", required = false) Integer page) {
         def activity = activityService.getActivityInfo(activityId)
+        if (activity==null) {
+            model.put("result","该活动不存在！")
+            return "result"
+        }
         model.put("activity",activity)
         if (page==null)
             page = 0
         model.put("page",page)
         return "activityInfo"
+    }
+
+    //我发起的正在审核活动页
+    @RequestMapping(value = "/activity0")
+    public String activity0(Map<String, Object> model,
+                         @RequestParam(value = "activityId") Long activityId) {
+        def activity = activityService.findOneById(activityId)
+        if (activity==null) {
+            model.put("result","该活动不存在！")
+            return "result"
+        }
+        model.put("activityId",activityId)
+        model.put("name",activity.name)
+        model.put("startTime",activity.startTime)
+        model.put("endTime",activity.endTime)
+        model.put("hour",activity.hour)
+        model.put("details",activity.details)
+        return "activity0"
+    }
+
+    //我发起的招募中活动页
+    @RequestMapping(value = "/activity1")
+    public String activity1(Map<String, Object> model,
+                            @RequestParam(value = "activityId") Long activityId) {
+        def activity = activityService.findOneById(activityId)
+        if (activity==null) {
+            model.put("result","该活动不存在！")
+            return "result"
+        }
+        model.put("activityId",activityId)
+        model.put("name",activity.name)
+        model.put("sponsor",activity.sponsor)
+        return "activity1"
+    }
+
+    //我发起的即将开始活动页
+    @RequestMapping(value = "/activity2")
+    public String activity2(Map<String, Object> model,
+                            @RequestParam(value = "activityId") Long activityId) {
+        def activity = activityService.findOneById(activityId)
+        if (activity==null) {
+            model.put("result","该活动不存在！")
+            return "result"
+        }
+        model.put("activityId",activityId)
+        model.put("name",activity.name)
+        model.put("startTime",activity.startTime)
+        model.put("endTime",activity.endTime)
+        return "activity2"
+    }
+
+    //我发起的正在进行活动页
+    @RequestMapping(value = "/activity3")
+    public String activity3(Map<String, Object> model,
+                             @RequestParam(value = "activityId") Long activityId) {
+        //获取签到情况列表
+        model.put("infoList",null)
+        return "infoList"
     }
 
     //发起活动页

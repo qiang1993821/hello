@@ -59,12 +59,31 @@
 		            </div>
 		        </a>
 		    </div>
-		    <article class="weui_article">
-			    <section>
-	                <h3>活动详情</h3>
-	                <p>${activity.details}</p>
-	            </section>
-	        </article>
+			<c:if test="${page<5}">
+				<article class="weui_article">
+					<section>
+						<c:if test="${page<4}">
+							<h3>活动详情</h3>
+							<p>${activity.details}</p>
+						</c:if>
+						<c:if test="${page==4}">
+							<h3>下载表格</h3>
+							<p>请凭借id号${activity.id}，前往www.ustbvolunteer.com/download下载活动统计表</p>
+						</c:if>
+					</section>
+				</article>
+			</c:if>
+			<c:if test="${page==5}">
+				<div class="weui_cells_title">信息反馈</div>
+				<div class="weui_cells weui_cells_form">
+					<div class="weui_cell">
+						<div class="weui_cell_bd weui_cell_primary">
+							<textarea class="weui_textarea" placeholder="请输入反馈信息" rows="3" id="feedback"></textarea>
+							<div class="weui_textarea_counter"><span>0</span>/200</div>
+						</div>
+					</div>
+				</div>
+			</c:if>
 			<c:if test="${activity.join && page == 0}">
 				<div class="bd spacing" id="joinBtn">
 					<a href="javascript:joinAC(${activity.id})" class="weui_btn weui_btn_primary">报名</a>
@@ -85,6 +104,11 @@
 			<c:if test="${page == 3}">
 				<div class="bd spacing">
 					<a href="javascript:signIn(${activity.id})" class="weui_btn weui_btn_primary">签到</a>
+				</div>
+			</c:if>
+			<c:if test="${page == 5}">
+				<div class="bd spacing">
+					<a href="javascript:feedback(${activity.id})" class="weui_btn weui_btn_primary">提交反馈</a>
 				</div>
 			</c:if>
 		</div>

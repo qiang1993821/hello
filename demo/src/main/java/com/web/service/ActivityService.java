@@ -141,9 +141,24 @@ public interface ActivityService {
     boolean signIn(long uid,long activityId,int type);
 
     /**
+     * 提交反馈
+     * @param uid
+     * @param activityId
+     * @param feedback 反馈的内容
+     * @return
+     */
+    boolean feedback(long uid,long activityId,String feedback);
+
+    /**
      * 获取活动详情展示页的相关属性
      * @param activityId
      * @return
      */
     JSONObject getActivityInfo(long activityId);
+
+    /**
+     * 获取活动反馈表的信息
+     * @param activityId
+     */
+    List<JSONObject> downloadList(long activityId);
 }

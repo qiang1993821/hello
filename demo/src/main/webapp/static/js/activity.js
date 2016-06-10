@@ -225,4 +225,43 @@ function signIn(activityId){
         }
     });
 }
+//提交反馈
+function feedback(activityId){
+    var feedback = $("#feedback").val();
+    if(feedback==null||feedback==""){
+        $(".weui_dialog_title").html("提交失败");
+        $(".weui_dialog_bd").html("反馈不能为！");
+        $('#url').attr('href',"javascript:closeDialog(0)");
+        $(".weui_dialog_alert").removeAttr("hidden");
+    }else{
+        $.ajax({
+            url: 'activity/feedback',
+            type: 'POST',
+            data:{
+                uid:localStorage.gyid,
+                feedback:feedback,
+                activityId:activityId
+            },
+            dataType: 'json',
+            error: function () {
+                $(".weui_dialog_title").html("提交失败");
+                $(".weui_dialog_bd").html("服务器被海王类劫持了！");
+                $('#url').attr('href',"javascript:closeDialog(0)");
+                $(".weui_dialog_alert").removeAttr("hidden");
+            },
+            success: function (data) {
+                if(data.code==1){
+                    $(".weui_dialog_title").html("提交成功");
+                    $(".weui_dialog_bd").html("");
+                    $('#url').attr('href',"javascript:closeDialog(1)");
+                }else{
+                    $(".weui_dialog_title").html("提交失败");
+                    $(".weui_dialog_bd").html(data.msg);
+                    $('#url').attr('href',"javascript:closeDialog(0)");
+                }
+                $(".weui_dialog_alert").removeAttr("hidden");
+            }
+        });
+    }
+}
 

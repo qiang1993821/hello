@@ -77,7 +77,7 @@ class MailController {
             for (JSONObject member:memberList){
                 def uid = (Number)member.get("uid")
                 def user = userService.findOneUser(uid.longValue())
-                def msg = "志愿者，你好！您参加的"+activity.name+"将于"+activity.startTime+"开始,请进行活动参加确认。<a href=\"http://localhost/ensureResult?uid="+uid+"&activityId="+activityId+"\">点击此处确认参加</a>"
+                def msg = "志愿者，你好！您参加的"+activity.name+"将于"+activity.startTime+"开始,请进行活动参加确认。<a href=\"http://www.ustbvolunteer.com/ensureResult?uid="+uid+"&activityId="+activityId+"\">点击此处确认参加</a>"
                 def title = "活动提醒|"+activity.name
                 if (MailUtil.sendMail(MailUtil.ustbMail, MailUtil.ustbPwd, user.mail, title, msg))
                     code = code + 1

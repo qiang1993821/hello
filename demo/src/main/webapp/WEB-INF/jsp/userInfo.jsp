@@ -94,6 +94,10 @@
 			<div class="bd spacing">
 				<a href="javascript:ensureSign(${uid})" class="weui_btn weui_btn_primary">确认签到</a>
 			</div>
+			<br>
+			<div class="bd spacing">
+				<a href="javascript:closeDialog(1)" class="weui_btn weui_btn_primary">返回</a>
+			</div>
 		</c:if>
 		<c:if test="${page==4}">
 			<div class="bd spacing">

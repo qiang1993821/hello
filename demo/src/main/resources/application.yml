@@ -29,6 +29,6 @@ spring:
 
 
 logging:
-#  config: ./logback.xml
+  config: ./logback.xml
 
 

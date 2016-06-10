@@ -307,4 +307,10 @@ public class HomeController {
         return "user_change"
     }
 
+    //下载活动反馈表
+    @RequestMapping(value = "/download")
+    public String download() {
+        return "download"
+    }
+
 }

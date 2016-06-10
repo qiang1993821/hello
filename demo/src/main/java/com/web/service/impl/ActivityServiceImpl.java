@@ -490,4 +490,69 @@ public class ActivityServiceImpl implements ActivityService {
         }
         return false;
     }
+
+    @Override
+    public boolean feedback(long uid, long activityId, String feedback) {
+        try {
+            Activity activity = activityDao.findOneById(activityId).get(0);
+            if (StringUtils.isNotBlank(activity.getMember())) {
+                JSONObject jsonObject = JSON.parseObject(activity.getMember());
+                List<JSONObject> memberList = (List<JSONObject>) jsonObject.get("memberList");
+                if (memberList != null && memberList.size() > 0) {
+                    for (int i=0;i<memberList.size();i++){
+                        JSONObject member = memberList.get(i);
+                        Number memberId = (Number)member.get("uid");
+                        if (uid==memberId.longValue()) {
+                            member.put("feedback",feedback);
+                            memberList.remove(i);
+                            memberList.add(member);
+                            jsonObject.put("memberList",memberList);
+                            activity.setMember(jsonObject.toJSONString());
+                            activityDao.save(activity);
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }catch (Exception e){
+            logger.error("feedback|"+e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public List<JSONObject> downloadList(long activityId) {
+        try {
+            Activity activity = activityDao.findOneById(activityId).get(0);
+            if (StringUtils.isBlank(activity.getMember()))
+                return null;
+            List<JSONObject> memberList = (List<JSONObject>)JSON.parseObject(activity.getMember()).get("memberList");
+            if (memberList==null||memberList.size()==0)
+                return null;
+            List<JSONObject> downloadList = new ArrayList<JSONObject>();
+            for (JSONObject member:memberList){
+                JSONObject info = new JSONObject();
+                List<String> infoList = new ArrayList<String>();
+                User user = userDao.findOneById(member.getLongValue("uid")).get(0);
+                infoList.add(user.getName());
+                infoList.add(user.getAcademy());
+                infoList.add(user.getClassName());
+                infoList.add(user.getPhone());
+                infoList.add(user.getMail());
+                switch (member.getIntValue("status")){
+                    case 0:infoList.add("未签到");break;
+                    case 1:infoList.add("单向签到");break;
+                    case 2:infoList.add("双向签到");break;
+                }
+                infoList.add(member.getString("feedback"));
+                info.put("infoList",infoList);
+                downloadList.add(info);
+            }
+            return downloadList;
+        }catch (Exception e){
+            logger.error("downloadList|"+e.getMessage());
+        }
+        return null;
+    }
 }

@@ -68,7 +68,7 @@
 						</c:if>
 						<c:if test="${page==4}">
 							<h3>下载表格</h3>
-							<p>请凭借id号${activity.id}，前往www.ustbvolunteer.com/download下载活动统计表</p>
+							<p>请凭借活动id号${activity.id}，前往www.ustbvolunteer.com/download下载活动统计表</p>
 						</c:if>
 					</section>
 				</article>

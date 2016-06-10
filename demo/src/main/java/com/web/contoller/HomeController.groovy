@@ -2,6 +2,7 @@ package com.web.contoller
 
 import com.web.service.impl.ActivityServiceImpl
 import com.web.service.impl.UserServiceImpl
+import com.web.util.CacheUtil
 import com.web.util.UserUtil
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -34,6 +35,30 @@ public class HomeController {
             model.put("result","验证成功！");
         }catch (Exception e){
             model.put("result","验证失败，请重试，若已尝试多次，请返回平台再次发送验证邮件！");
+            logger.error("testMail|"+e.message)
+        }
+        return "result"
+    }
+
+    @RequestMapping(value = "/ensureResult")
+    public String ensureResult(Map<String, Object> model,
+                           @RequestParam(value = "uid") Long uid,
+                           @RequestParam(value = "activityId") Long activityId) {
+        try {
+            if (CacheUtil.getCache(uid+"ensure"+activityId)){
+                model.put("result","你已确认过该活动！");
+                return "result"
+            }else {
+                CacheUtil.putCache(uid+"ensure"+activityId,"1",CacheUtil.MEMCACHED_ONE_DAY)
+                if (CacheUtil.getCache(uid+"ensure"+activityId)){
+                    model.put("result","确认成功！");
+                }else {
+                    model.put("result","确认失败！");
+                }
+            }
+        }catch (Exception e){
+            model.put("result","验证失败，请重试，若已尝试多次，请返回平台再次发送验证邮件！");
+            logger.error("testMail|"+e.message)
         }
         return "result"
     }
@@ -137,6 +162,15 @@ public class HomeController {
                               @RequestParam(value = "uid") Long uid) {
         def friendList = activityService.friendList(uid,activityId)
         model.put("infoList",friendList)
+        return "infoList"
+    }
+
+    //活动确认成员列表页
+    @RequestMapping(value = "/ensureList")
+    public String ensureList(Map<String, Object> model,
+                              @RequestParam(value = "activityId") Long activityId) {
+        def ensureList = activityService.ensureList(activityId)
+        model.put("infoList",ensureList)
         return "infoList"
     }
 

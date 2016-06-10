@@ -102,6 +102,13 @@ public interface ActivityService {
     List<JSONObject> partakeList(long activityId);
 
     /**
+     * 确认列表
+     * @param activityId
+     * @return
+     */
+    List<JSONObject> ensureList(long activityId);
+
+    /**
      * 招募中活动邀请朋友列表页
      * @param uid
      * @param activityId

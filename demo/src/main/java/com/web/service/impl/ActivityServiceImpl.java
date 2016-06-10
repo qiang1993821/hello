@@ -9,10 +9,7 @@ import com.web.domain.Activity;
 import com.web.domain.Pend;
 import com.web.domain.User;
 import com.web.service.ActivityService;
-import com.web.util.ActivityUtil;
-import com.web.util.MailUtil;
-import com.web.util.TimeUtil;
-import com.web.util.UserUtil;
+import com.web.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -386,6 +383,37 @@ public class ActivityServiceImpl implements ActivityService {
             return friendList;
         }catch (Exception e){
             logger.error("partakeList|"+e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<JSONObject> ensureList(long activityId) {
+        try {
+            List<JSONObject> ensureList = new ArrayList<JSONObject>();
+            List<JSONObject> isSure = new ArrayList<JSONObject>();
+            Activity activity = activityDao.findOneById(activityId).get(0);
+            if (StringUtils.isNotBlank(activity.getMember())) {
+                JSONObject jsonObject = JSON.parseObject(activity.getMember());
+                List<JSONObject> otherList = (List<JSONObject>) jsonObject.get("memberList");
+                if (otherList != null && otherList.size() > 0) {
+                    for (JSONObject member:otherList){
+                        member.put("url","/userInfo?uid="+member.getString("uid")+"&page=7");
+                        member.put("name",member.getString("name"));
+                        if (CacheUtil.getCache(member.getString("uid")+"ensure"+activityId)==null){
+                            member.put("info","");
+                            ensureList.add(member);
+                        }else {
+                            member.put("info","已确认");
+                            isSure.add(member);
+                        }
+                    }
+                    ensureList.addAll(isSure);
+                }
+            }
+            return ensureList;
+        }catch (Exception e){
+            logger.error("ensureList|"+e.getMessage());
             return null;
         }
     }

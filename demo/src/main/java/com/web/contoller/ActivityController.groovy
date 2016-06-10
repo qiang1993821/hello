@@ -272,7 +272,7 @@ class ActivityController {
                     }
                     iRow++
                 }
-                String realPath = "/www/activityExcel/"+activity.name+".xls"
+                String realPath = "/www/test/activityExcel/"+activity.name+".xls"
                 FileOutputStream fOut = new FileOutputStream(realPath);
                 workbook.write(fOut);
                 fOut.flush();
@@ -305,10 +305,10 @@ class ActivityController {
                     if (bos != null)
                         bos.close();
                 }
-                return null;
                 File file = new File(realPath);
                 if (file.isFile() & file.exists())
                     file.delete();
+                return null
             }catch (Exception e){
                 logger.error(e.message)
                 map.put("msg","服务器被海王类袭击，表格下载异常！");

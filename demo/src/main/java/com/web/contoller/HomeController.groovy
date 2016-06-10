@@ -267,6 +267,7 @@ public class HomeController {
             return "result"
         }
         model.put("activityId",activityId)
+        model.put("sponsor",activity.sponsor)
         model.put("name",activity.name)
         model.put("startTime",activity.startTime)
         model.put("endTime",activity.endTime)

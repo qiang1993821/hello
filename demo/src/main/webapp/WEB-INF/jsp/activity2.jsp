@@ -38,7 +38,24 @@
 					<div class="weui_cell_ft">${endTime}</div>
 				</div>
 			</div>
-
+			<div class="weui_cells weui_cells_access">
+				<a class="weui_cell" href="/inviteFriend?uid=${sponsor}&activityId=${activityId}">
+					<div class="weui_cell_bd weui_cell_primary">
+						<p>邀请好友</p>
+					</div>
+					<div class="weui_cell_ft">
+					</div>
+				</a>
+			</div>
+			<div class="weui_cells weui_cells_access">
+				<a class="weui_cell" href="/approveList?activityId=${activityId}">
+					<div class="weui_cell_bd weui_cell_primary">
+						<p>报名申请</p>
+					</div>
+					<div class="weui_cell_ft">
+					</div>
+				</a>
+			</div>
 			<div class="weui_cells weui_cells_access">
 				<a class="weui_cell" href="/ensureList?activityId=${activityId}">
 					<div class="weui_cell_bd weui_cell_primary">

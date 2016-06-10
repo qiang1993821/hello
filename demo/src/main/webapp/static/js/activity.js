@@ -199,3 +199,30 @@ function approve(code){
         }
     });
 }
+//签到
+function signIn(activityId){
+    $.ajax({
+        url: 'activity/signIn?activityId='+activityId+"&uid="+localStorage.gyid+"&type=0",
+        type: 'POST',
+        dataType: 'json',
+        error: function () {
+            $(".weui_dialog_title").html("签到失败");
+            $(".weui_dialog_bd").html("服务器被海王类劫持了！");
+            $('#url').attr('href',"javascript:closeDialog(0)");
+            $(".weui_dialog_alert").removeAttr("hidden");
+        },
+        success: function (data) {
+            if(data.code==1){
+                $(".weui_dialog_title").html("签到成功");
+                $(".weui_dialog_bd").html("");
+                $('#url').attr('href',"javascript:closeDialog(1)");
+            }else{
+                $(".weui_dialog_title").html("签到失败");
+                $(".weui_dialog_bd").html(data.msg);
+                $('#url').attr('href',"javascript:closeDialog(0)");
+            }
+            $(".weui_dialog_alert").removeAttr("hidden");
+        }
+    });
+}
+

@@ -4,6 +4,7 @@ import com.web.domain.Activity
 import com.web.domain.Pend
 import com.web.service.impl.ActivityServiceImpl
 import com.web.service.impl.UserServiceImpl
+import com.web.util.CacheUtil
 import groovy.json.JsonBuilder
 import org.apache.commons.lang.StringUtils
 import org.slf4j.Logger
@@ -179,11 +180,33 @@ class ActivityController {
         map.put("activityList",activityList)
         return new JsonBuilder(map).toString()
     }
+
     @RequestMapping(value = "/fuzzyQueryAC")
     String fuzzyQueryAC(@RequestParam(value = "name") String name){
         def map = [:]
         def nameList = activityService.fuzzyQuery(name)
         map.put("nameList",nameList)
+        return new JsonBuilder(map).toString()
+    }
+
+    @RequestMapping(value = "/signIn")
+    String signIn(@RequestParam(value = "activityId") Long activityId,
+                  @RequestParam(value = "uid") Long uid,
+                  @RequestParam(value = "type") Integer type){
+        def map = [:]
+        if (type==0&&CacheUtil.getCache(uid+"sign"+activityId)!=null){
+            map.put("msg","您已签到过，不必重复操作！");
+            map.put("code",0);
+            return new JsonBuilder(map).toString()
+        }else {
+            if (activityService.signIn(uid,activityId,type)){
+                map.put("msg","");
+                map.put("code",1);
+            }else {
+                map.put("msg","签到发生异常，请退出重试！");
+                map.put("code",0);
+            }
+        }
         return new JsonBuilder(map).toString()
     }
 }

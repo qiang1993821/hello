@@ -109,6 +109,13 @@ public interface ActivityService {
     List<JSONObject> ensureList(long activityId);
 
     /**
+     * 签到列表
+     * @param activityId
+     * @return
+     */
+    List<JSONObject> signList(long activityId);
+
+    /**
      * 招募中活动邀请朋友列表页
      * @param uid
      * @param activityId
@@ -123,6 +130,15 @@ public interface ActivityService {
      * @return
      */
     boolean hasJoined(long uid,long activityId);
+
+    /**
+     * 签到相关
+     * @param uid
+     * @param activityId
+     * @param type 0是签到，1是确认签到
+     * @return
+     */
+    boolean signIn(long uid,long activityId,int type);
 
     /**
      * 获取活动详情展示页的相关属性

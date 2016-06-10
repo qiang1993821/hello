@@ -86,7 +86,7 @@ public class ActivityUtil {
                 jsonObject.put("name", activity.getName());
                 newList.add(jsonObject);
             }
-        }else if (from==1){
+        }else if (from==1){//我参与的
             for (Activity activity : list) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("info", ActivityUtil.statusToString(activity.getStatus()));
@@ -99,7 +99,7 @@ public class ActivityUtil {
                 jsonObject.put("name", activity.getName());
                 newList.add(jsonObject);
             }
-        }else if (from==2){
+        }else if (from==2){//我发起的
             for (Activity activity : list) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("info", ActivityUtil.statusToString(activity.getStatus()));

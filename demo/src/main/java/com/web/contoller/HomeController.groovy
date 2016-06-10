@@ -45,7 +45,7 @@ public class HomeController {
                            @RequestParam(value = "uid") Long uid,
                            @RequestParam(value = "activityId") Long activityId) {
         try {
-            if (CacheUtil.getCache(uid+"ensure"+activityId)){
+            if (CacheUtil.getCache(uid+"ensure"+activityId)!=null){
                 model.put("result","你已确认过该活动！");
                 return "result"
             }else {
@@ -278,7 +278,8 @@ public class HomeController {
     public String activity3(Map<String, Object> model,
                              @RequestParam(value = "activityId") Long activityId) {
         //获取签到情况列表
-        model.put("infoList",null)
+        def signList = activityService.signList(activityId)
+        model.put("infoList",signList)
         return "infoList"
     }
 

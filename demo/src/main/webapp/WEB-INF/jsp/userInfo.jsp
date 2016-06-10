@@ -140,6 +140,9 @@
 				location.href = "/index?uid=" + localStorage.gyid;
 			}else if(code==0){
 				$(".weui_dialog_alert").attr("hidden","hidden");
+			}else if(code==2){
+				var activityId = $("#activityId").val();
+				location.href = "/activity3?activityId=" + activityId;
 			}
 		}
 		//添加好友
@@ -256,6 +259,33 @@
 						$('#url').attr('href',"javascript:closeDialog(1)");
 					}else{
 						$(".weui_dialog_title").html("邀请失败");
+						$(".weui_dialog_bd").html(data.msg);
+						$('#url').attr('href',"javascript:closeDialog(0)");
+					}
+					$(".weui_dialog_alert").removeAttr("hidden");
+				}
+			});
+		}
+		//确认签到
+		function ensureSign(uid){
+			var activityId = $("#activityId").val();
+			$.ajax({
+				url: 'activity/signIn?uid='+uid+'&activityId='+activityId+"&type=1",
+				type: 'POST',
+				dataType: 'json',
+				error: function () {
+					$(".weui_dialog_title").html("确认失败");
+					$(".weui_dialog_bd").html("服务器被海王类劫持了！");
+					$('#url').attr('href',"javascript:closeDialog(0)");
+					$(".weui_dialog_alert").removeAttr("hidden");
+				},
+				success: function (data) {
+					if(data.code==1){
+						$(".weui_dialog_title").html("确认成功");
+						$(".weui_dialog_bd").html("");
+						$('#url').attr('href',"javascript:closeDialog(2)");
+					}else{
+						$(".weui_dialog_title").html("确认失败");
 						$(".weui_dialog_bd").html(data.msg);
 						$('#url').attr('href',"javascript:closeDialog(0)");
 					}

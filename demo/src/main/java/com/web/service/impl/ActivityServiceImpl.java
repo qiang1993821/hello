@@ -382,7 +382,7 @@ public class ActivityServiceImpl implements ActivityService {
             }
             return friendList;
         }catch (Exception e){
-            logger.error("partakeList|"+e.getMessage());
+            logger.error("friendList|"+e.getMessage());
             return null;
         }
     }
@@ -414,7 +414,80 @@ public class ActivityServiceImpl implements ActivityService {
             return ensureList;
         }catch (Exception e){
             logger.error("ensureList|"+e.getMessage());
-            return null;
         }
+        return null;
+    }
+
+    @Override
+    public List<JSONObject> signList(long activityId) {
+        try {
+            List<JSONObject> signList = new ArrayList<JSONObject>();
+            List<JSONObject> sign1 = new ArrayList<JSONObject>();
+            List<JSONObject> sign2 = new ArrayList<JSONObject>();
+            Activity activity = activityDao.findOneById(activityId).get(0);
+            if (StringUtils.isNotBlank(activity.getMember())) {
+                JSONObject jsonObject = JSON.parseObject(activity.getMember());
+                List<JSONObject> otherList = (List<JSONObject>) jsonObject.get("memberList");
+                if (otherList != null && otherList.size() > 0) {
+                    for (JSONObject member:otherList){
+                        if (member.getString("status").equals("0")) {
+                            member.put("info", "未签到");
+                            member.put("url","/userInfo?uid="+member.getString("uid")+"&page=1");
+                            sign2.add(member);
+                        }else if (member.getString("status").equals("1")) {
+                            member.put("info", "对方已签到，点击确认");
+                            member.put("url","/userInfo?uid="+member.getString("uid")+"&page=3&activityId="+activityId);
+                            signList.add(member);
+                        }else if (member.getString("status").equals("2")) {
+                            member.put("info", "已确认签到");
+                            member.put("url","/userInfo?uid="+member.getString("uid")+"&page=7");
+                            sign1.add(member);
+                        }
+                        member.put("name",member.getString("name"));
+                    }
+                    signList.addAll(sign1);
+                    signList.addAll(sign2);
+                }
+            }
+            return signList;
+        }catch (Exception e){
+            logger.error("signList|"+e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public boolean signIn(long uid, long activityId,int type) {
+        try {
+            Activity activity = activityDao.findOneById(activityId).get(0);
+            if (StringUtils.isNotBlank(activity.getMember())) {
+                JSONObject jsonObject = JSON.parseObject(activity.getMember());
+                List<JSONObject> memberList = (List<JSONObject>) jsonObject.get("memberList");
+                if (memberList != null && memberList.size() > 0) {
+                    for (int i=0;i<memberList.size();i++){
+                        JSONObject member = memberList.get(i);
+                        Number memberId = (Number)member.get("uid");
+                        if (uid==memberId.longValue()) {
+                            if (type == 0) {//签到
+                                member.put("status", "1");
+                                CacheUtil.putCache(uid + "sign" + activityId, "1", CacheUtil.MEMCACHED_ONE_DAY);
+                            } else if (type == 1) {//确认签到
+                                member.put("status", "2");
+                            }
+                            memberList.remove(i);
+                            memberList.add(member);
+                            jsonObject.put("memberList",memberList);
+                            activity.setMember(jsonObject.toJSONString());
+                            activityDao.save(activity);
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }catch (Exception e){
+            logger.error("signIn|"+e.getMessage());
+        }
+        return false;
     }
 }

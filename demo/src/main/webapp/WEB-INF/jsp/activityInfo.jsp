@@ -92,6 +92,7 @@
 			<c:if test="${page == 1}">
 				<div class="bd spacing">
 					<input type="hidden" id="activityId" value="${activity.id}"/>
+					<input type="hidden" id="pendId" value="${pendId}"/>
 					<a href="javascript:approve(1)" class="weui_btn weui_btn_primary">接受</a>
 					<a href="javascript:approve(0)" class="weui_btn weui_btn_warn">拒绝</a>
 				</div>

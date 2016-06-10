@@ -25,8 +25,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 @SpringBootApplication
 @Service
 public class ActivityServiceImpl implements ActivityService {
@@ -82,10 +82,19 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public int join(Pend pend) {
+    public int addPend(Pend pend,int type) {
         try {
-            pend.setType(1);
+            User user = userDao.findOneById(pend.getUid()).get(0);
+            Activity activity = activityDao.findOneById(pend.getActivityId()).get(0);
+            pend.setUsername(user.getName());
+            pend.setActivityName(activity.getName());
+            pend.setType(type);
             pendDao.save(pend);
+            if (type==2){
+                String msg = "志愿者，你好！发起者邀请你参加"+activity.getName()+"，请登录平台进入“我---收到的邀请”查看详情。";
+                String title = "活动邀请|"+activity.getName();
+                MailUtil.sendMail(MailUtil.ustbMail, MailUtil.ustbPwd, user.getMail(), title, msg);
+            }
             return 1;
         }catch (Exception e){
             logger.error(e.getMessage());
@@ -101,7 +110,7 @@ public class ActivityServiceImpl implements ActivityService {
             User user = userDao.findOneById(pend.getUid()).get(0);
             if (activity == null || user == null)
                 return 0;
-            String newMember = ActivityUtil.addMember(activity.getMember(),pend.getUid(),pend.getUsername());
+            String newMember = ActivityUtil.addMember(activity.getMember(),pend.getUid(),user.getName());
             String newJoin = UserUtil.addJoin(user.getPartake(),pend.getActivityId());
             if (newMember == null || newJoin == null)
                 return 0;
@@ -110,10 +119,12 @@ public class ActivityServiceImpl implements ActivityService {
             pendDao.delete(pend);
             activityDao.save(activity);
             userDao.save(user);
-            //发邮件通知
-            String msg = "志愿者，恭喜！活动发起者已同意你的报名申请，请准时参加"+activity.getStartTime()+"开始的"+activity.getName()+"。";
-            String title = activity.getName()+"活动报名结果反馈";
-            MailUtil.sendMail(MailUtil.ustbMail, MailUtil.ustbPwd, user.getMail(), title, msg);
+            if (pend.getType()!=2) {
+                //发邮件通知
+                String msg = "志愿者，恭喜！活动发起者已同意你的报名申请，请准时参加" + activity.getStartTime() + "开始的" + activity.getName() + "。";
+                String title = activity.getName() + "活动报名结果反馈";
+                MailUtil.sendMail(MailUtil.ustbMail, MailUtil.ustbPwd, user.getMail(), title, msg);
+            }
             return 1;
         }catch (Exception e){
             logger.error(e.getMessage());
@@ -130,9 +141,11 @@ public class ActivityServiceImpl implements ActivityService {
             //发邮件通知
             Activity activity = activityDao.findOneById(pend.getActivityId()).get(0);
             User user = userDao.findOneById(pend.getUid()).get(0);
-            String msg = "志愿者，你好！很遗憾活动发起者拒绝了你对开始于"+activity.getStartTime()+"的"+activity.getName()+"的申请。";
-            String title = activity.getName()+"活动报名结果反馈";
-            MailUtil.sendMail(MailUtil.ustbMail, MailUtil.ustbPwd, user.getMail(), title, msg);
+            if (pend.getType()!=2) {
+                String msg = "志愿者，你好！很遗憾活动发起者拒绝了你对开始于" + activity.getStartTime() + "的" + activity.getName() + "的申请。";
+                String title = activity.getName() + "活动报名结果反馈";
+                MailUtil.sendMail(MailUtil.ustbMail, MailUtil.ustbPwd, user.getMail(), title, msg);
+            }
             return 1;
         }catch (Exception e){
             logger.error(e.getMessage());
@@ -269,7 +282,7 @@ public class ActivityServiceImpl implements ActivityService {
                 JSONObject invite = new JSONObject();
                 invite.put("name",pend.getActivityName());
                 invite.put("info","");
-                invite.put("url","/activityInfo?activityId=" + pend.getActivityId() + "&page=1");
+                invite.put("url","/activityInfo?activityId=" + pend.getActivityId() + "&page=1" + "&pendId=" + pend.getId());
                 inviteList.add(invite);
             }
             return inviteList;
@@ -316,6 +329,61 @@ public class ActivityServiceImpl implements ActivityService {
                 }
             }
             return partakeList;
+        }catch (Exception e){
+            logger.error("partakeList|"+e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<JSONObject> friendList(long uid, long activityId) {
+        try {
+            List<JSONObject> friendList = new ArrayList<JSONObject>();
+            Map<String,JSONObject> friendMap = new HashMap<String, JSONObject>();
+            User user = userDao.findOneById(uid).get(0);
+            if (StringUtils.isNotBlank(user.getFriends())) {
+                JSONObject jsonObject = JSON.parseObject(user.getFriends());
+                List<JSONObject> otherList = (List<JSONObject>) jsonObject.get("friendList");
+                if (otherList != null && otherList.size() > 0) {
+                    for (JSONObject friend:otherList){
+                        friend.put("info","");
+                        friend.put("url","/userInfo?uid="+friend.getString("id")+"&page=4&activityId="+activityId);
+                        friend.put("name",friend.getString("name"));
+                        friendMap.put(friend.getString("id"),friend);
+                    }
+                }
+                List<Pend> pendList = pendDao.getInviteFriend(activityId);
+                for (Pend pend:pendList){
+                    JSONObject friend = new JSONObject();
+                    friend.put("info","已邀请，待回复");
+                    if (pend.getStatus()==-1){
+                        friend.put("info","已拒绝");
+                    }
+                    friend.put("url","/userInfo?uid="+pend.getUid()+"&page=6");
+                    friend.put("name",pend.getUsername());
+                    friendMap.put(pend.getUid()+"",friend);
+                }
+                Activity activity = activityDao.findOneById(activityId).get(0);
+                if (StringUtils.isNotBlank(activity.getMember())) {
+                    List<JSONObject> memberList = (List<JSONObject>) JSON.parseObject(activity.getMember()).get("memberList");
+                    if (memberList != null && memberList.size() > 0) {
+                        for (JSONObject member:memberList){
+                            JSONObject friend = new JSONObject();
+                            friend.put("info","已参加");
+                            friend.put("url","/userInfo?uid="+member.getString("uid")+"&page=6");
+                            friend.put("name",member.getString("name"));
+                            friendMap.put(member.getString("uid"),friend);
+                        }
+                    }
+                }
+                Iterator iter = friendMap.entrySet().iterator();
+                while (iter.hasNext()) {
+                    Map.Entry entry = (Map.Entry) iter.next();
+                    JSONObject val = (JSONObject)entry.getValue();
+                    friendList.add(val);
+                }
+            }
+            return friendList;
         }catch (Exception e){
             logger.error("partakeList|"+e.getMessage());
             return null;

@@ -34,8 +34,10 @@ public interface ActivityService {
     /**
      * 报名活动
      * @param pend
+     * @param type 1是报名，2是邀请
+     * @return
      */
-    int join(Pend pend);
+    int addPend(Pend pend,int type);
 
     /**
      * 批准报名
@@ -98,6 +100,14 @@ public interface ActivityService {
      * @return
      */
     List<JSONObject> partakeList(long activityId);
+
+    /**
+     * 招募中活动邀请朋友列表页
+     * @param uid
+     * @param activityId
+     * @return
+     */
+    List<JSONObject> friendList(long uid,long activityId);
 
     /**
      * 判断是否已经报名参加发起

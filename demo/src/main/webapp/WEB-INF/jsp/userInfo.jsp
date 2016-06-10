@@ -104,8 +104,6 @@
 			<div class="bd spacing">
 				<input type="hidden" id="uid" value="${uid}"/>
 				<input type="hidden" id="pendId" value="${pendId}"/>
-				<input type="hidden" id="activityId" value="${activityId}"/>
-				<input type="hidden" id="username" value="${name}"/>
 				<a href="javascript:approve(1)" class="weui_btn weui_btn_primary">接受</a>
 				<a href="javascript:approve(0)" class="weui_btn weui_btn_warn">拒绝</a>
 			</div>
@@ -115,6 +113,7 @@
 				<a href="javascript:kicked(${uid})" class="weui_btn weui_btn_warn">踢出成员</a>
 			</div>
 		</c:if>
+		<input type="hidden" id="activityId" value="${activityId}"/>
 	</div>
 	<div class="weui_dialog_alert" hidden="hidden">
 		<div class="weui_mask"></div>
@@ -207,10 +206,9 @@
 			var uid = $("#uid").val();
 			var pendId = $("#pendId").val();
 			var activityId = $("#activityId").val();
-			var username = $("#username").val();
 			var url;
 			if(code==1){
-				url = "activity/approveUser?id="+pendId+"&uid="+uid+"&activityId="+activityId+"&result=1&username="+username;
+				url = "activity/approveUser?id="+pendId+"&uid="+uid+"&activityId="+activityId+"&result=1";
 			}else{
 				url = "activity/approveUser?id="+pendId+"&uid="+uid+"&activityId="+activityId+"&result=0";
 			}
@@ -231,6 +229,33 @@
 						$('#url').attr('href',"javascript:closeDialog(1)");
 					}else{
 						$(".weui_dialog_title").html("审批失败");
+						$(".weui_dialog_bd").html(data.msg);
+						$('#url').attr('href',"javascript:closeDialog(0)");
+					}
+					$(".weui_dialog_alert").removeAttr("hidden");
+				}
+			});
+		}
+		//邀请好友
+		function invite(uid){
+			var activityId = $("#activityId").val();
+			$.ajax({
+				url: 'activity/invite?uid='+uid+'&activityId='+activityId,
+				type: 'POST',
+				dataType: 'json',
+				error: function () {
+					$(".weui_dialog_title").html("邀请失败");
+					$(".weui_dialog_bd").html("服务器被海王类劫持了！");
+					$('#url').attr('href',"javascript:closeDialog(0)");
+					$(".weui_dialog_alert").removeAttr("hidden");
+				},
+				success: function (data) {
+					if(data.code==1){
+						$(".weui_dialog_title").html("邀请成功");
+						$(".weui_dialog_bd").html("");
+						$('#url').attr('href',"javascript:closeDialog(1)");
+					}else{
+						$(".weui_dialog_title").html("邀请失败");
 						$(".weui_dialog_bd").html(data.msg);
 						$('#url').attr('href',"javascript:closeDialog(0)");
 					}

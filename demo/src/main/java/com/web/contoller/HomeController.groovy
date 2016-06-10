@@ -130,6 +130,16 @@ public class HomeController {
         return "infoList"
     }
 
+    //招募中活动邀请朋友列表页
+    @RequestMapping(value = "/inviteFriend")
+    public String inviteFriend(Map<String, Object> model,
+                              @RequestParam(value = "activityId") Long activityId,
+                              @RequestParam(value = "uid") Long uid) {
+        def friendList = activityService.friendList(uid,activityId)
+        model.put("infoList",friendList)
+        return "infoList"
+    }
+
     //用户详情页
     @RequestMapping(value = "/userInfo")
     public String userInfo(Map<String, Object> model,
@@ -153,10 +163,10 @@ public class HomeController {
             model.put("phone",StringUtils.isBlank(user.phone)?"未填写":user.phone)
             model.put("mail",StringUtils.isBlank(user.mail)?"未填写":user.mail)
         }
-        if (pendId!=null&&activityId!=null) {
+        if (pendId!=null)
             model.put("pendId", pendId)
+        if (activityId!=null)
             model.put("activityId", activityId)
-        }
         return "userInfo"
     }
 
@@ -164,7 +174,8 @@ public class HomeController {
     @RequestMapping(value = "/activityInfo")
     public String activityInfo(Map<String, Object> model,
                            @RequestParam(value = "activityId") Long activityId,
-                           @RequestParam(value = "page", required = false) Integer page) {
+                           @RequestParam(value = "page", required = false) Integer page,
+                           @RequestParam(value = "pendId", required = false) Long pendId) {
         def activity = activityService.getActivityInfo(activityId)
         if (activity==null) {
             model.put("result","该活动不存在！")
@@ -173,6 +184,8 @@ public class HomeController {
         model.put("activity",activity)
         if (page==null)
             page = 0
+        if (pendId!=null)
+            model.put("pendId", pendId)
         model.put("page",page)
         return "activityInfo"
     }

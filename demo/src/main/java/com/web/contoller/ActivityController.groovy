@@ -102,7 +102,7 @@ class ActivityController {
         }else {
             def user = userService.findOneUser(pend.uid)
             pend.username = user.name
-            activityService.join(pend)
+            activityService.addPend(pend,1)
             map.put("msg","报名成功！")
             map.put("code",1)
         }
@@ -110,7 +110,33 @@ class ActivityController {
     }
 
     /**
-     * 审批活动报名
+     * 邀请好友
+     * @param pend
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/invite")
+    String invite(Pend pend,HttpServletRequest request){
+        def map = [:]
+        if (StringUtils.isBlank(request.getParameter("uid")) || StringUtils.isBlank(request.getParameter("activityId"))){
+            map.put("msg","信息错误，邀请朋友失败！")
+            map.put("code",0)
+        }else if (!userService.isFullInfo(pend.uid)){//先判断报名人信息是否完整
+            map.put("msg","该好友资料不完善，无法邀请！")
+            map.put("code",0)
+        }else if (activityService.hasJoined(pend.uid,pend.activityId)){//先判断报名人是否已经参与
+            map.put("msg","该好友曾报名|受邀|参与|发起过该活动！")
+            map.put("code",0)
+        }else {
+            activityService.addPend(pend,2)
+            map.put("msg","邀请成功！")
+            map.put("code",1)
+        }
+        return new JsonBuilder(map).toString()
+    }
+
+    /**
+     * 审批
      * @param pend
      * @param request
      * @return

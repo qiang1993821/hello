@@ -74,11 +74,9 @@ $(function () {
             }
         })
     }
-
-    //var activityId = $("#activityId").val();
-    //if(activityId && activityId!=""){
-    //    //获取活动信息，给各项填入数据，只有活动在审核状态适用，目前预留
-    //}
+    if(!localStorage.gyid){
+        location.href = "/login";
+    }
 });
 //点击报名活动按钮
 function joinAC(activityId){
@@ -121,9 +119,6 @@ function closeDialog(code){
 }
 //发起活动
 function launch(){
-    if(!localStorage.gyid){
-        location.href = "/login";
-    }
     var name = $("#activityName").val();
     var startTime = $("#startTime").val();
     var endTime = $("#endTime").val();
@@ -169,4 +164,38 @@ function launch(){
         $('#url').attr('href',"javascript:closeDialog(0)");
         $(".weui_dialog_alert").removeAttr("hidden");
     }
+}
+//审批邀请
+function approve(code){
+    var pendId = $("#pendId").val();
+    var activityId = $("#activityId").val();
+    var url;
+    if(code==1){
+        url = "activity/approveUser?id="+pendId+"&uid="+localStorage.gyid+"&activityId="+activityId+"&result=1&type=2";
+    }else{
+        url = "activity/approveUser?id="+pendId+"&uid="+localStorage.gyid+"&activityId="+activityId+"&result=0&type=2";
+    }
+    $.ajax({
+        url: url,
+        type: 'POST',
+        dataType: 'json',
+        error: function () {
+            $(".weui_dialog_title").html("审批失败");
+            $(".weui_dialog_bd").html("服务器被海王类劫持了！");
+            $('#url').attr('href',"javascript:closeDialog(0)");
+            $(".weui_dialog_alert").removeAttr("hidden");
+        },
+        success: function (data) {
+            if(data.code==1){
+                $(".weui_dialog_title").html("审批成功");
+                $(".weui_dialog_bd").html("");
+                $('#url').attr('href',"javascript:closeDialog(1)");
+            }else{
+                $(".weui_dialog_title").html("审批失败");
+                $(".weui_dialog_bd").html(data.msg);
+                $('#url').attr('href',"javascript:closeDialog(0)");
+            }
+            $(".weui_dialog_alert").removeAttr("hidden");
+        }
+    });
 }

@@ -66,7 +66,9 @@ class MailController {
             map.put("code",0)
             return new JsonBuilder(map).toString()
         }
-        def enSureTimes = CacheUtil.getCache("enSureTimes")
+        def cacheTimes = "enSureTimes"+activityId
+        def enSureTimes = CacheUtil.getCache(cacheTimes)
+        logger.error(cacheTimes+":"+enSureTimes)
         if (enSureTimes!=null&&((Number)enSureTimes).intValue()==2){
             map.put("msg","您已多次发送，请耐心等待！")
             map.put("code",0)
@@ -83,11 +85,11 @@ class MailController {
                     code = code + 1
             }
             if (enSureTimes==null){
-                CacheUtil.putCache("enSureTimes",0,CacheUtil.MEMCACHED_ONE_DAY);
+                CacheUtil.putCache(cacheTimes,0,CacheUtil.MEMCACHED_ONE_DAY);
             }else {
                 def times = ((Number)enSureTimes).intValue()
                 times++
-                CacheUtil.putCache("enSureTimes",times,CacheUtil.MEMCACHED_ONE_DAY);
+                CacheUtil.putCache(cacheTimes,times,CacheUtil.MEMCACHED_ONE_DAY);
             }
             if (code==0){
                 map.put("msg","提醒邮件群发异常！")

@@ -94,6 +94,7 @@ class UserController {
      */
     @RequestMapping(value = "/login")
     String login(@RequestParam(value = "username") String username){
+        logger.error("111111111111111111111111"+username)
         def map = [:]
         if (StringUtils.isBlank(username)){
             map.put("result","微信登录异常，请重新登录！")

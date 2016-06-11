@@ -75,7 +75,7 @@ $(function () {
         })
     }
     if(!localStorage.gyid){
-        location.href = "/login";
+        location.href = "/login?activityId="+$("#activityId").val();
     }
 });
 //点击报名活动按钮

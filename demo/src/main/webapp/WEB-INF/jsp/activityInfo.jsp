@@ -91,7 +91,6 @@
 			</c:if>
 			<c:if test="${page == 1}">
 				<div class="bd spacing">
-					<input type="hidden" id="activityId" value="${activity.id}"/>
 					<input type="hidden" id="pendId" value="${pendId}"/>
 					<a href="javascript:approve(1)" class="weui_btn weui_btn_primary">接受</a>
 					<a href="javascript:approve(0)" class="weui_btn weui_btn_warn">拒绝</a>
@@ -112,6 +111,7 @@
 					<a href="javascript:feedback(${activity.id})" class="weui_btn weui_btn_primary">提交反馈</a>
 				</div>
 			</c:if>
+			<input type="hidden" id="activityId" value="${activity.id}"/>
 		</div>
 	</script>
 <div class="weui_dialog_alert" hidden="hidden">

@@ -103,6 +103,9 @@ public class ActivityServiceImpl implements ActivityService {
     public int approve(Pend pend) {
         //在活动表的成员项加入成员，在用户表的参与项加入活动
         try {
+            Pend oldPend = pendDao.findOneById(pend.getId()).get(0);
+            if (oldPend==null)
+                return 0;
             Activity activity = activityDao.findOneById(pend.getActivityId()).get(0);
             User user = userDao.findOneById(pend.getUid()).get(0);
             if (activity == null || user == null)

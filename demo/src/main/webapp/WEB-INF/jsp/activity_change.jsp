@@ -52,7 +52,7 @@
                 <div class="weui_textarea_counter"><span>0</span>/200</div>
             </div>
         </div>
-        <div class="bd spacing"> 
+        <div class="bd spacing" id="launch">
         	<a href="javascript:launch()" class="weui_btn weui_btn_primary">发起活动</a>
         </div>
     </div>

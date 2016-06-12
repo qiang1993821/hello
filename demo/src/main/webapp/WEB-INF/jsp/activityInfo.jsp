@@ -90,24 +90,24 @@
 				</div>
 			</c:if>
 			<c:if test="${page == 1}">
-				<div class="bd spacing">
+				<div class="bd spacing" id="approve">
 					<input type="hidden" id="pendId" value="${pendId}"/>
 					<a href="javascript:approve(1)" class="weui_btn weui_btn_primary">接受</a>
 					<a href="javascript:approve(0)" class="weui_btn weui_btn_warn">拒绝</a>
 				</div>
 			</c:if>
 			<c:if test="${page == 2}">
-				<div class="bd spacing">
+				<div class="bd spacing" id="quitAC">
 					<a href="javascript:quitAC(${activity.id})" class="weui_btn weui_btn_warn">退出活动</a>
 				</div>
 			</c:if>
 			<c:if test="${page == 3}">
-				<div class="bd spacing">
+				<div class="bd spacing" id="signIn">
 					<a href="javascript:signIn(${activity.id})" class="weui_btn weui_btn_primary">签到</a>
 				</div>
 			</c:if>
 			<c:if test="${page == 5}">
-				<div class="bd spacing">
+				<div class="bd spacing" id="feedbackbtn">
 					<a href="javascript:feedback(${activity.id})" class="weui_btn weui_btn_primary">提交反馈</a>
 				</div>
 			</c:if>

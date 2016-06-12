@@ -134,6 +134,7 @@ class UserController {
         def map = [:]
         try {
             def user = userService.findOneUser(newUser.id)
+            def oldUser = user
             user.name = StringUtils.isBlank(newUser.name)?user.name:newUser.name
             user.academy = StringUtils.isBlank(newUser.academy)?user.academy:newUser.academy
             user.className = StringUtils.isBlank(newUser.className)?user.className:newUser.className
@@ -141,6 +142,13 @@ class UserController {
             user.wechat = StringUtils.isBlank(newUser.wechat)?user.wechat:newUser.wechat
             user.show = StringUtils.isBlank(request.getParameter("show"))?user.show:newUser.show
             user.sex = StringUtils.isBlank(request.getParameter("sex"))?user.sex:newUser.sex
+            if (oldUser.name.equals(user.name)&&oldUser.academy.equals(user.academy)&&oldUser.className.equals(user.className)
+            &&oldUser.phone.equals(user.phone)&&oldUser.wechat.equals(user.wechat)&&oldUser.mail.equals(newUser.mail)
+            &&oldUser.show==user.show&&oldUser.sex==user.sex){
+                map.put("msg", "信息没有改动")
+                map.put("code",0)
+                return new JsonBuilder(map).toString()
+            }
             userService.save(user)
             map.put("msg", "")
             map.put("code",1)

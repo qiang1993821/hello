@@ -81,12 +81,12 @@
 
 		</div>
 		<c:if test="${page==0 || page==1}">
-			<div class="bd spacing">
+			<div class="bd spacing" id="addFriend">
 				<a href="javascript:addFriend(${uid})" class="weui_btn weui_btn_primary">添加好友</a>
 			</div>
 		</c:if>
 		<c:if test="${page==2}">
-		<div class="bd spacing">
+		<div class="bd spacing" id="delFriend">
 			<a href="javascript:delFriend(${uid})" class="weui_btn weui_btn_warn">删除好友</a>
 		</div>
 		</c:if>
@@ -100,12 +100,12 @@
 			</div>
 		</c:if>
 		<c:if test="${page==4}">
-			<div class="bd spacing">
+			<div class="bd spacing" id="invite">
 				<a href="javascript:invite(${uid})" class="weui_btn weui_btn_primary">邀请</a>
 			</div>
 		</c:if>
 		<c:if test="${page==5}">
-			<div class="bd spacing">
+			<div class="bd spacing" id="approve">
 				<input type="hidden" id="uid" value="${uid}"/>
 				<input type="hidden" id="pendId" value="${pendId}"/>
 				<a href="javascript:approve(1)" class="weui_btn weui_btn_primary">接受</a>
@@ -157,6 +157,7 @@
 				$('#url').attr('href',"javascript:closeDialog(0)");
 				$(".weui_dialog_alert").removeAttr("hidden");
 			}else{
+				$("#addFriend").attr("hidden","hidden");
 				$.ajax({
 					url: 'user/addFriend?uid=' + localStorage.gyid + '&friendId=' + uid,
 					type: 'POST',
@@ -166,6 +167,7 @@
 						$(".weui_dialog_bd").html("服务器被海王类劫持了！");
 						$('#url').attr('href',"javascript:closeDialog(0)");
 						$(".weui_dialog_alert").removeAttr("hidden");
+						$("#addFriend").removeAttr("hidden");
 					},
 					success: function (data) {
 						if(data.code==1){
@@ -176,6 +178,7 @@
 							$(".weui_dialog_title").html("添加失败");
 							$(".weui_dialog_bd").html(data.msg);
 							$('#url').attr('href',"javascript:closeDialog(0)");
+							$("#addFriend").removeAttr("hidden");
 						}
 						$(".weui_dialog_alert").removeAttr("hidden");
 					}
@@ -184,6 +187,7 @@
 		}
 		//删除好友
 		function delFriend(uid){
+			$("#delFriend").attr("hidden","hidden");
 			$.ajax({
 				url: 'user/delFriend?uid=' + localStorage.gyid + '&friendId=' + uid,
 				type: 'POST',
@@ -193,6 +197,7 @@
 					$(".weui_dialog_bd").html("服务器被海王类劫持了！");
 					$('#url').attr('href',"javascript:closeDialog(0)");
 					$(".weui_dialog_alert").removeAttr("hidden");
+					$("#delFriend").removeAttr("hidden");
 				},
 				success: function (data) {
 					if(data.code==1){
@@ -203,6 +208,7 @@
 						$(".weui_dialog_title").html("删除失败");
 						$(".weui_dialog_bd").html(data.msg);
 						$('#url').attr('href',"javascript:closeDialog(0)");
+						$("#delFriend").removeAttr("hidden");
 					}
 					$(".weui_dialog_alert").removeAttr("hidden");
 				}
@@ -210,6 +216,7 @@
 		}
 		//审批报名
 		function approve(code){
+			$("#approve").attr("hidden","hidden");
 			var uid = $("#uid").val();
 			var pendId = $("#pendId").val();
 			var activityId = $("#activityId").val();
@@ -228,6 +235,7 @@
 					$(".weui_dialog_bd").html("服务器被海王类劫持了！");
 					$('#url').attr('href',"javascript:closeDialog(0)");
 					$(".weui_dialog_alert").removeAttr("hidden");
+					$("#approve").removeAttr("hidden");
 				},
 				success: function (data) {
 					if(data.code==1){
@@ -238,6 +246,7 @@
 						$(".weui_dialog_title").html("审批失败");
 						$(".weui_dialog_bd").html(data.msg);
 						$('#url').attr('href',"javascript:closeDialog(0)");
+						$("#approve").removeAttr("hidden");
 					}
 					$(".weui_dialog_alert").removeAttr("hidden");
 				}
@@ -245,6 +254,7 @@
 		}
 		//邀请好友
 		function invite(uid){
+			$("#invite").attr("hidden","hidden");
 			var activityId = $("#activityId").val();
 			$.ajax({
 				url: 'activity/invite?uid='+uid+'&activityId='+activityId,
@@ -255,6 +265,7 @@
 					$(".weui_dialog_bd").html("服务器被海王类劫持了！");
 					$('#url').attr('href',"javascript:closeDialog(0)");
 					$(".weui_dialog_alert").removeAttr("hidden");
+					$("#invite").removeAttr("hidden");
 				},
 				success: function (data) {
 					if(data.code==1){
@@ -265,6 +276,7 @@
 						$(".weui_dialog_title").html("邀请失败");
 						$(".weui_dialog_bd").html(data.msg);
 						$('#url').attr('href',"javascript:closeDialog(0)");
+						$("#invite").removeAttr("hidden");
 					}
 					$(".weui_dialog_alert").removeAttr("hidden");
 				}

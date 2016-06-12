@@ -81,6 +81,7 @@ $(function () {
 //点击报名活动按钮
 function joinAC(activityId){
     if(localStorage.gyid){
+        $("#joinBtn").attr("hidden","hidden");
         $.ajax({
             url: 'activity/join?uid=' + localStorage.gyid + '&activityId=' + activityId,
             type: 'POST',
@@ -90,6 +91,7 @@ function joinAC(activityId){
                 $(".weui_dialog_bd").html("服务器被海王类劫持了！");
                 $('#url').attr('href',"javascript:closeDialog(0)");
                 $(".weui_dialog_alert").removeAttr("hidden");
+                $("#joinBtn").removeAttr("hidden");
             },
             success: function (data) {
                 if(data.code==1){
@@ -100,6 +102,7 @@ function joinAC(activityId){
                     $(".weui_dialog_title").html("报名失败");
                     $(".weui_dialog_bd").html(data.msg);
                     $('#url').attr('href',"javascript:closeDialog(1)");
+                    $("#joinBtn").removeAttr("hidden");
                 }
                 $(".weui_dialog_alert").removeAttr("hidden");
             }
@@ -127,6 +130,7 @@ function launch(){
     if(!hour)
         hour = 0;
     if(name&&startTime&&endTime&&details){
+        $("#launch").attr("hidden","hidden");
         $.ajax({
             url: 'activity/launch',
             type: 'POST',
@@ -144,6 +148,7 @@ function launch(){
                 $(".weui_dialog_bd").html("服务器被海王类劫持了！");
                 $('#url').attr('href',"javascript:closeDialog(0)");
                 $(".weui_dialog_alert").removeAttr("hidden");
+                $("#launch").removeAttr("hidden");
             },
             success: function (data) {
                 if(data.code==1){
@@ -167,6 +172,7 @@ function launch(){
 }
 //审批邀请
 function approve(code){
+    $("#approve").attr("hidden","hidden");
     var pendId = $("#pendId").val();
     var activityId = $("#activityId").val();
     var url;
@@ -184,6 +190,7 @@ function approve(code){
             $(".weui_dialog_bd").html("服务器被海王类劫持了！");
             $('#url').attr('href',"javascript:closeDialog(0)");
             $(".weui_dialog_alert").removeAttr("hidden");
+            $("#approve").removeAttr("hidden");
         },
         success: function (data) {
             if(data.code==1){
@@ -194,6 +201,7 @@ function approve(code){
                 $(".weui_dialog_title").html("审批失败");
                 $(".weui_dialog_bd").html(data.msg);
                 $('#url').attr('href',"javascript:closeDialog(0)");
+                $("#approve").removeAttr("hidden");
             }
             $(".weui_dialog_alert").removeAttr("hidden");
         }
@@ -201,6 +209,7 @@ function approve(code){
 }
 //签到
 function signIn(activityId){
+    $("#signIn").attr("hidden","hidden");
     $.ajax({
         url: 'activity/signIn?activityId='+activityId+"&uid="+localStorage.gyid+"&type=0",
         type: 'POST',
@@ -210,6 +219,7 @@ function signIn(activityId){
             $(".weui_dialog_bd").html("服务器被海王类劫持了！");
             $('#url').attr('href',"javascript:closeDialog(0)");
             $(".weui_dialog_alert").removeAttr("hidden");
+            $("#signIn").removeAttr("hidden");
         },
         success: function (data) {
             if(data.code==1){
@@ -220,6 +230,7 @@ function signIn(activityId){
                 $(".weui_dialog_title").html("签到失败");
                 $(".weui_dialog_bd").html(data.msg);
                 $('#url').attr('href',"javascript:closeDialog(0)");
+                $("#signIn").removeAttr("hidden");
             }
             $(".weui_dialog_alert").removeAttr("hidden");
         }
@@ -234,6 +245,7 @@ function feedback(activityId){
         $('#url').attr('href',"javascript:closeDialog(0)");
         $(".weui_dialog_alert").removeAttr("hidden");
     }else{
+        $("#feedbackbtn").attr("hidden","hidden");
         $.ajax({
             url: 'activity/feedback',
             type: 'POST',
@@ -248,6 +260,7 @@ function feedback(activityId){
                 $(".weui_dialog_bd").html("服务器被海王类劫持了！");
                 $('#url').attr('href',"javascript:closeDialog(0)");
                 $(".weui_dialog_alert").removeAttr("hidden");
+                $("#feedbackbtn").removeAttr("hidden");
             },
             success: function (data) {
                 if(data.code==1){
@@ -258,6 +271,7 @@ function feedback(activityId){
                     $(".weui_dialog_title").html("提交失败");
                     $(".weui_dialog_bd").html(data.msg);
                     $('#url').attr('href',"javascript:closeDialog(0)");
+                    $("#feedbackbtn").removeAttr("hidden");
                 }
                 $(".weui_dialog_alert").removeAttr("hidden");
             }

@@ -147,7 +147,8 @@
 						phone:phone,
 						wechat:wechat,
 						sex:sex,
-						show:show
+						show:show,
+						mail:newMail
 					},
 					dataType: 'json',
 					error: function () {

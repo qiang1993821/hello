@@ -17,7 +17,7 @@
 </head>
 <body class="login">
 	<div class="userPhoto"><img src="static/images/head.jpg" alt=""></div>
-	<span class="name">志愿者平台</span>
+	<span class="name">活动助手</span>
 	<div class="username"><input type="text" placeholder="请填写名字" id="username"></div>
 	<a href="#" class="weui_btn weui_btn_primary btn" onclick="login()">登录</a>
 	<div class="weui_dialog_alert" hidden="hidden">

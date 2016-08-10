@@ -21,6 +21,8 @@ public class User {
     private String phone;
     @Column(nullable = true, name="mail")
     private String mail;
+    @Column(nullable = true, name="pwd")
+    private String pwd;
     @Column(nullable = true, name="academy")
     private String academy;
     @Column(nullable = true, name="class_name")
@@ -138,5 +140,13 @@ public class User {
 
     public void setMail(String mail) {
         this.mail = mail;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 }

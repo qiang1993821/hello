@@ -3,7 +3,9 @@ package com.web.volunteer.contoller
 import com.web.volunteer.domain.User
 import com.web.volunteer.util.CacheUtil
 import com.web.volunteer.service.impl.UserServiceImpl
+import com.web.volunteer.util.MailUtil
 import com.web.volunteer.util.TimeUtil
+import com.web.volunteer.util.UserUtil
 import org.apache.commons.lang.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -89,28 +91,34 @@ class UserController {
      * @return
      */
     @RequestMapping(value = "/login")
-    String login(@RequestParam(value = "username") String username){
-        logger.error("111111111111111111111111"+username)
+    String login(@RequestParam(value = "username") String username,
+                 @RequestParam(value = "pwd") String pwd){
         def map = [:]
         if (StringUtils.isBlank(username)){
             map.put("result","微信登录异常，请重新登录！")
             map.put("code",0)
         }else {
-            def uid = userService.findIdByName(username)
+            def user = userService.getUserByMail(username)
             def type = 1
-            def result = uid
-            if (uid == null){
-                def user = new User()
-                user.name = username
-                user.regTime = TimeUtil.getNowTime()
-                type = userService.save(user)
-                if (type == 1) {
-                    uid = user.id
-                    result = uid//存cookie用
-                    CacheUtil.putCache(username,uid,CacheUtil.MEMCACHED_ONE_DAY*3)
-                    logger.error("LOGIN|uid:"+uid+",name:"+username+",time:"+TimeUtil.getNowTime())
+            def result
+            def random = UserUtil.getRondomNum()//随机数，增大安全性，否则不登陆邮箱知道注册激活链接也能注册
+            if (user == null){
+                type = 0
+                CacheUtil.putCache(username,pwd,CacheUtil.MEMCACHED_ONE_DAY*3)
+                CacheUtil.putCache("random-"+username,random,CacheUtil.MEMCACHED_ONE_DAY*3)
+                def msg = "欢迎注册弓一活动平台，<a href=\"http://www.ustbvolunteer.com/reg?mail="+username+"&random="+random+"\">点击完成注册</a>，若非本人操作请忽略！（此邮件三日内有效）"
+                def title = "弓一活动平台注册激活"
+                if (MailUtil.sendMail(MailUtil.ustbMail,MailUtil.ustbPwd,username,title,msg)){
+                    result = "此邮箱不存在，已发送注册邮件，请尽快登录完成注册！"
                 }else {
-                    result = "创建用户异常"
+                    result = "此邮箱不存在，注册邮件发送失败！"
+                }
+            }else {
+                if (user.pwd == pwd){
+                    result = user.id
+                }else {
+                    type = 0
+                    result = "密码错误！"
                 }
             }
             map.put("code",type)

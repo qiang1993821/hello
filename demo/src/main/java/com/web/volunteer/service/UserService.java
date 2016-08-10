@@ -98,4 +98,18 @@ public interface UserService {
      * @return
      */
     List<JSONObject> getActivityList(long uid,String type,int from);
+
+    /**
+     * 根据邮箱（用户名），获取密码
+     * @param mail
+     * @return
+     */
+    String getPwdByMail(String mail);
+
+    /**
+     * 根据邮箱获取用户
+     * @param mail
+     * @return
+     */
+    User getUserByMail(String mail);
 }

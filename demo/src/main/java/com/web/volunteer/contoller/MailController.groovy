@@ -39,6 +39,12 @@ class MailController {
             map.put("code",0)
             return new JsonBuilder(map).toString()
         }
+        def pwd = userService.getPwdByMail(mail)
+        if (StringUtils.isNotBlank(pwd)){
+            map.put("msg","邮箱已存在！")
+            map.put("code",0)
+            return new JsonBuilder(map).toString()
+        }
         def msg = "志愿者，你好！这是一封志愿平台邮箱验证邮件，若非本人操作请忽略！<a href=\"http://www.ustbvolunteer.com/testMail?uid="+uid+"&mail="+mail+"\">点击验证</a>"
         def title = "志愿者平台邮箱验证"
         if (MailUtil.sendMail(MailUtil.ustbMail,MailUtil.ustbPwd,mail,title,msg)){
@@ -97,6 +103,31 @@ class MailController {
                 code = 1
             }
             map.put("code",code)
+        }
+        return new JsonBuilder(map).toString()
+    }
+
+    //发送密码提醒邮件
+    @RequestMapping(value = "/forget")
+    String forget(@RequestParam(value = "mail") String mail){
+        def map = [:]
+        if (StringUtils.isBlank(mail)){
+            map.put("code",0)
+            map.put("result","邮箱为空")
+        }
+        def pwd = userService.getPwdByMail(mail)
+        if (StringUtils.isBlank(pwd)){
+            map.put("code",2)
+        }else {
+            def msg = "您的密码为："+pwd
+            def title = "弓一活动助手密码找回"
+            if (MailUtil.sendMail(MailUtil.ustbMail,MailUtil.ustbPwd,mail,title,msg)){
+                map.put("msg","验证邮件已发送，请尽快登录邮箱进行验证！")
+                map.put("code",1)
+            }else {
+                map.put("msg","验证邮件发送失败！")
+                map.put("code",0)
+            }
         }
         return new JsonBuilder(map).toString()
     }

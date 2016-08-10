@@ -18,8 +18,12 @@
 <body class="login">
 	<div class="userPhoto"><img src="static/images/head.jpg" alt=""></div>
 	<span class="name">活动助手</span>
-	<div class="username"><input type="text" placeholder="请填写名字" id="username"></div>
-	<a href="#" class="weui_btn weui_btn_primary btn" onclick="login()">登录</a>
+	<div class="username"><input type="text" placeholder="请填写邮箱" id="username"></div>
+	<div class="pwd"><input type="password" placeholder="请填写密码" id="pwd"></div>
+	<div id="btn">
+		<a href="#" class="weui_btn weui_btn_primary btn" onclick="login()">登录</a>
+		<a href="#" class="weui_btn weui_btn_warn btn" onclick="forget()">忘记密码</a>
+	</div>
 	<div class="weui_dialog_alert" hidden="hidden">
 		<div class="weui_mask"></div>
 		<div class="weui_dialog">
@@ -44,23 +48,28 @@
 			}
 		});
 		function login(){
+			$("#btn").attr("hidden","hidden");
 			var activityId = $("#activityId").val();
 			var name = $("#username").val();
-			if(name==null||name==""){
-				$(".weui_dialog_title").html("登录失败");
-				$(".weui_dialog_bd").html("用户名不能为空！");
-				$('#url').attr('href',activityId==0?"/login":"/login?activityId="+activityId);
-				$(".weui_dialog_alert").removeAttr("hidden");
-			}else{
+			var pwd = $("#pwd").val();
+			var msg = null;
+			//验证邮箱
+			var reg=/^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/;
+			if(name==null||pwd==null||name==""||pwd=="")
+				msg = "用户名或密码不能为空！";
+			else if(reg.test(name.trim() ) == false)
+				msg = "请检查邮箱格式！";
+			if(msg == null){
 				$.ajax({
-					url: 'user/login?username=' + name,
+					url: 'user/login?username=' + name + '&pwd=' + pwd,
 					type: 'POST',
 					dataType: 'json',
 					error: function () {
 						$(".weui_dialog_title").html("登录失败");
 						$(".weui_dialog_bd").html("服务器被海王类劫持了！");
-						$('#url').attr('href',activityId==0?"/login":"/login?activityId="+activityId);
+						$('#url').attr('href',"javascript:closeDialog()");
 						$(".weui_dialog_alert").removeAttr("hidden");
+						$("#btn").removeAttr("hidden");
 					},
 					success: function (data) {
 						if(data.code==1){
@@ -69,14 +78,73 @@
 							$('#url').attr('href',activityId==0?"/index?uid="+data.result:"/activityInfo?activityId="+activityId);
 							localStorage.gyid = data.result;
 						}else{
-							$(".weui_dialog_title").html("登录失败");
+							$(".weui_dialog_title").html("提示");
 							$(".weui_dialog_bd").html(data.result);
-							$('#url').attr('href',activityId==0?"/login":"/login?activityId="+activityId);
+							$('#url').attr('href',"javascript:closeDialog()");
 						}
+						$("#btn").removeAttr("hidden");
 						$(".weui_dialog_alert").removeAttr("hidden");
 					}
 				});
+			}else{
+				$(".weui_dialog_title").html("登录失败");
+				$(".weui_dialog_bd").html(msg);
+				$('#url').attr('href',"javascript:closeDialog()");
+				$(".weui_dialog_alert").removeAttr("hidden");
+				$("#btn").removeAttr("hidden");
 			}
+		}
+		function forget(){
+			$("#btn").attr("hidden","hidden");
+			var name = $("#username").val();
+			var msg = null;
+			//验证邮箱
+			var reg=/^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/;
+			if(name==null||name=="")
+				msg = "请输入邮箱！";
+			else if(reg.test(name.trim() ) == false)
+				msg = "请检查邮箱格式！";
+			if(msg == null){
+				$.ajax({
+					url: 'mail/forget?mail=' + name,
+					type: 'POST',
+					dataType: 'json',
+					error: function () {
+						$(".weui_dialog_title").html("操作失败");
+						$(".weui_dialog_bd").html("服务器被海王类劫持了！");
+						$('#url').attr('href',"javascript:closeDialog()");
+						$(".weui_dialog_alert").removeAttr("hidden");
+						$("#btn").removeAttr("hidden");
+					},
+					success: function (data) {
+						if(data.code==1){
+							$(".weui_dialog_title").html("提示");
+							$(".weui_dialog_bd").html("已向该邮箱发送提醒邮件");
+							$('#url').attr('href',"javascript:closeDialog()");
+						}else if(data.code==2){
+							$(".weui_dialog_title").html("提示");
+							$(".weui_dialog_bd").html("该邮箱尚未注册，直接设定密码登录即可");
+							$('#url').attr('href',"javascript:closeDialog()");
+						}else{
+							$(".weui_dialog_title").html("提示");
+							$(".weui_dialog_bd").html(data.result);
+							$('#url').attr('href',"javascript:closeDialog()");
+						}
+						$("#btn").removeAttr("hidden");
+						$(".weui_dialog_alert").removeAttr("hidden");
+					}
+				});
+			}else{
+				$(".weui_dialog_title").html("注意");
+				$(".weui_dialog_bd").html(msg);
+				$('#url').attr('href',"javascript:closeDialog()");
+				$(".weui_dialog_alert").removeAttr("hidden");
+				$("#btn").removeAttr("hidden");
+			}
+		}
+		//关闭对话框
+		function closeDialog(){
+			$(".weui_dialog_alert").attr("hidden","hidden");
 		}
 	</script>
 </body>

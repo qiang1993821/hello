@@ -256,4 +256,26 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
+
+    @Override
+    public String getPwdByMail(String mail) {
+        String pwd = null;
+        try {
+            pwd = userDao.getPwdByMail(mail).get(0);
+        }catch (Exception e){
+            logger.error("getPwdByMail|"+e.getMessage());
+        }
+        return pwd;
+    }
+
+    @Override
+    public User getUserByMail(String mail) {
+        User user = null;
+        try {
+            user = userDao.getUserByMail(mail).get(0);
+        }catch (Exception e){
+            logger.error("getUserByMail|"+e.getMessage());
+        }
+        return user;
+    }
 }

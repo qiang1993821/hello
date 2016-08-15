@@ -27,7 +27,6 @@ class WechatController {
     private final Logger logger = LoggerFactory.getLogger(WechatController.class)
     @RequestMapping(value = "/check")
     String doWechat(HttpServletRequest request){
-        logger.error("111111111111111111")
         Map<String, String> msg = new HashMap<String, String>()
         try {
             ServletInputStream inputStream = request.getInputStream()
@@ -62,13 +61,20 @@ class WechatController {
             logger.error("WECHAT_INDEX|FromUserName:"+msg.get("FromUserName"))
             return HttpJsonUtil.reply(msg,content)
         }
+        //获取缓存回复，将来信加入缓存，t开头代表文本，v声音，i图片
+        content = "t"+content
         Random random = new Random()
         int r = random.nextInt(10)//十个缓存，避免一直和自己对话
+        if (CacheUtil.getCache("lastMsg"+r)!=null)
+            content = CacheUtil.getCache("lastMsg"+r)
         if ("text".equalsIgnoreCase(msg.get("MsgType"))){
-            if (CacheUtil.getCache("lastMsg"+r)!=null)
-                content = CacheUtil.getCache("lastMsg"+r)
-            CacheUtil.putCache("lastMsg"+r,msg.get("Content"),CacheUtil.MEMCACHED_ONE_MONTH)
+            CacheUtil.putCache("lastMsg"+r,"t"+msg.get("Content"),CacheUtil.MEMCACHED_ONE_MONTH)
+        }else if ("voice".equalsIgnoreCase(msg.get("MsgType"))){
+            CacheUtil.putCache("lastMsg"+r,"v"+msg.get("MediaId"),CacheUtil.MEMCACHED_ONE_MONTH)
+        }else if ("image".equalsIgnoreCase(msg.get("MsgType"))){
+            CacheUtil.putCache("lastMsg"+r,"i"+msg.get("MediaId"),CacheUtil.MEMCACHED_ONE_MONTH)
         }
+        logger.error("reply:"+content+"|||||||||this:"+CacheUtil.getCache("lastMsg"+r))
         return HttpJsonUtil.reply(msg,content)
     }
 

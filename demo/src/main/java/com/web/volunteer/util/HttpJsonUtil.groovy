@@ -165,8 +165,16 @@ class HttpJsonUtil {
         str.append("<ToUserName><![CDATA[" + msg.get("FromUserName") + "]]></ToUserName>")
         str.append("<FromUserName><![CDATA[" + msg.get("ToUserName") + "]]></FromUserName>")
         str.append("<CreateTime>" + msg.get("CreateTime") + "</CreateTime>")
-        str.append("<MsgType><![CDATA[text]]></MsgType>")
-        str.append("<Content><![CDATA[" + content + "]]></Content>")
+        if (content.startsWith("t")) {
+            str.append("<MsgType><![CDATA[text]]></MsgType>")
+            str.append("<Content><![CDATA[" + content.substring(1) + "]]></Content>")
+        }else if (content.startsWith("i")) {
+            str.append("<MsgType><![CDATA[image]]></MsgType>")
+            str.append("<Image><MediaId><![CDATA[" + content.substring(1) + "]]></MediaId></Image>")
+        }else if (content.startsWith("v")) {
+            str.append("<MsgType><![CDATA[voice]]></MsgType>")
+            str.append("<Voice><MediaId><![CDATA[" + content.substring(1) + "]]></MediaId></Voice>")
+        }
         str.append("</xml>")
         logger.error(str.toString())
         return str.toString()

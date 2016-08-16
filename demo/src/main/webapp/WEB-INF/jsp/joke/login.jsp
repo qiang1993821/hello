@@ -9,15 +9,15 @@
 <meta content="black" name="apple-mobile-web-app-status-bar-style">
 <meta content="telephone=no" name="format-detection">
 <meta name="wap-font-scale" content="no">
-<link rel="stylesheet" href="static/css/weui.min.css"/>
-<link rel="stylesheet" href="static/css/reset.css">
-<link rel="stylesheet" href="static/css/login.css">
-<script src="static/js/zepto.min.js"></script>
+<link rel="stylesheet" href="${url}/static/css/weui.min.css"/>
+<link rel="stylesheet" href="${url}/static/css/reset.css">
+<link rel="stylesheet" href="${url}/static/css/login.css">
+<script src="${url}/static/js/zepto.min.js"></script>
 <title>登录</title>
 </head>
 <body class="login">
-	<div class="userPhoto"><img src="static/images/head.jpg" alt=""></div>
-	<span class="name">活动助手</span>
+	<div class="userPhoto"><img src="${url}/static/images/joke_head.jpg" alt=""></div>
+	<span class="name">弹窗恶作剧</span>
 	<div class="username"><input type="text" placeholder="请填写邮箱" id="username"></div>
 	<div class="pwd"><input type="password" placeholder="请填写密码" id="pwd"></div>
 	<div id="btn">
@@ -34,22 +34,15 @@
 			</div>
 		</div>
 	</div>
-	<input type="hidden" id="activityId" value="${activityId}"/>
 	<script type="text/javascript">
 		localStorage.needRefresh = 1;
 		$(function() {
-			var activityId = $("#activityId").val();
-			if(localStorage.gyid){
-				if(activityId==0) {
-					location.href = "/index?uid="+localStorage.gyid;
-				} else{
-					location.href = "/activityInfo?activityId="+activityId;
-				}
+			if(localStorage.jokeId){
+				location.href = "/index?uid="+localStorage.jokeId;
 			}
 		});
 		function login(){
 			$("#btn").attr("hidden","hidden");
-			var activityId = $("#activityId").val();
 			var name = $("#username").val();
 			var pwd = $("#pwd").val();
 			var msg = null;
@@ -75,8 +68,8 @@
 						if(data.code==1){
 							$(".weui_dialog_title").html("登录成功");
 							$(".weui_dialog_bd").html("");
-							$('#url').attr('href',activityId==0?"/index?uid="+data.result:"/activityInfo?activityId="+activityId);
-							localStorage.gyid = data.result;
+							$('#url').attr('href',"/index?uid="+data.result);
+							localStorage.jokeId = data.result;
 						}else{
 							$(".weui_dialog_title").html("提示");
 							$(".weui_dialog_bd").html(data.result);

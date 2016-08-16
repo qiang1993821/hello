@@ -111,24 +111,35 @@ class MailController {
     @RequestMapping(value = "/forget")
     String forget(@RequestParam(value = "mail") String mail){
         def map = [:]
+        def code = 0
+        def msg = ""
         if (StringUtils.isBlank(mail)){
             map.put("code",0)
             map.put("result","邮箱为空")
+            return new JsonBuilder(map).toString()
         }
+        if (CacheUtil.getCache("forget"+mail)==null)
+            CacheUtil.putCache("forget"+mail,0,CacheUtil.MEMCACHED_ONE_DAY)
+        int times = CacheUtil.getCache("forget"+mail)
         def pwd = userService.getPwdByMail(mail)
-        if (StringUtils.isBlank(pwd)){
-            map.put("code",2)
-        }else {
-            def msg = "您的密码为："+pwd
+        if (StringUtils.isBlank(pwd)) {
+            msg = "该邮箱尚未注册，直接设定密码登录即可"
+        } else if (times<5){
+            def content = "您的密码为：" + pwd
             def title = "弓一活动助手密码找回"
-            if (MailUtil.sendMail(MailUtil.ustbMail,MailUtil.ustbPwd,mail,title,msg)){
-                map.put("msg","验证邮件已发送，请尽快登录邮箱进行验证！")
-                map.put("code",1)
-            }else {
-                map.put("msg","验证邮件发送失败！")
-                map.put("code",0)
+            if (MailUtil.sendMail(MailUtil.ustbMail, MailUtil.ustbPwd, mail, title, content)) {
+                msg = "邮件已发送，请尽快登录邮箱查看密码！"
+                code = 1
+            } else {
+                msg = "验证邮件发送失败！"
             }
+            times++
+            CacheUtil.putCache("forget"+mail,times,CacheUtil.MEMCACHED_ONE_DAY)
+        }else {
+            msg = "已达今日密码找回邮件发送次数上限"
         }
+        map.put("code",code)
+        map.put("result",msg)
         return new JsonBuilder(map).toString()
     }
 }

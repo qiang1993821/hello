@@ -389,10 +389,4 @@ public class HomeController {
         return "download"
     }
 
-    //玩笑
-    @RequestMapping(value = "/joke")
-    public String joke(Map<String, Object> model) {
-        return "joke"
-    }
-
 }

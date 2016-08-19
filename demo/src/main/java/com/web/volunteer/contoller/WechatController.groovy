@@ -43,7 +43,7 @@ class WechatController {
             e.printStackTrace()
         }
         def event = msg.get("Event");
-        def content = "t活动管理平台：http://www.ustbvolunteer.com/login\n" +
+        def content = "活动管理平台：http://www.ustbvolunteer.com/login\n" +
                 "弹窗恶作剧：http://www.ustbvolunteer.com/joke/login\n" +
                 "本平台自带超简易的回复系统，回复内容是上一位的发言，如果聊上了，纯属巧合。~\n" +
                 "如果你有有意思的点子，无聊的点子，腹黑的点子，可以联系roc_strong@163.com~"
@@ -52,9 +52,10 @@ class WechatController {
             if ("subscribe".equalsIgnoreCase(event)){
                 if (StringUtils.isNotBlank(msg.get("FromUserName")))
                     CacheUtil.putCache(msg.get("FromUserName"),"1",CacheUtil.MEMCACHED_ONE_DAY)
-                return HttpJsonUtil.reply(msg,"十分感谢关注弓一\n"+content)
+                return HttpJsonUtil.reply(msg,"t十分感谢关注弓一\n"+content)
             }
         }
+        content = "t"+content
         //每天发一次推送
         if (StringUtils.isNotBlank(msg.get("FromUserName"))&&CacheUtil.getCache(msg.get("FromUserName"))==null){//每天推一次欢迎内容
             CacheUtil.putCache(msg.get("FromUserName"),"1",CacheUtil.MEMCACHED_ONE_DAY)

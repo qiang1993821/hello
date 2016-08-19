@@ -15,9 +15,9 @@ app:
 spring:
  datasource:
   driver-class-name: com.mysql.jdbc.Driver
-  url: jdbc:mysql://121.42.44.189:3306/test
+  url: jdbc:mysql://*****
   username: root
-  password: 123456
+  password: *****
  jpa:
   hibernate.ddl-auto: update
 #  show-sql: true

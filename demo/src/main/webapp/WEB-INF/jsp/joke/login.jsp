@@ -9,14 +9,14 @@
 <meta content="black" name="apple-mobile-web-app-status-bar-style">
 <meta content="telephone=no" name="format-detection">
 <meta name="wap-font-scale" content="no">
-<link rel="stylesheet" href="${url}/static/css/weui.min.css"/>
-<link rel="stylesheet" href="${url}/static/css/reset.css">
-<link rel="stylesheet" href="${url}/static/css/login.css">
-<script src="${url}/static/js/zepto.min.js"></script>
+<link rel="stylesheet" href="/static/css/weui.min.css"/>
+<link rel="stylesheet" href="/static/css/reset.css">
+<link rel="stylesheet" href="/static/css/login.css">
+<script src="/static/js/zepto.min.js"></script>
 <title>登录</title>
 </head>
 <body class="login">
-	<div class="userPhoto"><img src="${url}/static/images/joke_head.jpg" alt=""></div>
+	<div class="userPhoto"><img src="/static/images/joke_head.jpg" alt=""></div>
 	<span class="name">弹窗恶作剧</span>
 	<div class="username"><input type="text" placeholder="请填写邮箱" id="username"></div>
 	<div class="pwd"><input type="password" placeholder="请填写密码" id="pwd"></div>
@@ -38,7 +38,7 @@
 		localStorage.needRefresh = 1;
 		$(function() {
 			if(localStorage.jokeId){
-				location.href = "/index?uid="+localStorage.jokeId;
+				location.href = "index";
 			}
 		});
 		function login(){
@@ -68,7 +68,7 @@
 						if(data.code==1){
 							$(".weui_dialog_title").html("登录成功");
 							$(".weui_dialog_bd").html("");
-							$('#url').attr('href',"/index?uid="+data.result);
+							$('#url').attr('href',"index");
 							localStorage.jokeId = data.result;
 						}else{
 							$(".weui_dialog_title").html("提示");

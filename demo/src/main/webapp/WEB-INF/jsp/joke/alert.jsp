@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="/static/css/index.css">
   <link rel="stylesheet" href="/static/css/login.css">
   <link rel="stylesheet" href="/static/css/example.css">
-  <title>弓一</title>
+  <title>${title}</title>
 </head>
 <body>
 <c:forEach items="${alertList}" var="var">

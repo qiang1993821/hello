@@ -102,6 +102,8 @@ public class PageController {
     //新增弹窗
     @RequestMapping(value = "/add")
     public String add(Map<String, Object> model) {
+        model.put("img","/static/images/joke_head.jpg")
+        model.put("title","啦啦啦")
         return "joke/add"
     }
 
@@ -161,6 +163,23 @@ public class PageController {
             model.put("result","图片保存失败！")
             return "joke/add"
         }
+    }
+
+    //弹窗内页的列表
+    @RequestMapping(value = "/pageList")
+    public String pageList(Map<String, Object> model,
+                       @RequestParam(value = "alertId") Long alertId) {
+        model.put("alertId",alertId)
+        return "joke/pageList"
+    }
+
+    //新增弹窗内页的
+    @RequestMapping(value = "/addPage")
+    public String addPage(Map<String, Object> model,
+                           @RequestParam(value = "alertId") Long alertId) {
+        model.put("alertId",alertId)
+        model.put("pageNum",alertService.getPageNum(alertId))
+        return "joke/addPage"
     }
 
 }

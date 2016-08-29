@@ -21,18 +21,26 @@
   <form action='addAlert' method='post' enctype='multipart/form-data' id="addAlert">
     <input type="file" onchange='PreviewImage(this)' hidden="hidden" id="upload" name="upload"/>
     <div id="imgPreview">
-      <img src=""style='width:100px; '/>
+      <img src="${img}" style='width:100px; '/>
     </div>
     <a href="javascript:upload()" class="weui_btn weui_btn_default">点击选择图片</a>
     <br><hr>
     <div align="center">图片和标题为转发至朋友圈后显示的图片和标题，有没有人上当，就看你怎么设置了！</div>
     <hr><br>
-    <div class="title"><input type="text" placeholder="请填写标题" id="title" name="title"></div>
-    <c:if test="${alertId !=null && alertId >0}">
-      <input type="hidden" id="alertId" name="alertId" value="${alertId}">
-    </c:if>
+    <div class="title"><input type="text" placeholder="请填写标题" id="title" name="title" value="${title}"></div>
+    <br><br><br><br>
+    <c:choose>
+      <c:when test="${alertId >0}">
+        <input type="hidden" id="alertId" name="alertId" value="${alertId}">
+        <a href="javascript:addAlert()" class="weui_btn weui_btn_primary">确认修改</a>
+        <a href="" class="weui_btn weui_btn_default">预览弹窗</a>
+        <a href="javascript:addAlert()" class="weui_btn weui_btn_warn">删除弹窗</a>
+      </c:when>
+      <c:otherwise>
+        <a href="javascript:addAlert()" class="weui_btn weui_btn_primary">确认新建</a>
+      </c:otherwise>
+    </c:choose>
     <div id="uid" hidden="hidden"></div>
-    <a href="javascript:addAlert()" class="weui_btn weui_btn_primary">确认修改/上传，记得改</a>
   </form>
 </center>
 <!-- 搜索结束 -->

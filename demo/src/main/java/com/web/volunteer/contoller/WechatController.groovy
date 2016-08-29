@@ -43,10 +43,11 @@ class WechatController {
             e.printStackTrace()
         }
         def event = msg.get("Event");
-        def content = "活动管理平台：http://www.ustbvolunteer.com/login\n" +
-                "弹窗恶作剧：http://www.ustbvolunteer.com/joke/login\n" +
-                "本平台自带超简易的回复系统，回复内容是上一位的发言，如果聊上了，纯属巧合。~\n" +
-                "如果你有有意思的点子，无聊的点子，腹黑的点子，可以联系roc_strong@163.com~"
+        def content = "\ue231<a href=\"http://www.ustbvolunteer.com/login\">点击进入活动管理平台</a>\ue231\n" +
+                "\ue231<a href=\"http://www.ustbvolunteer.com/joke/login\">点击进入弹窗恶作剧</a>\ue230\n" +
+                "自带超简易的回复系统，回复内容是上一位的发言,支持图片语音，如果聊上了，纯属巧合。~\n" +
+                "主页君是一个技术粗糙喜欢胡思乱想的无聊人士，会不定时的推出些无聊的小功能，欢迎邮件roc_strong@163.com，\n" +
+                "吐槽，提意见，出点子，技术改进均可~"
         if (StringUtils.isNotBlank(event)){
             logger.error("WECHAT_EVENT|event:"+event)
             if ("subscribe".equalsIgnoreCase(event)){

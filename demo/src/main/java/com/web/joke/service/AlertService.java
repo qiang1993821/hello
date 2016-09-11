@@ -1,7 +1,10 @@
 package com.web.joke.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.web.joke.enity.Alert;
 import com.web.joke.enity.SingleAlert;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/8/18.
@@ -44,4 +47,18 @@ public interface AlertService {
      * @return
      */
     int getPageNum(long alertId);
+
+    /**
+     * 获取照片列表
+     * @param alertId
+     * @return
+     */
+    List<JSONObject> getPageList(long alertId);
+
+    /**
+     * 根据id获取一个弹窗
+     * @param pageId
+     * @return
+     */
+    SingleAlert getOnePage(long pageId);
 }

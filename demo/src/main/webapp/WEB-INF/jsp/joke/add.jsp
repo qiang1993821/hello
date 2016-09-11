@@ -33,8 +33,9 @@
       <c:when test="${alertId >0}">
         <input type="hidden" id="alertId" name="alertId" value="${alertId}">
         <a href="javascript:addAlert()" class="weui_btn weui_btn_primary">确认修改</a>
-        <a href="" class="weui_btn weui_btn_default">预览弹窗</a>
-        <a href="javascript:addAlert()" class="weui_btn weui_btn_warn">删除弹窗</a>
+        <a href="javascript:addAlert()" class="weui_btn weui_btn_primary">查看全部弹窗</a>
+        <a href="" class="weui_btn weui_btn_default">预览</a>
+        <a href="javascript:addAlert()" class="weui_btn weui_btn_warn">删除</a>
       </c:when>
       <c:otherwise>
         <a href="javascript:addAlert()" class="weui_btn weui_btn_primary">确认新建</a>

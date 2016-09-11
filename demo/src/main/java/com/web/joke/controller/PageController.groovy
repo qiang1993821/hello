@@ -170,15 +170,34 @@ public class PageController {
     public String pageList(Map<String, Object> model,
                        @RequestParam(value = "alertId") Long alertId) {
         model.put("alertId",alertId)
+        model.put("infoList",alertService.getPageList(alertId))
         return "joke/pageList"
     }
 
-    //新增弹窗内页的
+    //新增弹窗内页
     @RequestMapping(value = "/addPage")
     public String addPage(Map<String, Object> model,
                            @RequestParam(value = "alertId") Long alertId) {
         model.put("alertId",alertId)
         model.put("pageNum",alertService.getPageNum(alertId))
+        return "joke/addPage"
+    }
+
+    //修改弹窗内页
+    @RequestMapping(value = "/editPage")
+    public String editPage(Map<String, Object> model,
+                          @RequestParam(value = "alertId") Long alertId,
+                          @RequestParam(value = "pageId") Long pageId,
+                          @RequestParam(value = "currentPage") Integer currentPage) {
+        model.put("alertId",alertId)
+        model.put("pageId",pageId)
+        model.put("pageNum",alertService.getPageNum(alertId))
+        model.put("currentPage",currentPage)
+        def page = alertService.getOnePage(pageId)
+        model.put("prompt",page.prompt)
+        model.put("content",page.content)
+        model.put("answer",page.answer)
+        model.put("wrong",page.wrong)
         return "joke/addPage"
     }
 

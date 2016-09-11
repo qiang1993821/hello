@@ -27,7 +27,7 @@
           <c:if test="${pageNum>0}">
             <c:forEach begin="0" end="${pageNum-1}" step="1" var="num">
               <c:choose>
-                <c:when test="${num==currentPage}">
+                <c:when test="${(pageNum-num)==currentPage}">
                   <option value="${pageNum-num}" selected>第${pageNum-num}</option>
                 </c:when>
                 <c:otherwise>
@@ -84,11 +84,11 @@
     <div id="btn">
     <c:choose>
       <c:when test="${pageId >0}">
-        <a href="javascript:editPage()" class="weui_btn weui_btn_primary">确认修改</a>
+        <a href="javascript:savePage()" class="weui_btn weui_btn_primary">确认修改</a>
         <a href="javascript:deletePage()" class="weui_btn weui_btn_warn">删除弹窗</a>
       </c:when>
       <c:otherwise>
-        <a href="javascript:addPge()" class="weui_btn weui_btn_primary" id="addBtn">确认新建</a>
+        <a href="javascript:savePage()" class="weui_btn weui_btn_primary" id="addBtn">确认新建</a>
       </c:otherwise>
     </c:choose>
     </div>
@@ -119,8 +119,8 @@
         $("#hasAnswer").attr("hidden","hidden");
       }
     }
-    //新建弹窗
-    function addPge(){
+    //新建修改弹窗
+    function savePage(){
       $("#btn").attr("hidden","hidden");
       var pageNum = $("#pageNum").val();
       var content = $("#content").val();

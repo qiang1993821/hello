@@ -1,5 +1,6 @@
 package com.web.joke.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.web.joke.dao.AlertDao;
 import com.web.joke.dao.SingleAlertDao;
 import com.web.joke.enity.Alert;
@@ -60,8 +61,11 @@ public class AlertServiceImpl implements AlertService {
         try {
             String listStr = alert.getAlertList();
             List<String> pageList = new ArrayList<String>();
+            String[] pageArr = listStr.split("-");
             if (StringUtils.isNotBlank(listStr)){
-                pageList = Arrays.asList(listStr.split("-"));
+                for (int i = 0; i < pageArr.length; i++){
+                    pageList.add(pageArr[i]);
+                }
             }
             pageList.remove(pageId+"");
             String newList = "";
@@ -90,5 +94,43 @@ public class AlertServiceImpl implements AlertService {
         if (StringUtils.isBlank(alertList))
             return 0;
         return alertList.split("-").length;
+    }
+
+    @Override
+    public List<JSONObject> getPageList(long alertId) {
+        Alert alert = alertDao.findOne(alertId);
+        String alertList =  alert.getAlertList();
+        if (StringUtils.isBlank(alertList))
+            return null;
+        try {
+            String[] pageArr = alertList.split("-");
+            List<JSONObject> infoList = new ArrayList<JSONObject>();
+            for (int i = 0; i < pageArr.length; i++){
+                JSONObject info = new JSONObject();
+                SingleAlert page = pageDao.findOne(Long.valueOf(pageArr[i]));
+                info.put("url","editPage?alertId="+alertId+"&pageId="+page.getId()+"&"+"currentPage="+(i+1));
+                info.put("info",page.getContent());
+                if (page.getPrompt() == 1)
+                    info.put("tips","答");
+                infoList.add(info);
+            }
+            if (infoList.size()>0)
+                return infoList;
+            else
+                return null;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public SingleAlert getOnePage(long pageId) {
+        try {
+            return pageDao.findOne(pageId);
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return null;
+        }
     }
 }

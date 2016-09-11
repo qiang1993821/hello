@@ -27,9 +27,9 @@
 				<c:forEach items="${infoList}" var="info" varStatus="status">
 					<a class="weui_cell" href="${info.url}">
 						<div class="weui_cell_bd weui_cell_primary">
-							<p>${status.index+1}.${info.name}</p>
+							<p>${status.index+1}.${info.info}</p>
 						</div>
-						<div class="weui_cell_ft">${info.info}</div>
+						<div class="weui_cell_ft">${info.tips}</div>
 					</a>
 				</c:forEach>
 				<c:if test="${infoList==null || infoList.size()==0}">

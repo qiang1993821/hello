@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/static/css/index.css">
   <link rel="stylesheet" href="/static/css/login.css">
   <link rel="stylesheet" href="/static/css/example.css">
-  <title>新建</title>
+  <title>弹窗</title>
 </head>
 <body class="login">
 <center>
@@ -28,16 +28,33 @@
     <div align="center">图片和标题为转发至朋友圈后显示的图片和标题，有没有人上当，就看你怎么设置了！</div>
     <hr><br>
     <div class="title"><input type="text" placeholder="请填写标题" id="title" name="title" value="${title}"></div>
-    <br><br><br><br>
     <c:choose>
       <c:when test="${alertId >0}">
+        <div class="weui_cells">
+          <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+              <p>创建时间</p>
+            </div>
+            <div class="weui_cell_ft">${addTime}</div>
+          </div>
+        </div>
+        <div class="weui_cells">
+          <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+              <p>最新修改</p>
+            </div>
+            <div class="weui_cell_ft">${editTime}</div>
+          </div>
+        </div>
+        <br><br>
         <input type="hidden" id="alertId" name="alertId" value="${alertId}">
-        <a href="javascript:addAlert()" class="weui_btn weui_btn_primary">确认修改</a>
-        <a href="javascript:addAlert()" class="weui_btn weui_btn_primary">查看全部弹窗</a>
-        <a href="" class="weui_btn weui_btn_default">预览</a>
-        <a href="javascript:addAlert()" class="weui_btn weui_btn_warn">删除</a>
+        <a href="javascript:editAlert()" class="weui_btn weui_btn_primary">确认修改</a>
+        <a href="javascript:toAllPage()" class="weui_btn weui_btn_primary">查看全部弹窗</a>
+        <a href="javascript:preview()" class="weui_btn weui_btn_default">预览</a>
+        <a href="javascript:delAlert()" class="weui_btn weui_btn_warn">删除</a>
       </c:when>
       <c:otherwise>
+        <br><br><br><br>
         <a href="javascript:addAlert()" class="weui_btn weui_btn_primary">确认新建</a>
       </c:otherwise>
     </c:choose>
@@ -59,6 +76,10 @@
 <script src="/static/js/zepto.min.js"></script>
 <script src="/static/js/router.min.js"></script>
 <script type="text/javascript">
+  var title = "";
+  if($("#alertId").val()){
+    title = $("#title").val();
+  }
   $(function() {
     if(!localStorage.jokeId){
       location.href = "login";
@@ -79,17 +100,33 @@
   function upload(){
     return $("#upload").click();
   }
+  //新增
   function addAlert(){
-    var title = $("#title").val();
+    title = $("#title").val();
     var img = $("#upload").val();
-    if(img=="") {
+    if(img=="" || title=="") {
       $(".weui_dialog_title").html("上传失败");
       $(".weui_dialog_bd").html("图片或标题不能为空！");
       $('#url').attr('href',"javascript:closeDialog(0)");
       $(".weui_dialog_alert").removeAttr("hidden");
       $("#btn").removeAttr("hidden");
-    }else
+    }else {
       $("#addAlert").submit();
+    }
+  }
+  //编辑
+  function editAlert(){
+    var newTitle = $("#title").val();
+    var img = $("#upload").val();
+    if(img=="" && title==newTitle) {
+      $(".weui_dialog_title").html("上传失败");
+      $(".weui_dialog_bd").html("未做修改！");
+      $('#url').attr('href',"javascript:closeDialog(0)");
+      $(".weui_dialog_alert").removeAttr("hidden");
+      $("#btn").removeAttr("hidden");
+    }else {
+      $("#addAlert").submit();
+    }
   }
   function PreviewImage(imgFile) {
     var pattern = /(\.*.jpg$)|(\.*.png$)|(\.*.jpeg$)|(\.*.gif$)|(\.*.bmp$)/;
@@ -117,6 +154,10 @@
         document.getElementById("imgPreview").innerHTML = "<img width='100px' src='"+path+"'/>";
       }
     }
+  }
+  //查看全部弹窗
+  function toAllPage(){
+    location.href = "pageList?alertId="+$("#alertId").val();
   }
   //关闭对话框
   function closeDialog(type){

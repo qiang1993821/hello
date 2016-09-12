@@ -21,7 +21,7 @@
         <a href="add" class="weui_btn weui_btn_primary">
             新建弹窗
         </a>
-        <a href="javascript:logout()" class="weui_btn weui_btn_default">
+        <a href="javascript:myAlert()" class="weui_btn weui_btn_default">
             我的弹窗
         </a>
         <a href="javascript:logout()" class="weui_btn weui_btn_warn">
@@ -41,6 +41,10 @@
         function logout(){
             localStorage.clear();
             location.href = "login";
+        }
+        //我的弹窗
+        function myAlert(){
+            location.href = "myAlert?uid="+localStorage.jokeId;
         }
     </script>
     <style type="text/css">

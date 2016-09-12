@@ -3,6 +3,7 @@ package com.web.joke.controller
 import com.web.joke.enity.SingleAlert
 import com.web.joke.service.impl.AlertServiceImpl
 import groovy.json.JsonBuilder
+import org.apache.tomcat.util.http.fileupload.IOUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,6 +11,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+
+import javax.servlet.http.HttpServletResponse
 
 /**
  * Created by roc on 2016/8/29.
@@ -54,5 +57,22 @@ class AlertContoller {
             logger.error("joke|savePage|Exception:" + e.message)
         }
         return new JsonBuilder(map).toString()
+    }
+
+    //新增或修改一个弹窗
+    @RequestMapping(value = "/getImg")
+    String getImg(@RequestParam(value = "alertId") Long alertId,
+                  HttpServletResponse response){
+        FileInputStream inputStream = new FileInputStream("E:\\joke\\"+alertId+".jpg");
+        int length = inputStream.available();
+        byte[] data = new byte[length];
+        response.setContentLength(length);
+        response.setContentType("jpg");
+        inputStream.read(data);
+        OutputStream toClient = response.getOutputStream();
+        toClient.write(data);
+        toClient.flush();
+        IOUtils.closeQuietly(toClient);
+        IOUtils.closeQuietly(inputStream);
     }
 }

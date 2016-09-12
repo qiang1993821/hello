@@ -11,17 +11,51 @@
   <meta name="wap-font-scale" content="no">
   <link rel="stylesheet" href="/static/css/weui.min.css"/>
   <link rel="stylesheet" href="/static/css/reset.css">
-  <link rel="stylesheet" href="/static/css/login.css">
+  <link rel="stylesheet" href="/static/css/index.css">
+  <link rel="stylesheet" href="/static/css/example.css">
   <script src="/static/js/zepto.min.js"></script>
   <title>我的弹窗</title>
 </head>
 <body>
-<a class="weui_cell" href="javascript:;">
-  <div class="weui_cell_hd"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" alt="" style="width:20px;margin-right:5px;display:block"></div>
-  <div class="weui_cell_bd weui_cell_primary">
-    <p>文字标题</p>
-  </div>
-  <span class="weui_cell_ft"></span>
-</a>
+<div class="hd">
+  <h1 class="page_title" style="font-size:20px;color:#000000;">点击编辑弹窗</h1>
+</div>
+<hr>
+<c:choose>
+  <c:when test="${not empty alertList}">
+    <c:forEach items="${alertList}" var="alert">
+      <a href="${alert.url}" class="weui_media_box weui_media_appmsg">
+        <div class="weui_media_hd">
+          <img class="weui_media_appmsg_thumb" src="${alert.imgUrl}" alt="图片无法显示">
+        </div>
+        <div class="weui_media_bd">
+          <h4 class="weui_media_title">${alert.title}</h4>
+        </div>
+      </a>
+    </c:forEach>
+  </c:when>
+  <c:otherwise>
+    <div class="weui_dialog_alert" hidden="hidden">
+      <div class="weui_mask"></div>
+      <div class="weui_dialog">
+        <div class="weui_dialog_hd"><strong class="weui_dialog_title">弹窗标题</strong></div>
+        <div class="weui_dialog_bd">弹窗内容，告知当前页面信息等</div>
+        <div class="weui_dialog_ft">
+          <a href="#" class="weui_btn_dialog primary" id="url">确定</a>
+        </div>
+      </div>
+    </div>
+  <script type="text/javascript">
+    $(".weui_dialog_title").html("提示");
+    $(".weui_dialog_bd").html("您还未建立弹窗");
+    $('#url').attr('href',"javascript:closeDialog()");
+    $(".weui_dialog_alert").removeAttr("hidden");
+    function closeDialog(){
+        location.href = "index";
+    }
+  </script>
+  </c:otherwise>
+</c:choose>
+<hr>
 </body>
 </html>

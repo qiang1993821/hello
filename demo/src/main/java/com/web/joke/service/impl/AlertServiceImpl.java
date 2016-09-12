@@ -14,7 +14,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -132,5 +131,26 @@ public class AlertServiceImpl implements AlertService {
             logger.error(e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public List<JSONObject> getMyAlertList(long uid) {
+        try {
+            List<Alert> alertList = alertDao.getMyAlertList(uid);
+            if (alertList != null && alertList.size()>0){
+                List<JSONObject> infoList = new ArrayList<JSONObject>();
+                for (Alert alert:alertList){
+                    JSONObject info = new JSONObject();
+                    info.put("imgUrl","alert/getImg?alertId="+alert.getId());
+                    info.put("url","edit?alertId="+alert.getId());
+                    info.put("title",alert.getTitle());
+                    infoList.add(info);
+                }
+                return infoList;
+            }
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        return null;
     }
 }

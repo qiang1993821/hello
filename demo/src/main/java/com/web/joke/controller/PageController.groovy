@@ -102,8 +102,6 @@ public class PageController {
     //新增弹窗
     @RequestMapping(value = "/add")
     public String add(Map<String, Object> model) {
-        model.put("img","/static/images/joke_head.jpg")
-        model.put("title","啦啦啦")
         return "joke/add"
     }
 
@@ -112,7 +110,13 @@ public class PageController {
     public String edit(Map<String, Object> model,
                       @RequestParam(value = "alertId") Long alertId) {
         model.put("alertId",alertId)
-        //根据id取title，修改时间之类的
+        def alert = alertService.getOneById(alertId)
+        if (alert != null) {
+            model.put("img", "alert/getImg?alertId=" + alertId)
+            model.put("title", alert.title)
+            model.put("addTime", alert.addTime)
+            model.put("editTime", StringUtils.isBlank(alert.editTime)?alert.addTime:alert.editTime)
+        }
         return "joke/add"
     }
 
@@ -130,6 +134,7 @@ public class PageController {
             model.put("result","图片过大，上传失败！")
             return "joke/add"
         }
+        def isEdit = false
         def alert = new Alert()
         if (alertId==null || alertId==0){//新建
             alert.addTime = TimeUtil.getNowTime()
@@ -142,6 +147,7 @@ public class PageController {
             }
             alertId = alert.id
         }else {
+            isEdit = true
             alert = alertService.getOneById(alertId)
             if (alert==null){
                 model.put("result","弹窗不存在！")
@@ -153,15 +159,21 @@ public class PageController {
             if (type==0){
                 model.put("result","修改弹窗失败！")
                 return "joke/add"
+            }else {
+                model.put("result","修改弹窗成功！")
             }
         }
-        if (PhontoUtil.savePhonto(file,alertId)){
-            model.put("alertId",alertId)
-            model.put("result","操作成功")//和前端js判断相关，别随意改
+        if (isEdit && file.size==0){
             return "joke/add"
         }else {
-            model.put("result","图片保存失败！")
-            return "joke/add"
+            if (PhontoUtil.savePhonto(file, alertId)) {
+                model.put("alertId", alertId)
+                model.put("result", "操作成功")//和前端js判断相关，别随意改
+                return "joke/add"
+            } else {
+                model.put("result", "图片保存失败！")
+                return "joke/add"
+            }
         }
     }
 
@@ -201,4 +213,12 @@ public class PageController {
         return "joke/addPage"
     }
 
+    //我的弹窗
+    @RequestMapping(value = "/myAlert")
+    public String myAlert(Map<String, Object> model,
+                           @RequestParam(value = "uid") Long uid) {
+        def alertList = alertService.getMyAlertList(uid)
+        model.put("alertList",alertList)
+        return "joke/myAlert"
+    }
 }

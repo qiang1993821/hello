@@ -61,4 +61,11 @@ public interface AlertService {
      * @return
      */
     SingleAlert getOnePage(long pageId);
+
+    /**
+     * 获取我的全部弹窗
+     * @param uid
+     * @return
+     */
+    List<JSONObject> getMyAlertList(long uid);
 }

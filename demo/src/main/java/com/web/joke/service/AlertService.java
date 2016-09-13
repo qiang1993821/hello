@@ -68,4 +68,26 @@ public interface AlertService {
      * @return
      */
     List<JSONObject> getMyAlertList(long uid);
+
+    /**
+     * 删除弹窗
+     * @param pageId
+     * @param alertId
+     * @return
+     */
+    int delPage(long pageId,long alertId);
+
+    /**
+     * 删除整个弹窗
+     * @param alertId
+     * @return
+     */
+    int delAlert(long alertId);
+
+    /**
+     * 获取全部弹窗
+     * @param alertStr
+     * @return
+     */
+    List<SingleAlert> getAllPage(String alertStr);
 }

@@ -107,7 +107,7 @@
 <script src="/static/js/router.min.js"></script>
   <script type="text/javascript">
     $(function() {
-      if (!localStorage.jokeId) {
+      if(!localStorage.jokeId || localStorage.jokeId=='undefined'){
         location.href = "login";
       }
     });
@@ -159,7 +159,6 @@
               $(".weui_dialog_title").html("操作成功");
               $(".weui_dialog_bd").html("");
               $('#url').attr('href',"javascript:closeDialog(2)");
-              localStorage.jokeId = data.result;
             }else{
               $(".weui_dialog_title").html("提示");
               $(".weui_dialog_bd").html(data.result);
@@ -173,6 +172,46 @@
         $(".weui_dialog_title").html("操作失败");
         $(".weui_dialog_bd").html(msg);
         $('#url').attr('href',"javascript:closeDialog(1)");
+        $(".weui_dialog_alert").removeAttr("hidden");
+        $("#btn").removeAttr("hidden");
+      }
+    }
+    //删除弹窗
+    function deletePage(){
+      $("#btn").attr("hidden","hidden");
+      var alertId = $("#alertId").val();
+      var pageId = $("#pageId").val();
+      if(pageId!=null && pageId>0 && alertId!=null && alertId>0){
+        var url = "alert/delPage?pageId="+pageId+"&alertId="+alertId;
+        $.ajax({
+          url: url,
+          type: 'POST',
+          dataType: 'json',
+          error: function () {
+            $(".weui_dialog_title").html("操作失败");
+            $(".weui_dialog_bd").html("服务器被海王类劫持了！");
+            $('#url').attr('href',"javascript:closeDialog(1)");
+            $(".weui_dialog_alert").removeAttr("hidden");
+            $("#btn").removeAttr("hidden");
+          },
+          success: function (data) {
+            if(data.code==1){
+              $(".weui_dialog_title").html("操作成功");
+              $(".weui_dialog_bd").html("");
+              $('#url').attr('href',"javascript:closeDialog(2)");
+            }else{
+              $(".weui_dialog_title").html("提示");
+              $(".weui_dialog_bd").html(data.result);
+              $('#url').attr('href',"javascript:closeDialog(1)");
+            }
+            $("#btn").removeAttr("hidden");
+            $(".weui_dialog_alert").removeAttr("hidden");
+          }
+        });
+      }else{
+        $(".weui_dialog_title").html("操作失败");
+        $(".weui_dialog_bd").html("未获取到id");
+        $('#url').attr('href',"javascript:closeDialog(2)");
         $(".weui_dialog_alert").removeAttr("hidden");
         $("#btn").removeAttr("hidden");
       }

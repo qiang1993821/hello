@@ -48,14 +48,18 @@
         </div>
         <br><br>
         <input type="hidden" id="alertId" name="alertId" value="${alertId}">
-        <a href="javascript:editAlert()" class="weui_btn weui_btn_primary">确认修改</a>
-        <a href="javascript:toAllPage()" class="weui_btn weui_btn_primary">查看全部弹窗</a>
-        <a href="javascript:preview()" class="weui_btn weui_btn_default">预览</a>
-        <a href="javascript:delAlert()" class="weui_btn weui_btn_warn">删除</a>
+        <div id="btn">
+          <a href="javascript:editAlert()" class="weui_btn weui_btn_primary">确认修改</a>
+          <a href="javascript:toAllPage()" class="weui_btn weui_btn_primary">查看全部弹窗</a>
+          <a href="javascript:preview()" class="weui_btn weui_btn_default">预览转发</a>
+          <a href="javascript:delAlert()" class="weui_btn weui_btn_warn">删除</a>
+        </div>
       </c:when>
       <c:otherwise>
         <br><br><br><br>
-        <a href="javascript:addAlert()" class="weui_btn weui_btn_primary">确认新建</a>
+        <div id="btn">
+          <a href="javascript:addAlert()" class="weui_btn weui_btn_primary">确认新建</a>
+        </div>
       </c:otherwise>
     </c:choose>
     <div id="uid" hidden="hidden"></div>
@@ -81,7 +85,7 @@
     title = $("#title").val();
   }
   $(function() {
-    if(!localStorage.jokeId){
+    if(!localStorage.jokeId || localStorage.jokeId=='undefined'){
       location.href = "login";
     }
     document.getElementById("uid").innerHTML = '<input type="hidden" name="uid" value="'+localStorage.jokeId+'">'
@@ -93,7 +97,6 @@
       if(result=="操作成功")
         $('#url').attr('href',"javascript:closeDialog(2)");
       $(".weui_dialog_alert").removeAttr("hidden");
-      $("#btn").removeAttr("hidden");
     }
   });
   //上传
@@ -102,6 +105,7 @@
   }
   //新增
   function addAlert(){
+    $("#btn").attr("hidden","hidden");
     title = $("#title").val();
     var img = $("#upload").val();
     if(img=="" || title=="") {
@@ -116,6 +120,7 @@
   }
   //编辑
   function editAlert(){
+    $("#btn").attr("hidden","hidden");
     var newTitle = $("#title").val();
     var img = $("#upload").val();
     if(img=="" && title==newTitle) {
@@ -158,6 +163,49 @@
   //查看全部弹窗
   function toAllPage(){
     location.href = "pageList?alertId="+$("#alertId").val();
+  }
+  //删除弹窗
+  function delAlert(){
+    $("#btn").attr("hidden","hidden");
+    var alertId = $("#alertId").val();
+    if(alertId!=null && alertId>0){
+      var url = "alert/delAlert?alertId="+alertId;
+      $.ajax({
+        url: url,
+        type: 'POST',
+        dataType: 'json',
+        error: function () {
+          $(".weui_dialog_title").html("操作失败");
+          $(".weui_dialog_bd").html("服务器被海王类劫持了！");
+          $('#url').attr('href',"javascript:closeDialog(1)");
+          $(".weui_dialog_alert").removeAttr("hidden");
+          $("#btn").removeAttr("hidden");
+        },
+        success: function (data) {
+          if(data.code==1){
+            $(".weui_dialog_title").html("操作成功");
+            $(".weui_dialog_bd").html("");
+            $('#url').attr('href',"javascript:closeDialog(1)");
+          }else{
+            $(".weui_dialog_title").html("提示");
+            $(".weui_dialog_bd").html(data.result);
+            $('#url').attr('href',"javascript:closeDialog(1)");
+          }
+          $("#btn").removeAttr("hidden");
+          $(".weui_dialog_alert").removeAttr("hidden");
+        }
+      });
+    }else{
+      $(".weui_dialog_title").html("操作失败");
+      $(".weui_dialog_bd").html("未获取到id");
+      $('#url').attr('href',"javascript:closeDialog(1)");
+      $(".weui_dialog_alert").removeAttr("hidden");
+      $("#btn").removeAttr("hidden");
+    }
+  }
+  //预览
+  function preview(){
+    location.href = "alert?alertId="+$("#alertId").val();
   }
   //关闭对话框
   function closeDialog(type){

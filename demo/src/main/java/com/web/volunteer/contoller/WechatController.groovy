@@ -43,8 +43,8 @@ class WechatController {
             e.printStackTrace()
         }
         def event = msg.get("Event");
-        def content = "\ue231<a href=\"http://www.ustbvolunteer.com/login\">点击进入活动管理平台</a>\ue231\n" +
-                "\ue231<a href=\"http://www.ustbvolunteer.com/joke/login\">点击进入弹窗恶作剧</a>\ue230\n" +
+        def content = "\ue231<a href=\"http://www.ustbvolunteer.com/login\">点击进入活动管理平台</a>\n" +
+                "\ue231<a href=\"http://www.ustbvolunteer.com/joke/login\">点击进入弹窗恶作剧</a>\n" +
                 "自带超简易的回复系统，回复内容是上一位的发言,支持图片语音，如果聊上了，纯属巧合。~\n" +
                 "主页君是一个技术粗糙喜欢胡思乱想的无聊人士，会不定时的推出些无聊的小功能，欢迎邮件roc_strong@163.com，\n" +
                 "吐槽，提意见，出点子，技术改进均可~"
@@ -64,7 +64,6 @@ class WechatController {
             return HttpJsonUtil.reply(msg,content)
         }
         //获取缓存回复，将来信加入缓存，t开头代表文本，v声音，i图片
-        content = "t"+content
         Random random = new Random()
         int r = random.nextInt(10)//十个缓存，避免一直和自己对话
         if (CacheUtil.getCache("lastMsg"+r)!=null)

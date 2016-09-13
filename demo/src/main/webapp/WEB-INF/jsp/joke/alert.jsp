@@ -14,8 +14,26 @@
   <link rel="stylesheet" href="/static/css/login.css">
   <link rel="stylesheet" href="/static/css/example.css">
   <title>${title}</title>
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?97f7f6d84c6771a74c86e1837c2e9751";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
 </head>
 <body>
+<div style='margin:0 auto;width:0px;height:0px;overflow:hidden;'>
+  <img src="${imgUrl}" width='700'>
+</div>
+<img src="/static/images/joke_bg.jpg" style="width:100%;">
+<br><br>
+<h1 style="font-weight: bold;font-size: 19px;color: #FF0000;">长按上图识别图中二维码</h1><br>
+<h1 style="font-weight: bold;font-size: 19px;color: #FFCC00;">或搜索公众号“弓一”</h1><br>
+<h1 style="font-weight: bold;font-size: 19px;color: #00FF00;">或搜索公众号“roc_gongyi”</h1>
 <c:forEach items="${alertList}" var="var">
   <c:choose>
     <c:when test="${var.prompt eq 0}">

@@ -2,6 +2,7 @@ package com.web.joke.controller
 
 import com.web.joke.enity.SingleAlert
 import com.web.joke.service.impl.AlertServiceImpl
+import com.web.joke.util.PhontoUtil
 import groovy.json.JsonBuilder
 import org.apache.tomcat.util.http.fileupload.IOUtils
 import org.slf4j.Logger
@@ -59,11 +60,58 @@ class AlertContoller {
         return new JsonBuilder(map).toString()
     }
 
-    //新增或修改一个弹窗
+    //删除整个弹窗
+    @RequestMapping(value = "/delAlert")
+    String delAlert(@RequestParam(value = "alertId") Long alertId){
+        def map = [:]
+        try{
+            if (alertId==null || alertId==0){
+                map.put("code",0)
+                map.put("result","获取不到弹窗ID")
+                return new JsonBuilder(map).toString()
+            }
+            //删除弹窗
+            int code = alertService.delAlert(alertId)
+            if (code != 1)
+                map.put("result","删除失败")
+            map.put("code", code)
+        }catch (Exception e){
+            map.put("code", -1)
+            map.put("result","删除异常")
+            logger.error("joke|delPage|Exception:" + e.message)
+        }
+        return new JsonBuilder(map).toString()
+    }
+
+    //删除一个弹窗
+    @RequestMapping(value = "/delPage")
+    String delPage(@RequestParam(value = "pageId") Long pageId,
+                   @RequestParam(value = "alertId") Long alertId){
+        def map = [:]
+        try{
+            if (pageId==null || alertId==null || pageId==0 || alertId==0){
+                map.put("code",0)
+                map.put("result","获取不到弹窗ID")
+                return new JsonBuilder(map).toString()
+            }
+            //删除弹窗
+            int code = alertService.delPage(pageId,alertId)
+            if (code != 1)
+                map.put("result","删除失败")
+            map.put("code", code)
+        }catch (Exception e){
+            map.put("code", -1)
+            map.put("result","删除异常")
+            logger.error("joke|delPage|Exception:" + e.message)
+        }
+        return new JsonBuilder(map).toString()
+    }
+
+    //获取图片
     @RequestMapping(value = "/getImg")
     String getImg(@RequestParam(value = "alertId") Long alertId,
                   HttpServletResponse response){
-        FileInputStream inputStream = new FileInputStream("E:\\joke\\"+alertId+".jpg");
+        FileInputStream inputStream = new FileInputStream(PhontoUtil.IMG_URL+alertId+".jpg");
         int length = inputStream.available();
         byte[] data = new byte[length];
         response.setContentLength(length);

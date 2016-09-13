@@ -33,7 +33,7 @@
     <script src="/static/js/router.min.js"></script>
     <script type="text/javascript">
         $(function() {
-            if(!localStorage.jokeId){
+            if(!localStorage.jokeId || localStorage.jokeId=='undefined'){
                 location.href = "login";
             }
         });
@@ -48,7 +48,6 @@
         }
     </script>
     <style type="text/css">
-
         #qyp{
             height:70%;
             background:url(/static/images/joke_head.jpg) center top no-repeat;

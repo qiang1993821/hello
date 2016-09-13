@@ -14,17 +14,18 @@ import java.io.File;
  */
 public class PhontoUtil {
     private static final Logger logger = LoggerFactory.getLogger(PhontoUtil.class);
+    public static final String IMG_URL = "E:\\joke\\";
 
     public static boolean savePhonto(MultipartFile file, long alertId){
-        String filePath = "E:\\joke\\";
+        String filePath = IMG_URL;
         try {
             File localFile = new File(filePath+alertId+".jpg");
             file.transferTo(localFile);//MultipartFile自带的方法
             //裁剪图片
             BufferedImage input = ImageIO.read(localFile);
-            BufferedImage inputbig = new BufferedImage(256, 256, BufferedImage.TYPE_INT_BGR);
+            BufferedImage inputbig = new BufferedImage(300, 300, BufferedImage.TYPE_INT_BGR);
             Graphics2D g = (Graphics2D) inputbig.getGraphics();
-            g.drawImage(input, 0, 0,256,256,null); //画图
+            g.drawImage(input, 0, 0,300,300,null); //画图
             g.dispose();
             inputbig.flush();
             ImageIO.write(inputbig, "jpg", new File(filePath+alertId+".jpg"));

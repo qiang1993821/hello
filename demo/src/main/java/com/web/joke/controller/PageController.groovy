@@ -76,26 +76,11 @@ public class PageController {
     public String alert(Map<String, Object> model,
                         @RequestParam(value = "alertId") Long alertId) {
         //处理
-        def list = new ArrayList<SingleAlert>()
-        def a1 = new SingleAlert()
-        a1.content = "窗前明月光"
-        a1.prompt = 0
-        list.add(a1)
-        def a2 = new SingleAlert()
-        a2.content = "疑是地上霜"
-        a2.prompt = 0
-        list.add(a2)
-        def a3 = new SingleAlert()
-        a3.content = "下一句："
-        a3.prompt = 1
-        a3.answer = "举头望明月"
-        a3.wrong = "这都不会？"
-        list.add(a3)
-        def a4 = new SingleAlert()
-        a4.content = "低头思故乡"
-        a4.prompt = 0
-        list.add(a4)
-        model.put("alertList",list)
+        def alert = alertService.getOneById(alertId)
+        def alertList = alertService.getAllPage(alert.alertList)
+        model.put("alertList",alertList)
+        model.put("imgUrl","http://www.ustbvolunteer.com/joke/alert/getImg?alertId=" + alertId)
+        model.put("title",alert.title)
         return "joke/alert"
     }
 

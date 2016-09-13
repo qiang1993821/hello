@@ -45,6 +45,12 @@
 				} else{
 					location.href = "/activityInfo?activityId="+activityId;
 				}
+			}else{
+				$(".weui_dialog_title").html("注册指南");
+				$(".weui_dialog_bd").html("输入正确的邮箱，设置密码后点击登录按钮，您的邮箱将收到激活链接，激活后即可登录！");
+				$('#url').attr('href',"javascript:closeDialog()");
+				$(".weui_dialog_alert").removeAttr("hidden");
+				$("#btn").removeAttr("hidden");
 			}
 		});
 		function login(){

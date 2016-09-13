@@ -6,6 +6,7 @@ import com.web.joke.dao.SingleAlertDao;
 import com.web.joke.enity.Alert;
 import com.web.joke.enity.SingleAlert;
 import com.web.joke.service.AlertService;
+import com.web.joke.util.PhontoUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +61,11 @@ public class AlertServiceImpl implements AlertService {
     public boolean saveSequence(Alert alert, int num, long pageId) {
         try {
             String listStr = alert.getAlertList();
+            if (StringUtils.isBlank(listStr)){
+                alert.setAlertList(pageId+"-");
+                alertDao.save(alert);
+                return true;
+            }
             List<String> pageList = new ArrayList<String>();
             String[] pageArr = listStr.split("-");
             if (StringUtils.isNotBlank(listStr)){
@@ -66,7 +73,8 @@ public class AlertServiceImpl implements AlertService {
                     pageList.add(pageArr[i]);
                 }
             }
-            pageList.remove(pageId+"");
+            if (num <= pageArr.length)
+                pageList.remove(pageId+"");
             String newList = "";
             for (int i = 1;i<pageList.size()+2;i++){
                 if (i<num){
@@ -152,5 +160,67 @@ public class AlertServiceImpl implements AlertService {
             logger.error(e.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public int delPage(long pageId, long alertId) {
+        try {
+            pageDao.delete(pageId);
+            Alert alert = alertDao.findOne(alertId);
+            String listStr = alert.getAlertList();
+            String[] pageArr = listStr.split("-");
+            listStr = "";
+            for (int i = 0; i < pageArr.length; i++){
+                if (pageArr[i].equals(pageId+""))
+                    continue;
+                listStr += pageArr[i]+"-";
+            }
+            alert.setAlertList(listStr);
+            alertDao.save(alert);
+            return 1;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        return 0;
+    }
+
+    @Override
+    public int delAlert(long alertId) {
+        try {
+            Alert alert = alertDao.findOne(alertId);
+            File img = new File(PhontoUtil.IMG_URL+alertId+".jpg");
+            img.delete();
+            if (StringUtils.isNotBlank(alert.getAlertList())){
+                String[] pageArr = alert.getAlertList().split("-");
+                for (int i = 0; i < pageArr.length; i++){
+                    pageDao.delete(Long.valueOf(pageArr[i]));
+                }
+            }
+            alertDao.delete(alertId);
+            return 1;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        return 0;
+    }
+
+    @Override
+    public List<SingleAlert> getAllPage(String alertList) {
+        if (StringUtils.isBlank(alertList))
+            return null;
+        try {
+            String[] pageArr = alertList.split("-");
+            List<SingleAlert> infoList = new ArrayList<SingleAlert>();
+            for (int i = 0; i < pageArr.length; i++){
+                infoList.add(pageDao.findOne(Long.valueOf(pageArr[i])));
+            }
+            if (infoList.size()>0)
+                return infoList;
+            else
+                return null;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return null;
+        }
     }
 }

@@ -45,9 +45,9 @@ class WechatController {
         def event = msg.get("Event");
         def content = "\ue231<a href=\"http://www.ustbvolunteer.com/login\">点击进入活动管理平台</a>\n" +
                 "\ue231<a href=\"http://www.ustbvolunteer.com/joke/login\">点击进入弹窗恶作剧</a>\n" +
-                "自带超简易的回复系统，回复内容是上一位的发言,支持图片语音，如果聊上了，纯属巧合。~\n" +
-                "主页君是一个技术粗糙喜欢胡思乱想的无聊人士，会不定时的推出些无聊的小功能，欢迎邮件roc_strong@163.com，\n" +
-                "吐槽，提意见，出点子，技术改进均可~"
+                "\ue231<a href=\"http://www.ustbvolunteer.com:821/login\">狼人杀首夜辅助</a>\n" +
+                "bug反馈，技术合作欢迎邮件roc_strong@163.com\n" +
+                "本公众号为个人爱好，非商业用途，如果你有只差一个程序员的有趣点子欢迎联系讨论。"
         if (StringUtils.isNotBlank(event)){
             logger.error("WECHAT_EVENT|event:"+event)
             if ("subscribe".equalsIgnoreCase(event)){

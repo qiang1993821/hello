@@ -14,7 +14,7 @@ import java.io.File;
  */
 public class PhontoUtil {
     private static final Logger logger = LoggerFactory.getLogger(PhontoUtil.class);
-    public static final String IMG_URL = "E:\\joke\\";
+    public static final String IMG_URL = "/www/joke/";
 
     public static boolean savePhonto(MultipartFile file, long alertId){
         String filePath = IMG_URL;
